@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://d16s7d124y6qr"]
+
+[ext_resource type="Script" uid="uid://ckhrqkqpdwy0d" path="res://scripts/characters/goku.gd" id="1_rwjit"]
+[ext_resource type="Resource" uid="uid://bkg06l82b2gr6" path="res://resources/characters/goku.tres" id="2_j34ol"]
+[ext_resource type="Texture2D" uid="uid://iwaacjno3yc6" path="res://icon.svg" id="3_jxlal"]
+[ext_resource type="Script" uid="uid://b62lh3r0wglh5" path="res://scripts/states/state_machine.gd" id="4_eoue0"]
+[ext_resource type="Script" uid="uid://7vk7xj544oko" path="res://scripts/states/idle_state.gd" id="5_7on5h"]
+[ext_resource type="Script" uid="uid://cgorcm1v17hry" path="res://scripts/states/walk_state.gd" id="6_gkl1l"]
+[ext_resource type="Script" uid="uid://cw2o4fa5ry5pl" path="res://scripts/states/jump_state.gd" id="7_gu68j"]
+[ext_resource type="Script" uid="uid://cr5vlmwtjucgf" path="res://scripts/states/attack_state.gd" id="8_l8ill"]
+[ext_resource type="Script" uid="uid://dmaw6h7f15dkd" path="res://scripts/states/hurt_state.gd" id="9_pay4t"]
+[ext_resource type="Script" uid="uid://b8vp81j44bq70" path="res://scripts/states/ko_state.gd" id="10_j04nu"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gbhp4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_jxlal")
+}],
+"loop": 1,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_jxlal")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_jxlal")
+}],
+"loop": 1,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_jxlal")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_d4dkj"]
+radius = 64.0
+height = 128.0
+
+[node name="goku" type="CharacterBody2D" unique_id=763281003]
+script = ExtResource("1_rwjit")
+data = ExtResource("2_j34ol")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=906207952]
+sprite_frames = SubResource("SpriteFrames_gbhp4")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1141331218]
+shape = SubResource("CapsuleShape2D_d4dkj")
+
+[node name="StateMachine" type="Node" parent="." unique_id=123822527]
+script = ExtResource("4_eoue0")
+
+[node name="Idle" type="Node" parent="StateMachine" unique_id=472908552]
+script = ExtResource("5_7on5h")
+
+[node name="Walk" type="Node" parent="StateMachine" unique_id=1269416839]
+script = ExtResource("6_gkl1l")
+
+[node name="Jump" type="Node" parent="StateMachine" unique_id=1322032657]
+script = ExtResource("7_gu68j")
+
+[node name="Attack" type="Node" parent="StateMachine" unique_id=1130829389]
+script = ExtResource("8_l8ill")
+
+[node name="Hurt" type="Node" parent="StateMachine" unique_id=1990727975]
+script = ExtResource("9_pay4t")
+
+[node name="KO" type="Node" parent="StateMachine" unique_id=240649229]
+script = ExtResource("10_j04nu")

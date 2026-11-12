@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://bkg06l82b2gr6"]
+
+[ext_resource type="Script" uid="uid://dnidmi20ukc3t" path="res://scripts/characters/character_data.gd" id="1_g6noj"]
+
+[resource]
+script = ExtResource("1_g6noj")
+id = "goku"
+display_name = "Goku"
+move_speed = 200.0
+damage_special = 25.0

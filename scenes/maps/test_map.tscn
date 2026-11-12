@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://hk4jverbcyef"]
+
+[ext_resource type="PackedScene" uid="uid://dxxlbwcsrjfiq" path="res://resources/characters/goku.tscn" id="1_b5vwe"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5m0q7"]
+size = Vector2(819, 20)
+
+[node name="TestMap" type="Node2D" unique_id=543809311]
+
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1320067994]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1931558154]
+position = Vector2(411, 67)
+shape = SubResource("RectangleShape2D_5m0q7")
+
+[node name="ColorRect" type="ColorRect" parent="Ground" unique_id=1968563396]
+offset_top = 57.0
+offset_right = 823.0
+offset_bottom = 77.0
+color = Color(0.007843138, 0.9764706, 0.2901961, 1)
+
+[node name="goku" parent="." unique_id=763281003 instance=ExtResource("1_b5vwe")]
+position = Vector2(411, -10)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=961781016]
+position = Vector2(411, 0)
