@@ -30,12 +30,15 @@ extends Resource
 @export var energy_cost_transform: float = 40.0  ## Ki mínimo requerido para activar
 
 # ---------------------------------------------------------------------------
-# Timing del ataque
+# Timing del ataque (Calibrado con los sprites reales de Goku: 8 frames)
+# Frames 0-3 (0.0s - 0.28s): Wind-up (preparación del golpe)
+# Frames 4-5 (0.28s - 0.48s): Extensión máxima del puño (Hitbox activa)
+# Frames 6-7 (0.48s - 0.65s): Recovery (recogida del brazo)
 # ---------------------------------------------------------------------------
 @export_group("Timing de Ataque")
-@export var attack_duration: float = 0.5
-@export var attack_active_start: float = 0.1
-@export var attack_active_end: float = 0.35
+@export var attack_duration: float = 0.65
+@export var attack_active_start: float = 0.28
+@export var attack_active_end: float = 0.48
 
 # ---------------------------------------------------------------------------
 # Hitstun

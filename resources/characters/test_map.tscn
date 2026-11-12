@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cscujbicxkd85"]
 
-[ext_resource type="PackedScene" uid="uid://cmx5akjfjgexa" path="res://scenes/characters/goku.tscn" id="1_b5vwe"]
 [ext_resource type="PackedScene" uid="uid://c5pbf144hl3uu" path="res://dummy.tscn" id="2_6qg6x"]
 [ext_resource type="Script" uid="uid://dm21o2burc2i5" path="res://scripts/ui/health_bar_ui.gd" id="3_t1lok"]
+[ext_resource type="PackedScene" uid="uid://cmx5akjfjgexa" path="res://resources/characters/goku.tscn" id="4_r8awe"]
 [ext_resource type="Script" uid="uid://o83hy2l6ax0m" path="res://scripts/ui/energy_bar_ui.gd" id="4_t1lok"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5m0q7"]
@@ -21,9 +21,6 @@ offset_top = 57.0
 offset_right = 823.0
 offset_bottom = 77.0
 color = Color(0.007843138, 0.9764706, 0.2901961, 1)
-
-[node name="goku" parent="." unique_id=763281003 instance=ExtResource("1_b5vwe")]
-position = Vector2(411, -10)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=961781016]
 position = Vector2(411, 0)
@@ -46,4 +43,6 @@ offset_top = -314.0
 offset_right = 179.0
 offset_bottom = -287.0
 script = ExtResource("4_t1lok")
-character_path = NodePath("../goku")
+
+[node name="goku" parent="." unique_id=763281003 instance=ExtResource("4_r8awe")]
+position = Vector2(182, -22)
