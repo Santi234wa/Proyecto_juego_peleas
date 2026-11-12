@@ -173,12 +173,14 @@ func try_transform() -> bool:
 	is_transformed = true
 	_speed_mult = data.transform_speed_mult
 	_damage_mult = data.transform_damage_mult
-
-	# Tinte dorado brillante Super Saiyajin
-	modulate = Color(1.35, 1.25, 0.45)
+	modulate = Color(1.0, 1.0, 1.0) # Colores puros de los sprites reales de Super Saiyajin
 
 	if _aura_particles:
 		_aura_particles.set("emitting", true)
+
+	# Actualizar visual inmediatamente al estado transformado
+	if state_machine and state_machine.current_state:
+		play_animation(state_machine.current_state.name.to_lower())
 
 	emit_signal("transformation_started", data.transform_name)
 	print("[%s] 🔥 ¡TRANSFORMACIÓN ACTIVADA! (%s) | Drenando %.1f Ki/s hasta llegar a 0..." % [
@@ -196,10 +198,14 @@ func end_transformation() -> void:
 	modulate = Color(1.0, 1.0, 1.0)
 
 	# Iniciar temporizador de enfriamiento
-	_cooldown_timer = data.transform_cooldown if data else 4.0
+	_cooldown_timer = data.transform_cooldown if data else 8.0
 
 	if _aura_particles:
 		_aura_particles.set("emitting", false)
+
+	# Restaurar visual inmediatamente a la forma base
+	if state_machine and state_machine.current_state:
+		play_animation(state_machine.current_state.name.to_lower())
 
 	emit_signal("transformation_ended")
 	print("[%s] 💨 Ki agotado (0 Ki). Fin de la transformación. Cooldown de %.1fs iniciado." % [name, _cooldown_timer])
@@ -214,16 +220,27 @@ func get_effective_speed() -> float:
 func get_effective_damage(base_damage: float) -> float:
 	return base_damage * _damage_mult
 
+## Reproduce la animación adecuada. Si está transformado, busca el prefijo 'ssj_'.
 func play_animation(anim_name: String) -> void:
-	if not _animated_sprite:
+	if not _animated_sprite or not _animated_sprite.sprite_frames:
 		return
-	if not _animated_sprite.sprite_frames:
+
+	# Si está transformado, intentar buscar la versión 'ssj_' de la animación
+	var target_name: String = anim_name
+	if is_transformed:
+		var ssj_candidate: String = "ssj_" + anim_name
+		if _animated_sprite.sprite_frames.has_animation(ssj_candidate):
+			target_name = ssj_candidate
+
+	# Si la animación no existe en SpriteFrames, no hacer nada para evitar errores
+	if not _animated_sprite.sprite_frames.has_animation(target_name):
 		return
-	if not _animated_sprite.sprite_frames.has_animation(anim_name):
+
+	# Evitar reiniciar la misma animación si ya se está reproduciendo
+	if _animated_sprite.animation == target_name and _animated_sprite.is_playing():
 		return
-	if _animated_sprite.animation == anim_name and _animated_sprite.is_playing():
-		return
-	_animated_sprite.play(anim_name)
+
+	_animated_sprite.play(target_name)
 
 func set_facing(facing_right: bool) -> void:
 	is_facing_right = facing_right
