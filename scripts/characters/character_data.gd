@@ -59,7 +59,7 @@ extends Resource
 @export var transform_damage_mult: float = 1.5             ## Multiplicador de daño
 @export var ki_drain_per_second: float = 8.0               ## Ki drenado por segundo mientras está activo
 @export var ki_gain_hit_mult_transformed: float = 0.3      ## Fracción de Ki ganado al golpear transformado (30%)
-@export var transform_cooldown: float = 4.0                ## Segundos de espera tras destransformarse
+@export var transform_cooldown: float = 8.0                ## Segundos de espera tras destransformarse
 
 # ---------------------------------------------------------------------------
 # Sprites y Audio
