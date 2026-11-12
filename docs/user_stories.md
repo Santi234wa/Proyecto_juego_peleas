@@ -14,10 +14,10 @@
 Como **jugador**, quiero mover a mi personaje izquierda/derecha y saltar, para poder posicionarme en el combate.
 
 **Criterios de aceptación**
-- [ ] El personaje se desplaza horizontalmente al presionar las teclas configuradas.
-- [ ] El personaje salta con una fuerza definida en su CharacterData.
-- [ ] El personaje no atraviesa el suelo ni los límites del escenario.
-- [ ] La animación cambia correctamente entre idle, walk y jump.
+- [x] El personaje se desplaza horizontalmente al presionar las teclas configuradas.
+- [x] El personaje salta con una fuerza definida en su CharacterData.
+- [x] El personaje no atraviesa el suelo ni los límites del escenario.
+- [x] La animación cambia correctamente entre idle, walk y jump.
 
 ---
 
@@ -25,10 +25,11 @@ Como **jugador**, quiero mover a mi personaje izquierda/derecha y saltar, para p
 Como **jugador**, quiero presionar un botón para realizar un ataque básico, para causar daño al rival.
 
 **Criterios de aceptación**
-- [ ] Al presionar la tecla de ataque se reproduce la animación de golpe.
-- [ ] Se activa una hitbox durante los frames activos del ataque.
-- [ ] El rival recibe el daño definido en `damage_basic` del CharacterData del atacante.
-- [ ] No se puede atacar durante el lag de recuperación del mismo ataque.
+- [x] Al presionar la tecla de ataque se reproduce la animación de golpe.
+- [x] Se activa una hitbox durante los frames activos del ataque (con set_deferred).
+- [x] El rival recibe el daño definido en `damage_basic` del CharacterData del atacante.
+- [x] Un ataque conecta una sola vez por activación (lista de objetivos golpeados).
+- [x] No se puede atacar durante el lag de recuperación del mismo ataque.
 
 ---
 
@@ -47,10 +48,10 @@ Como **jugador**, quiero usar un ataque especial que consuma energía, para hace
 Como **jugador**, quiero presionar un botón para bloquear, para reducir el daño recibido.
 
 **Criterios de aceptación**
-- [ ] Mientras se mantiene la tecla de bloqueo, el personaje entra al estado `Blocking`.
-- [ ] Los golpes recibidos mientras se bloquea causan el 50 % del daño normal.
-- [ ] No se puede atacar ni moverse mientras se bloquea.
-- [ ] La animación de bloqueo se reproduce correctamente.
+- [x] Mientras se mantiene la tecla de bloqueo, el personaje entra al estado `Blocking`.
+- [x] Los golpes recibidos mientras se bloquea causan el 50 % del daño normal.
+- [x] No se puede atacar ni moverse mientras se bloquea.
+- [x] Al soltar la tecla de bloqueo se retorna a Idle.
 
 ---
 
@@ -58,21 +59,23 @@ Como **jugador**, quiero presionar un botón para bloquear, para reducir el dañ
 Como **jugador**, quiero ver la barra de vida disminuir al recibir daño, para saber cuánta vida me queda.
 
 **Criterios de aceptación**
-- [ ] La barra se actualiza al recibir la señal `health_changed`.
-- [ ] Al llegar a 0 el personaje entra al estado KO y la ronda termina.
-- [ ] La barra nunca baja de 0 ni sube de `max_health`.
+- [x] La barra se actualiza al recibir la señal Observer `health_changed`.
+- [x] Al llegar a 0 el personaje emite `character_died` y transita a KO.
+- [x] La barra nunca baja de 0 ni sube de `max_health`.
 
 ---
 
-### HU-06 · Barra de energía y transformación 🔴 · S2
-Como **jugador**, quiero acumular energía dando y recibiendo golpes para poder transformarme, porque es una mecánica central del juego.
+### HU-06 · Barra de energía y transformación dinámica por Ki 🔴 · S2
+Como **jugador**, quiero acumular energía dando y recibiendo golpes para poder transformarme y sostener la forma según mi Ki, para tener una mecánica estratégica de gestión de recursos.
 
 **Criterios de aceptación**
-- [ ] Dar un golpe suma `energy_on_hit_dealt` al atacante.
-- [ ] Recibir un golpe suma `energy_on_hit_taken` al defensor.
-- [ ] Al presionar la tecla de transformación con energía suficiente, se inicia la transformación.
-- [ ] La transformación cambia el sprite, aumenta stats y activa partículas de aura.
-- [ ] La transformación dura `transform_duration` segundos y luego se revierte sola.
+- [x] Fuera de transformación: dar un golpe suma `energy_on_hit_dealt` (+10 Ki) y recibir golpe suma `energy_on_hit_taken` (+5 Ki).
+- [x] Al presionar la tecla de transformación con Ki suficiente (≥ `energy_cost_transform`), se inicia la transformación.
+- [x] Mientras está transformado, el Ki se drena continuamente cada segundo (`ki_drain_per_second`).
+- [x] Mientras está transformado, dar golpes suma solo una fracción del Ki (`ki_gain_hit_mult_transformed`) y recibir daño NO suma Ki.
+- [x] La transformación aumenta stats (daño x1.5, velocidad x1.35) y aplica tinte dorado Super Saiyajin.
+- [x] La transformación termina automáticamente cuando el Ki llega a 0 (`end_transformation`), restaurando stats normales.
+- [x] Tras destransformarse, se activa un enfriamiento (`transform_cooldown`) antes de poder volver a transformarse.
 
 ---
 

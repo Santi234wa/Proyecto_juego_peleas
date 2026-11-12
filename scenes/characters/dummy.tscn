@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://c55dmsx5qtg0c"]
+
+[ext_resource type="Script" uid="uid://dswewvh3o7itx" path="res://scripts/characters/dummy.gd" id="1_0umox"]
+[ext_resource type="Texture2D" uid="uid://iwaacjno3yc6" path="res://icon.svg" id="2_1324b"]
+[ext_resource type="Script" uid="uid://sn6wyjvs3f1a" path="res://scripts/utils/hurtbox.gd" id="3_stcs8"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5m0q7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_1324b")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5m0q7"]
+size = Vector2(126, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d4dkj"]
+size = Vector2(127, 126)
+
+[node name="Dummy" type="CharacterBody2D" unique_id=886917894]
+script = ExtResource("1_0umox")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=382280743]
+sprite_frames = SubResource("SpriteFrames_5m0q7")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=679373372]
+visible = false
+shape = SubResource("RectangleShape2D_5m0q7")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1937200339]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_stcs8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=458646889]
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_d4dkj")

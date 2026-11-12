@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://d16s7d124y6qr"]
+[gd_scene format=3 uid="uid://cmx5akjfjgexa"]
 
 [ext_resource type="Script" uid="uid://ckhrqkqpdwy0d" path="res://scripts/characters/goku.gd" id="1_rwjit"]
 [ext_resource type="Resource" uid="uid://bkg06l82b2gr6" path="res://resources/characters/goku.tres" id="2_j34ol"]
@@ -10,6 +10,8 @@
 [ext_resource type="Script" uid="uid://cr5vlmwtjucgf" path="res://scripts/states/attack_state.gd" id="8_l8ill"]
 [ext_resource type="Script" uid="uid://dmaw6h7f15dkd" path="res://scripts/states/hurt_state.gd" id="9_pay4t"]
 [ext_resource type="Script" uid="uid://b8vp81j44bq70" path="res://scripts/states/ko_state.gd" id="10_j04nu"]
+[ext_resource type="Script" uid="uid://2ipip1e7ygr6" path="res://scripts/utils/hitbox.gd" id="11_gkl1l"]
+[ext_resource type="Script" uid="uid://sn6wyjvs3f1a" path="res://scripts/utils/hurtbox.gd" id="12_gu68j"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_gbhp4"]
 animations = [{
@@ -50,6 +52,15 @@ animations = [{
 radius = 64.0
 height = 128.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5m0q7"]
+size = Vector2(123, 127)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gbhp4"]
+size = Vector2(26, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d4dkj"]
+size = Vector2(122, 125)
+
 [node name="goku" type="CharacterBody2D" unique_id=763281003]
 script = ExtResource("1_rwjit")
 data = ExtResource("2_j34ol")
@@ -59,6 +70,7 @@ sprite_frames = SubResource("SpriteFrames_gbhp4")
 animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1141331218]
+visible = false
 shape = SubResource("CapsuleShape2D_d4dkj")
 
 [node name="StateMachine" type="Node" parent="." unique_id=123822527]
@@ -81,3 +93,26 @@ script = ExtResource("9_pay4t")
 
 [node name="KO" type="Node" parent="StateMachine" unique_id=240649229]
 script = ExtResource("10_j04nu")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=223512891]
+position = Vector2(2, 4)
+collision_layer = 2
+collision_mask = 16
+script = ExtResource("11_gkl1l")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=426844482]
+visible = false
+position = Vector2(0.5, -0.5)
+shape = SubResource("RectangleShape2D_5m0q7")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitbox" unique_id=1137611394]
+position = Vector2(54, -4)
+shape = SubResource("RectangleShape2D_gbhp4")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=236085236]
+visible = false
+script = ExtResource("12_gu68j")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=630897362]
+position = Vector2(-1, -0.5)
+shape = SubResource("RectangleShape2D_d4dkj")

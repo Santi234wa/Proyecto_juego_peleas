@@ -1,13 +1,13 @@
 ## attack_state.gd
 ## Gestiona el ataque básico: startup → frames activos → recovery.
-## El hitbox se activa y desactiva según los tiempos en CharacterData.
+## Activa y desactiva el Hitbox usando set_deferred según los tiempos de CharacterData.
 ## Transiciones: Idle (al terminar el ataque).
 class_name AttackState
 extends CharacterState
 
 const GRAVITY: float = 980.0
 
-var _hitbox: Area2D = null
+var _hitbox: Hitbox = null
 var _elapsed: float = 0.0
 var _total_duration: float = 0.5
 var _active_start: float = 0.1
@@ -25,19 +25,18 @@ func enter() -> void:
 		_active_end     = character.data.attack_active_end
 
 	# Buscar y preparar el hitbox
-	_hitbox = character.get_node_or_null("Hitbox") as Area2D
-	if _hitbox:
-		_hitbox.monitoring = false
-		# Asignar daño efectivo (incluye multiplicador de transformación)
-		var base_dmg: float = character.data.damage_basic if character.data else 8.0
-		_hitbox.damage = character.get_effective_damage(base_dmg)
+	_hitbox = character.get_node_or_null("Hitbox") as Hitbox
+	if not _hitbox:
+		push_warning("%s: No tiene nodo 'Hitbox' asignado. No conectará golpes." % character.name)
+	else:
+		_hitbox.deactivate()
 
-	# El personaje no se mueve horizontalmente durante el ataque
+	# El personaje se detiene para golpear
 	character.velocity.x = 0.0
 	character.play_animation("attack")
 
 func physics_update(delta: float) -> void:
-	# ── Gravedad (por si ataca en el aire) ────────────────────────────────
+	# Gravedad si ataca en el aire
 	if not character.is_on_floor():
 		character.velocity.y += GRAVITY * delta
 	else:
@@ -46,16 +45,17 @@ func physics_update(delta: float) -> void:
 	character.velocity.x = 0.0
 	_elapsed += delta
 
-	# ── Gestión de frames activos ──────────────────────────────────────────
+	# ── Gestión de frames activos (Hitbox con set_deferred) ────────────────
 	if _elapsed >= _active_start and _elapsed < _active_end:
 		if not _hitbox_was_active:
 			_hitbox_was_active = true
 			if _hitbox:
-				_hitbox.monitoring = true
+				var base_dmg: float = character.data.damage_basic if character.data else 8.0
+				_hitbox.activate(character.get_effective_damage(base_dmg))
 	elif _elapsed >= _active_end and _hitbox_was_active:
 		_hitbox_was_active = false
 		if _hitbox:
-			_hitbox.monitoring = false
+			_hitbox.deactivate()
 
 	# ── Fin del ataque ─────────────────────────────────────────────────────
 	if _elapsed >= _total_duration:
@@ -65,5 +65,5 @@ func physics_update(delta: float) -> void:
 func exit() -> void:
 	# Garantizar que el hitbox quede desactivado al salir del estado
 	if _hitbox:
-		_hitbox.monitoring = false
+		_hitbox.deactivate()
 	_hitbox_was_active = false

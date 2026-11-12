@@ -1,6 +1,6 @@
 ## walk_state.gd
 ## El personaje camina horizontalmente en el suelo.
-## Transiciones: Idle (eje = 0), Jump, Attack.
+## Transiciones: Idle, Jump, Attack, Blocking.
 class_name WalkState
 extends CharacterState
 
@@ -10,15 +10,25 @@ func enter() -> void:
 	character.play_animation("walk")
 
 func physics_update(delta: float) -> void:
-	# ── Gravedad ──────────────────────────────────────────────────────────
+	# Gravedad
 	if not character.is_on_floor():
 		character.velocity.y += GRAVITY * delta
 	else:
 		character.velocity.y = 0.0
 
-	# ── Movimiento horizontal ─────────────────────────────────────────────
-	var h: float = InputManager.get_horizontal_axis(character.player_id)
+	# ── Prioridad de transiciones ─────────────────────────────────────────
 
+	# 1. Transformación
+	if InputManager.is_action_just_pressed(character.player_id, "transform"):
+		character.try_transform()
+
+	# 2. Bloqueo
+	if InputManager.is_action_held(character.player_id, "block"):
+		state_machine.transition_to("Blocking")
+		return
+
+	# 3. Movimiento horizontal
+	var h: float = InputManager.get_horizontal_axis(character.player_id)
 	if h == 0.0:
 		state_machine.transition_to("Idle")
 		return
@@ -26,11 +36,12 @@ func physics_update(delta: float) -> void:
 	character.velocity.x = h * character.get_effective_speed()
 	character.set_facing(h > 0.0)
 
-	# ── Otras transiciones ────────────────────────────────────────────────
+	# 4. Salto
 	if character.is_on_floor() and InputManager.is_action_just_pressed(character.player_id, "jump"):
 		state_machine.transition_to("Jump")
 		return
 
+	# 5. Ataque
 	if InputManager.is_action_just_pressed(character.player_id, "attack"):
 		state_machine.transition_to("Attack")
 		return

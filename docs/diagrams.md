@@ -65,6 +65,9 @@ classDiagram
         +transform_speed_mult: float
         +transform_damage_mult: float
         +transform_name: String
+        +ki_drain_per_second: float
+        +ki_gain_hit_mult_transformed: float
+        +transform_cooldown: float
         +sprite_dir_normal: String
         +sprite_dir_transform: String
         +aura_particle_scene: PackedScene
@@ -109,6 +112,25 @@ classDiagram
     class Vegetto {
         +player_id: int
         +_setup_state_machine()
+    }
+
+    class Dummy {
+        +start_health: float
+        +toggle_guard()
+        +simulate_attack_on_goku()
+    }
+
+    class Hitbox {
+        +owner_character: CharacterBase
+        +damage: float
+        -_hit_targets: Array
+        +activate(dmg)
+        +deactivate()
+    }
+
+    class Hurtbox {
+        +owner_character: CharacterBase
+        +receive_hit(damage, attacker)
     }
 
     %% ── Máquina de Estados ──────────────────────────────────────────────
@@ -162,8 +184,11 @@ classDiagram
     CharacterBase <|-- Naruto
     CharacterBase <|-- Madara
     CharacterBase <|-- Vegetto
+    CharacterBase <|-- Dummy
 
     CharacterBase "1" *-- "1" StateMachine
+    CharacterBase "1" *-- "1" Hitbox
+    CharacterBase "1" *-- "1" Hurtbox
     CharacterBase "1" o-- "1" CharacterData
 
     StateMachine "1" *-- "*" CharacterState
@@ -226,7 +251,8 @@ stateDiagram-v2
     Transformed --> Jump     : jump presionado
     Transformed --> Attack   : attack presionado (daño aumentado)
     Transformed --> Special  : special presionado (daño aumentado)
-    Transformed --> Idle     : duración expira o energía = 0
+    Transformed --> Idle     : Ki llega a 0 (drenaje continuo) -> inicia transform_cooldown
+    Transformed --> Transformed : golpe asestado -> suma fracción de Ki (ki_gain_hit_mult_transformed)
 
     KO --> [*]           : ronda termina
 ```
