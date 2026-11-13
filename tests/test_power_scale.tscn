@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://cpowerscaletestsuite"]
+[gd_scene format=3 uid="uid://5tnsbr51jr2i"]
 
 [ext_resource type="Script" path="res://tests/test_power_scale.gd" id="1_scale"]
 
 [node name="TestPowerScale" type="Node"]
 script = ExtResource("1_scale")
+

@@ -756,6 +756,10 @@ func _build_layer_mode_toggle() -> void:
 		_lbl_mode_hint.add_theme_font_override("font", _italic_font)
 	mode_container.add_child(_lbl_mode_hint)
 
+	var gdata = get_node_or_null("/root/GameData")
+	if gdata and "current_mode" in gdata:
+		_vs_ai_mode = (gdata.current_mode == gdata.GameMode.VS_AI)
+
 	_update_mode_button_visuals()
 	_update_map_button_visuals()
 

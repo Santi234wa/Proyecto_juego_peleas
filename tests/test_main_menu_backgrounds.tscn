@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://btu60h8q1e7va"]
+
+[ext_resource type="Script" uid="uid://dpw5348q12x6m" path="res://tests/test_main_menu_backgrounds.gd" id="1_test"]
+
+[node name="TestMainMenuBackgrounds" type="Node2D"]
+script = ExtResource("1_test")

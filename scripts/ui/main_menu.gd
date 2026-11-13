@@ -48,8 +48,8 @@ signal menu_exited()
 @export var breath_cycle_time: float = 0.8                 ## Tiempo de ciclo de respiración suave
 
 @export_group("Dimensiones y Layout")
-@export var ribbon_width: float = 270.0
-@export var ribbon_height: float = 40.0
+@export var ribbon_width: float = 280.0
+@export var ribbon_height: float = 34.0
 @export var ribbon_offset_x: float = -18.0
 @export var ribbon_offset_y: float = 0.0                   ## Centrado vertical exacto con el texto
 @export var badge_separation: float = 16.0                 ## 16 px de separación desde el final del texto real
@@ -62,6 +62,8 @@ signal menu_exited()
 @export var title_enter_time: float = 0.35          ## Caída del banner de título desde arriba
 @export var option_stagger_delay: float = 0.06      ## Retraso escalonado entre opciones
 @export var option_slide_time: float = 0.12         ## Deslizamiento de la franja amarilla de selección
+@export var bg_transition_time: float = 0.45        ## Transición suave entre fondos de escenario (0.45 s)
+@export var bg_parallax_offset: float = 4.0         ## Desplazamiento sutil de profundidad (4 px)
 
 @export_group("Colores")
 @export var color_sky: Color = Color(0.227, 0.184, 0.333)           ## #3A2F55 Fondo púrpura
@@ -78,26 +80,44 @@ signal menu_exited()
 @export var color_badge_text: Color = Color(1.0, 0.824, 0.247)      ## #FFD23F Texto etiqueta
 
 # ---------------------------------------------------------------------------
-# Constantes del Canvas Base
+# Constantes del Canvas Base y Fondos Dinámicos
 # ---------------------------------------------------------------------------
 const BASE_W: float = 680.0
 const BASE_H: float = 400.0
+const BG_NEUTRAL_X: float = -8.0
 
 # Definición de opciones del menú (nombre, habilitada)
 const OPTIONS_DEF: Array[Dictionary] = [
-	{"id": "story",   "label": "Modo historia", "enabled": true},
-	{"id": "local",   "label": "Modo local",    "enabled": true},
-	{"id": "shop",    "label": "Tienda",        "enabled": false},
-	{"id": "options", "label": "Opciones",      "enabled": false},
-	{"id": "exit",    "label": "Salir",         "enabled": true},
+	{"id": "story",    "label": "Modo historia", "enabled": true},
+	{"id": "local",    "label": "Modo local",    "enabled": true},
+	{"id": "vs_ai",    "label": "VS IA",         "enabled": true},
+	{"id": "training", "label": "Entrenamiento", "enabled": false},
+	{"id": "shop",     "label": "Tienda",        "enabled": false},
+	{"id": "options",  "label": "Opciones",      "enabled": false},
+	{"id": "exit",     "label": "Salir",         "enabled": true},
 ]
+
+# Asociación estricta entre opciones y escenarios existentes (Fase 9 - A1)
+const MAP_ASSOCIATIONS: Dictionary = {
+	"story": "res://assets/maps/valle_del_fin.png",
+	"local": "res://assets/maps/torneo_artes_marciales.png",
+	"vs_ai": "res://assets/maps/dimension_ecos.png",
+}
 
 # ---------------------------------------------------------------------------
 # Estado Interno y Nodos
 # ---------------------------------------------------------------------------
-var _current_index: int = 1 # "Modo local" por defecto al abrir
+var _current_index: int = 0 # "Modo historia" (Goku / Valle del Fin) por defecto al abrir
 var _content: Control = null
-var _bg_canvas: Control = null
+var _bg_layer: Control = null
+var _bg_current: TextureRect = null
+var _bg_incoming: TextureRect = null
+var _bg_dimmer: ColorRect = null
+var _bg_canvas_fallback: Control = null
+var _bg_tween: Tween = null
+var _active_map_path: String = ""
+var _map_texture_cache: Dictionary = {}
+
 var _panel_container: Control = null
 var _title_banner: Control = null
 var _options_container: Control = null
@@ -151,10 +171,11 @@ func _ready() -> void:
 	# Ajustar escala inicial al tamaño de ventana
 	_rescale_canvas()
 
-	# Selección inicial "Modo local" (índice 1 -> Naruto)
-	_current_index = 1
+	# Selección inicial "Modo historia" (índice 0 -> Goku con fondo Valle del Fin)
+	_current_index = 0
 	_update_selection_visuals(false)
-	_set_initial_character(1)
+	_set_initial_character(0)
+	_init_initial_background(0)
 
 	# Ejecutar animaciones de entrada
 	_play_intro_animations()
@@ -211,25 +232,134 @@ func _resolve_menu_font() -> Font:
 	return null
 
 # ---------------------------------------------------------------------------
-# CAPA 1: Fondo Púrpura, Sol y Montañas Escalonadas
+# CAPA 1: Fondos Dinámicos de Escenarios (Fase 9 - A1)
 # ---------------------------------------------------------------------------
 func _build_layer_1_background() -> void:
-	_bg_canvas = Control.new()
-	_bg_canvas.name = "Layer1_Background"
-	_bg_canvas.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg_canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_content.add_child(_bg_canvas)
+	_bg_layer = Control.new()
+	_bg_layer.name = "Layer1_Background"
+	_bg_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_bg_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_content.add_child(_bg_layer)
 
-	# Dibujado procedural de fondo, sol y montañas
-	_bg_canvas.draw.connect(_on_draw_background)
+	# 1. Fallback procedural de respaldo si faltase alguna textura
+	_bg_canvas_fallback = Control.new()
+	_bg_canvas_fallback.name = "FallbackCanvas"
+	_bg_canvas_fallback.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_bg_canvas_fallback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bg_layer.add_child(_bg_canvas_fallback)
+	_bg_canvas_fallback.draw.connect(_on_draw_background)
+
+	# 2. Dos capas visuales con TextureRect (Fondo actual y Fondo entrante)
+	# Se les añade 16 px de ancho extra y se centran en BG_NEUTRAL_X (-8.0)
+	# para permitir un desplazamiento de +-4 px sin bordes vacíos.
+	var bg_size := Vector2(BASE_W + 16.0, BASE_H)
+
+	_bg_current = TextureRect.new()
+	_bg_current.name = "BgCurrent"
+	_bg_current.position = Vector2(BG_NEUTRAL_X, 0.0)
+	_bg_current.size = bg_size
+	_bg_current.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bg_current.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_bg_current.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_bg_current.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_bg_layer.add_child(_bg_current)
+
+	_bg_incoming = TextureRect.new()
+	_bg_incoming.name = "BgIncoming"
+	_bg_incoming.position = Vector2(BG_NEUTRAL_X, 0.0)
+	_bg_incoming.size = bg_size
+	_bg_incoming.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bg_incoming.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_bg_incoming.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_bg_incoming.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_bg_incoming.modulate.a = 0.0
+	_bg_layer.add_child(_bg_incoming)
+
+	# 3. Oscurecimiento localizado detrás del contenido para asegurar contraste manga y legibilidad
+	_bg_dimmer = ColorRect.new()
+	_bg_dimmer.name = "BgDimmer"
+	_bg_dimmer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_bg_dimmer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bg_dimmer.color = Color(0.08, 0.06, 0.12, 0.28)
+	_bg_layer.add_child(_bg_dimmer)
+
+func _get_map_texture(path: String) -> Texture2D:
+	if _map_texture_cache.has(path):
+		return _map_texture_cache[path]
+	if ResourceLoader.exists(path):
+		var tex = load(path) as Texture2D
+		if tex:
+			_map_texture_cache[path] = tex
+			return tex
+	return null
+
+func _init_initial_background(option_idx: int) -> void:
+	var opt_id: String = OPTIONS_DEF[option_idx]["id"] if option_idx >= 0 and option_idx < OPTIONS_DEF.size() else "story"
+	var target_path: String = MAP_ASSOCIATIONS.get(opt_id, "res://assets/maps/valle_del_fin.png")
+	_active_map_path = target_path
+	var tex := _get_map_texture(target_path)
+	if tex and _bg_current:
+		_bg_current.texture = tex
+		_bg_current.modulate.a = 1.0
+		_bg_current.position.x = BG_NEUTRAL_X
+
+func _change_background_for_option(option_idx: int) -> void:
+	if option_idx < 0 or option_idx >= OPTIONS_DEF.size():
+		return
+	var opt_id: String = OPTIONS_DEF[option_idx]["id"]
+	if not MAP_ASSOCIATIONS.has(opt_id):
+		# ENTRENAMIENTO, TIENDA, OPCIONES y SALIR: Mantener el último fondo activo
+		return
+
+	var target_path: String = MAP_ASSOCIATIONS[opt_id]
+	if target_path == _active_map_path:
+		return
+
+	var next_tex: Texture2D = _get_map_texture(target_path)
+	if not next_tex:
+		return
+
+	# Si se produce una selección rápida, cancelar la transición anterior sin acumulación
+	if _bg_tween and _bg_tween.is_valid():
+		_bg_tween.kill()
+		if _bg_incoming.texture:
+			_bg_current.texture = _bg_incoming.texture
+		_bg_current.modulate.a = 1.0
+		_bg_current.position.x = BG_NEUTRAL_X
+		_bg_incoming.modulate.a = 0.0
+
+	_active_map_path = target_path
+	_bg_incoming.texture = next_tex
+	_bg_incoming.modulate.a = 0.0
+	_bg_incoming.position.x = BG_NEUTRAL_X - bg_parallax_offset
+
+	_bg_tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+	# 1. Desvanecer fondo anterior y desplazarlo levemente (+4 px) para crear profundidad
+	_bg_tween.tween_property(_bg_current, "modulate:a", 0.0, bg_transition_time)
+	_bg_tween.tween_property(_bg_current, "position:x", BG_NEUTRAL_X + bg_parallax_offset, bg_transition_time)
+
+	# 2. Mostrar nuevo fondo y deslizarlo a su posición neutra (-8 px)
+	_bg_tween.tween_property(_bg_incoming, "modulate:a", 1.0, bg_transition_time)
+	_bg_tween.tween_property(_bg_incoming, "position:x", BG_NEUTRAL_X, bg_transition_time)
+
+	# 3. Al terminar, consolidar el fondo entrante como actual
+	_bg_tween.chain().tween_callback(func():
+		_bg_current.texture = next_tex
+		_bg_current.modulate.a = 1.0
+		_bg_current.position.x = BG_NEUTRAL_X
+		_bg_incoming.modulate.a = 0.0
+	)
 
 func _on_draw_background() -> void:
 	# Rectángulo base púrpura #3A2F55
-	_bg_canvas.draw_rect(Rect2(0, 0, BASE_W, BASE_H), color_sky)
+	if not _bg_canvas_fallback:
+		return
+	_bg_canvas_fallback.draw_rect(Rect2(0, 0, BASE_W, BASE_H), color_sky)
 
 	# Sol circular #E8915A en la mitad derecha (x ~ 585, y ~ 215, r = 48)
 	var sun_pos := Vector2(585.0, 215.0)
-	_bg_canvas.draw_circle(sun_pos, 48.0, color_sun)
+	_bg_canvas_fallback.draw_circle(sun_pos, 48.0, color_sun)
 
 	# Capa de montañas trasera #5D3F63
 	var pts_back := PackedVector2Array([
@@ -246,7 +376,7 @@ func _on_draw_background() -> void:
 		Vector2(BASE_W, 245),
 		Vector2(BASE_W, BASE_H),
 	])
-	_bg_canvas.draw_colored_polygon(pts_back, color_mountain_back)
+	_bg_canvas_fallback.draw_colored_polygon(pts_back, color_mountain_back)
 
 	# Capa de montañas frontal #46304F
 	var pts_front := PackedVector2Array([
@@ -263,7 +393,7 @@ func _on_draw_background() -> void:
 		Vector2(BASE_W, 285),
 		Vector2(BASE_W, BASE_H),
 	])
-	_bg_canvas.draw_colored_polygon(pts_front, color_mountain_front)
+	_bg_canvas_fallback.draw_colored_polygon(pts_front, color_mountain_front)
 
 # ---------------------------------------------------------------------------
 # CAPA 2: Panel Diagonal Naranja con Trama de Puntos y Líneas de Velocidad
@@ -413,16 +543,23 @@ func _get_sprite_frames_for_option(index: int) -> SpriteFrames:
 	if _default_frames_cache.has(index):
 		return _default_frames_cache[index]
 
+	var opt_id: String = OPTIONS_DEF[index]["id"] if index >= 0 and index < OPTIONS_DEF.size() else "story"
 	var frames: SpriteFrames = null
-	match index:
-		0, 4: # Modo historia / Salir -> Goku
-			frames = _load_character_frames("res://resources/characters/goku.tscn", "res://scenes/characters/goku.tscn", "idle")
-		1: # Modo local -> Naruto
-			frames = _load_character_frames("res://resources/characters/naruto.tscn", "res://scenes/characters/naruto.tscn", "idle")
-		2: # Tienda -> Goku Super Saiyajin
-			frames = _load_character_frames("res://resources/characters/goku.tscn", "res://scenes/characters/goku.tscn", "ssj_idle")
-		3: # Opciones -> Naruto Modo Sabio
-			frames = _load_character_frames("res://resources/characters/naruto.tscn", "res://scenes/characters/naruto.tscn", "transformed_idle")
+	match opt_id:
+		"story": # Modo historia -> Goku
+			frames = _load_character_frames("res://scenes/characters/goku.tscn", "res://resources/characters/goku.tscn", "idle")
+		"local": # Modo local -> Naruto
+			frames = _load_character_frames("res://scenes/characters/naruto.tscn", "res://resources/characters/naruto.tscn", "idle")
+		"vs_ai": # VS IA -> Madara
+			frames = _load_character_frames("res://scenes/characters/madara.tscn", "res://resources/characters/madara.tscn", "idle")
+		"training": # Entrenamiento -> Vegetto
+			frames = _load_character_frames("res://scenes/characters/vegetto.tscn", "res://resources/characters/vegetto.tscn", "idle")
+		"shop": # Tienda -> Goku Super Saiyajin
+			frames = _load_character_frames("res://scenes/characters/goku.tscn", "res://resources/characters/goku.tscn", "ssj_idle")
+		"options": # Opciones -> Naruto Modo Sabio
+			frames = _load_character_frames("res://scenes/characters/naruto.tscn", "res://resources/characters/naruto.tscn", "transformed_idle")
+		"exit": # Salir -> Goku
+			frames = _load_character_frames("res://scenes/characters/goku.tscn", "res://resources/characters/goku.tscn", "idle")
 
 	if not frames:
 		frames = _load_character_frames("res://resources/characters/goku.tscn", "res://scenes/characters/goku.tscn", "idle")
@@ -532,15 +669,16 @@ func _build_layer_5_menu_options() -> void:
 	_options_container.add_child(_selector_ribbon)
 	_selector_ribbon.draw.connect(_on_draw_selector_ribbon)
 
-	var start_x: float = 345.0
-	var start_y: float = 116.0
-	var holder_h: float = ribbon_height # 40.0 para centrado vertical exacto
+	var start_x: float = 340.0
+	var start_y: float = 80.0
+	var step_y: float = 38.0
+	var holder_h: float = ribbon_height # 34.0 para centrado vertical exacto
 	_option_nodes.clear()
 
 	for i in OPTIONS_DEF.size():
 		var opt_data: Dictionary = OPTIONS_DEF[i]
-		var ox: float = start_x + i * 16.0
-		var oy: float = start_y + i * 50.0
+		var ox: float = start_x + i * 14.0
+		var oy: float = start_y + i * step_y
 
 		var btn_holder := Control.new()
 		btn_holder.name = "Option_%s" % opt_data["id"]
@@ -648,6 +786,7 @@ func _set_selection(new_index: int) -> void:
 	_play_sfx(_sfx_move)
 	_update_selection_visuals(true)
 	_change_character_for_option(_current_index)
+	_change_background_for_option(_current_index)
 
 func _update_selection_visuals(animate: bool) -> void:
 	if _current_index < 0 or _current_index >= _option_nodes.size():
@@ -679,14 +818,14 @@ func _update_selection_visuals(animate: bool) -> void:
 		var is_enabled: bool = OPTIONS_DEF[i]["enabled"]
 
 		if is_selected:
-			# Seleccionada: texto negro tamaño 26 centrado en la franja
-			lbl.add_theme_font_size_override("font_size", 26)
+			# Seleccionada: texto negro tamaño 21 centrado en la franja
+			lbl.add_theme_font_size_override("font_size", 21)
 			lbl.add_theme_color_override("font_color", Color(0.08, 0.08, 0.08))
 			lbl.remove_theme_constant_override("outline_size")
 			lbl.remove_theme_color_override("font_outline_color")
 		else:
-			# No seleccionada:
-			lbl.add_theme_font_size_override("font_size", 22)
+			# No seleccionada: tamaño 18
+			lbl.add_theme_font_size_override("font_size", 18)
 			if is_enabled:
 				# Habilitada no seleccionada: texto blanco con contorno negro de 4 px
 				lbl.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0))
@@ -823,13 +962,26 @@ func _activate_current_option() -> void:
 			else:
 				push_error("MainMenu: No se encontró la escena '%s'." % target_scene)
 		"local":
-			print("[Menú] ⚔️ Iniciando Selección de Personaje...")
+			print("[Menú] ⚔️ Iniciando Selección de Personaje (LOCAL)...")
+			var gdata = get_node_or_null("/root/GameData")
+			if gdata:
+				gdata.current_mode = gdata.GameMode.LOCAL
 			emit_signal("start_local_mode")
 			var target_scene := "res://scenes/ui/character_select.tscn"
 			if not ResourceLoader.exists(target_scene):
 				target_scene = local_map_scene_path
 				if not ResourceLoader.exists(target_scene) and ResourceLoader.exists("res://scenes/maps/test_map.tscn"):
 					target_scene = "res://scenes/maps/test_map.tscn"
+			if ResourceLoader.exists(target_scene):
+				get_tree().change_scene_to_file(target_scene)
+			else:
+				push_error("MainMenu: No se encontró la escena '%s'." % target_scene)
+		"vs_ai":
+			print("[Menú] 🤖 Iniciando Selección de Personaje (VS IA)...")
+			var gdata = get_node_or_null("/root/GameData")
+			if gdata:
+				gdata.current_mode = gdata.GameMode.VS_AI
+			var target_scene := "res://scenes/ui/character_select.tscn"
 			if ResourceLoader.exists(target_scene):
 				get_tree().change_scene_to_file(target_scene)
 			else:
