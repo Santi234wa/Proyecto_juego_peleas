@@ -28,3 +28,4 @@ func _setup_state_machine() -> void:
 
 func _on_state_changed(previous: String, next: String) -> void:
 	print("[Naruto P%d] %s → %s" % [player_id, previous, next])
+
