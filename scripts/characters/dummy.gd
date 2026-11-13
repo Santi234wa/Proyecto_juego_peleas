@@ -29,12 +29,12 @@ func _physics_process(delta: float) -> void:
 	velocity.x = 0.0
 	move_and_slide()
 
-## Controles de prueba en el teclado
+## Controles de prueba en el teclado (B = Guardia, M = Test golpe a Goku)
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_B:
 			toggle_guard()
-		elif event.keycode == KEY_K:
+		elif event.keycode == KEY_M:
 			simulate_attack_on_goku()
 
 func toggle_guard() -> void:

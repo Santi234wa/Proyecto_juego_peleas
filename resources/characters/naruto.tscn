@@ -12,7 +12,7 @@
 [ext_resource type="Script" uid="uid://2ipip1e7ygr6" path="res://scripts/utils/hitbox.gd" id="11_gkl1l"]
 [ext_resource type="Script" uid="uid://yj6urpfcrhmd" path="res://scripts/states/block_state.gd" id="11_gu68j"]
 [ext_resource type="Script" uid="uid://sn6wyjvs3f1a" path="res://scripts/utils/hurtbox.gd" id="12_gu68j"]
-[ext_resource type="Script" path="res://scripts/states/transforming_state.gd" id="13_trans"]
+[ext_resource type="Script" path="res://scripts/states/sage_transforming_state.gd" id="13_trans"]
 [ext_resource type="Texture2D" uid="uid://bgcphttt88v3l" path="res://assets/sprites/naruto/attack/attack_00.png" id="tex_20"]
 [ext_resource type="Texture2D" uid="uid://bnfsh54fu05rs" path="res://assets/sprites/naruto/attack/attack_01.png" id="tex_21"]
 [ext_resource type="Texture2D" uid="uid://1yohs87vttks" path="res://assets/sprites/naruto/attack/attack_02.png" id="tex_22"]

@@ -22,6 +22,7 @@ extends CharacterState
 @export var use_particles: bool = true             ## Emisión de aura y explosión de chispas
 @export var use_lightning: bool = true             ## Rayos procedimentales durante la carga
 @export var aura_color: Color = Color(1.0, 0.85, 0.2) ## Color dorado del aura y energía
+@export var flash_color: Color = Color(1.0, 1.0, 1.0) ## Color del destello de la explosión
 @export var body_center: Vector2 = Vector2(0, -6)  ## Centro del torso de Goku
 @export var feet_offset: Vector2 = Vector2(0, 20)  ## Base de los pies de Goku en el suelo
 
@@ -207,7 +208,7 @@ func _flash(time: float) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 100
 	var rect := ColorRect.new()
-	rect.color = Color(1.0, 1.0, 1.0, 1.0)
+	rect.color = Color(flash_color.r, flash_color.g, flash_color.b, 1.0)
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(rect)

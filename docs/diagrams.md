@@ -213,6 +213,7 @@ classDiagram
     CharacterState <|-- BlockState
     CharacterState <|-- HurtState
     CharacterState <|-- TransformingState
+    TransformingState <|-- SageTransformingState
     CharacterState <|-- TransformedState
     CharacterState <|-- KOState
 

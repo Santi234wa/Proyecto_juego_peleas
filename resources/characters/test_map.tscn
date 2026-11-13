@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dm21o2burc2i5" path="res://scripts/ui/health_bar_ui.gd" id="3_t1lok"]
 [ext_resource type="PackedScene" uid="uid://cmx5akjfjgexa" path="res://scenes/characters/goku.tscn" id="4_r8awe"]
 [ext_resource type="Script" uid="uid://o83hy2l6ax0m" path="res://scripts/ui/energy_bar_ui.gd" id="4_t1lok"]
+[ext_resource type="PackedScene" uid="uid://dwe8jt4232un3" path="res://resources/characters/naruto.tscn" id="5_r8awe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5m0q7"]
 size = Vector2(819, 20)
@@ -47,3 +48,6 @@ character_path = NodePath("../goku")
 
 [node name="goku" parent="." unique_id=763281003 instance=ExtResource("4_r8awe")]
 position = Vector2(182, -22)
+
+[node name="naruto" parent="." unique_id=282265705 instance=ExtResource("5_r8awe")]
+position = Vector2(343, -45)

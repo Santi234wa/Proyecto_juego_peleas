@@ -15,9 +15,9 @@ func _setup_state_machine() -> void:
 		push_error("Naruto: No se encontró el nodo 'StateMachine'. Revisar naruto.tscn.")
 		return
 
-	# Fallback de seguridad: instanciar Transforming si aún no está en la escena
+	# Fallback de seguridad: instanciar SageTransformingState (Modo Sabio) si aún no está en la escena
 	if not state_machine.has_node("Transforming"):
-		var trans_node = TransformingState.new()
+		var trans_node := SageTransformingState.new()
 		trans_node.name = "Transforming"
 		state_machine.add_child(trans_node)
 
