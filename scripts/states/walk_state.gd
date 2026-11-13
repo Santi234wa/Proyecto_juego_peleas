@@ -30,6 +30,14 @@ func physics_update(delta: float) -> void:
 			state_machine.transition_to("Transforming")
 			return
 
+	# 1.5. Ataque Especial
+	if InputManager.is_action_just_pressed(character.player_id, "special"):
+		if state_machine.has_node("Special"):
+			var cost: float = character.data.energy_cost_special if character.data else 20.0
+			if character.current_energy >= cost:
+				state_machine.transition_to("Special")
+				return
+
 	# 2. Bloqueo
 	if InputManager.is_action_held(character.player_id, "block"):
 		state_machine.transition_to("Blocking")

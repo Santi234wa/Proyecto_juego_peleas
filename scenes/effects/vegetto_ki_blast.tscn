@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_02.png" id="4_ki02"]
 [ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_03.png" id="5_ki03"]
 [ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_04.png" id="6_ki04"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_05.png" id="7_ki05"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_06.png" id="8_ki06"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_07.png" id="9_ki07"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ki"]
 animations = [{
@@ -15,12 +18,7 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": ExtResource("3_ki01")
-}],
-"loop": false,
-"name": &"spawn",
-"speed": 16.0
 }, {
-"frames": [{
 "duration": 1.0,
 "texture": ExtResource("4_ki02")
 }, {
@@ -29,10 +27,19 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": ExtResource("6_ki04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_ki05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ki06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ki07")
 }],
 "loop": true,
 "name": &"fly",
-"speed": 12.0
+"speed": 14.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ki"]
@@ -46,7 +53,7 @@ script = ExtResource("1_script")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_ki")
 animation = &"fly"
-autoplay = "spawn"
+autoplay = "fly"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(4, 0)

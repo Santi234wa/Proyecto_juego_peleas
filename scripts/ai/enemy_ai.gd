@@ -227,6 +227,15 @@ func _decide_next_action(abs_dist: float, dir_to_target: float) -> void:
 			_enter_attack(dir_to_target)
 			return
 
+	# 2.5. Ataque Especial a media distancia (proyectil característico)
+	var sp_cost: float = character.data.energy_cost_special if character.data else 20.0
+	if character.current_energy >= sp_cost and abs_dist > attack_range and abs_dist <= 280.0:
+		if randf() < 0.45:
+			character.set_facing(dir_to_target > 0.0)
+			InputManager.trigger_ai_action(character.player_id, "special")
+			_transition_to("AIIdle")
+			return
+
 	# 3. Si está fuera de rango: acercarse al objetivo
 	_transition_to("AIApproach")
 	_state_timer = 2.0 # Tiempo máximo de persecución continua antes de reevaluar
@@ -262,6 +271,12 @@ func _execute_attack() -> void:
 		if randf() < _transform_chance:
 			InputManager.trigger_ai_action(character.player_id, "transform")
 			return
+
+	# 2.5. Ataque Especial (técnica con Ki)
+	var sp_cost: float = character.data.energy_cost_special if character.data else 20.0
+	if character.current_energy >= sp_cost and randf() < 0.35:
+		InputManager.trigger_ai_action(character.player_id, "special")
+		return
 
 	# 3. Ataque básico por defecto
 	InputManager.trigger_ai_action(character.player_id, "attack")
