@@ -27,13 +27,13 @@ color = Color(0.007843138, 0.9764706, 0.2901961, 1)
 position = Vector2(411, 0)
 
 [node name="Dummy" parent="." unique_id=886917894 instance=ExtResource("2_6qg6x")]
-position = Vector2(729, -10)
+position = Vector2(398, -9)
 
 [node name="DummyHealthBar" type="ProgressBar" parent="." unique_id=1854077790]
-offset_left = 654.0
-offset_top = -126.0
-offset_right = 795.0
-offset_bottom = -99.0
+offset_left = 337.0
+offset_top = -112.0
+offset_right = 459.0
+offset_bottom = -85.0
 script = ExtResource("3_t1lok")
 character_path = NodePath("../Dummy")
 bar_color = Color(0.53928953, 0.082032196, 0.024856308, 1)
@@ -47,7 +47,33 @@ script = ExtResource("4_t1lok")
 character_path = NodePath("../goku")
 
 [node name="goku" parent="." unique_id=763281003 instance=ExtResource("4_r8awe")]
-position = Vector2(182, -22)
+position = Vector2(85, 27)
 
 [node name="naruto" parent="." unique_id=282265705 instance=ExtResource("5_r8awe")]
-position = Vector2(343, -45)
+position = Vector2(733, 31)
+
+[node name="Vida_Naruto" type="ProgressBar" parent="." unique_id=2063640424]
+offset_left = 695.0
+offset_top = -176.0
+offset_right = 817.0
+offset_bottom = -149.0
+script = ExtResource("3_t1lok")
+character_path = NodePath("../naruto")
+bar_color = Color(0.53928953, 0.082032196, 0.024856308, 1)
+
+[node name="Vida_Goku" type="ProgressBar" parent="." unique_id=1643517070]
+offset_left = 31.0
+offset_top = -196.0
+offset_right = 153.0
+offset_bottom = -169.0
+script = ExtResource("3_t1lok")
+character_path = NodePath("../goku")
+bar_color = Color(0.53928953, 0.082032196, 0.024856308, 1)
+
+[node name="Chacra_Naruto" type="ProgressBar" parent="." unique_id=1541013477]
+offset_left = 677.0
+offset_top = -301.0
+offset_right = 826.0
+offset_bottom = -274.0
+script = ExtResource("4_t1lok")
+character_path = NodePath("../naruto")

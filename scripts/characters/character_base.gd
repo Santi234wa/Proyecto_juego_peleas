@@ -121,6 +121,9 @@ func take_damage(amount: float) -> void:
 	current_health = maxf(0.0, current_health - effective)
 	emit_signal("health_changed", current_health, max_hp)
 
+	# Feedback visual de impacto (parpadeo rojo)
+	_flash_hit()
+
 	# REGLA: Si está transformado, recibir daño NO suma Ki.
 	# Fuera de la transformación, suma energía normalmente.
 	if not is_transformed:
@@ -280,11 +283,26 @@ func play_animation(anim_name: String) -> void:
 
 	_animated_sprite.play(target_name)
 
+func _flash_hit() -> void:
+	if not _animated_sprite:
+		return
+	var prev_mod: Color = modulate
+	modulate = Color(1.8, 0.4, 0.4, 1.0)
+	var tw: Tween = create_tween()
+	tw.tween_property(self, "modulate", prev_mod, 0.12)
+
 func set_facing(facing_right: bool) -> void:
 	is_facing_right = facing_right
 	if _animated_sprite:
 		_animated_sprite.flip_h = not facing_right
 	
-	var hitbox := get_node_or_null("Hitbox") as Node2D
+	var hitbox := get_node_or_null("Hitbox") as Area2D
 	if hitbox:
-		hitbox.position.x = absf(hitbox.position.x) * (1.0 if facing_right else -1.0)
+		# En Godot 2D la escala negativa en Area2D puede romper el cálculo de colisiones.
+		# Mantenemos scale.x en 1.0 positivo y reflejamos las posiciones de las formas hijas.
+		hitbox.scale = Vector2.ONE
+		var dir: float = 1.0 if facing_right else -1.0
+		hitbox.position.x = 2.0 * dir
+		for child in hitbox.get_children():
+			if child is CollisionShape2D:
+				child.position.x = absf(child.position.x) * dir

@@ -14,6 +14,8 @@ func _ready() -> void:
 	add_to_group("hurtbox")
 	monitoring = false   # La hurtbox no busca otras áreas
 	monitorable = true   # Permite ser detectada por los hitboxes rivales
+	collision_layer = 16 # Detectable en capa 5 (16)
+	collision_mask = 0
 	
 	if not owner_character and get_parent() is CharacterBase:
 		owner_character = get_parent() as CharacterBase

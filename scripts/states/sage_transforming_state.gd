@@ -14,15 +14,17 @@ class_name SageTransformingState
 extends TransformingState
 
 @export var gather_color_b: Color = Color(0.55, 0.9, 0.4)  ## Verde de energía natural
+@export var sage_flash_color: Color = Color(1.0, 0.85, 0.5) ## Destello cálido ámbar
 
-func _init() -> void:
+func enter() -> void:
 	charge_time = 1.5
 	hold_time = 0.6
 	zoom_in = 1.15
 	dim_amount = 0.35
 	aura_color = Color(1.0, 0.55, 0.1)      # Naranja chakra de Naruto
-	flash_color = Color(1.0, 0.85, 0.5)     # Destello cálido ámbar
+	flash_color = sage_flash_color          # Destello cálido ámbar
 	use_lightning = false
+	super.enter()
 
 func _play_sequence() -> void:
 	if not _sprite:
@@ -174,3 +176,4 @@ func _burst_leaves() -> void:
 		character.add_child(p)
 		p.emitting = true
 		_temp.append(p)
+

@@ -45,13 +45,15 @@ func physics_update(delta: float) -> void:
 	character.velocity.x = 0.0
 	_elapsed += delta
 
-	# ── Gestión de frames activos (Hitbox con set_deferred) ────────────────
+	# ── Gestión de frames activos (Hitbox) ────────────────────────────────
 	if _elapsed >= _active_start and _elapsed < _active_end:
 		if not _hitbox_was_active:
 			_hitbox_was_active = true
 			if _hitbox:
 				var base_dmg: float = character.data.damage_basic if character.data else 8.0
 				_hitbox.activate(character.get_effective_damage(base_dmg))
+		elif _hitbox:
+			_hitbox.check_overlaps()
 	elif _elapsed >= _active_end and _hitbox_was_active:
 		_hitbox_was_active = false
 		if _hitbox:

@@ -18,8 +18,10 @@ var damage: float = 0.0
 var _hit_targets: Array[Area2D] = []
 
 func _ready() -> void:
-	set_deferred("monitoring", false)
+	monitoring = false
 	monitorable = false
+	collision_layer = 2
+	collision_mask = 16
 	
 	if not owner_character and get_parent() is CharacterBase:
 		owner_character = get_parent() as CharacterBase
@@ -31,11 +33,21 @@ func _ready() -> void:
 func activate(damage_amount: float) -> void:
 	damage = damage_amount
 	_hit_targets.clear()
-	set_deferred("monitoring", true)
+	monitoring = true
+	# Si ya hay un hurtbox solapado en el momento exacto de golpear, conectarlo de inmediato
+	check_overlaps()
 
 ## Desactiva el hitbox de forma segura
 func deactivate() -> void:
-	set_deferred("monitoring", false)
+	monitoring = false
+	_hit_targets.clear()
+
+## Comprueba manualmente hurtboxes ya solapados
+func check_overlaps() -> void:
+	if not monitoring:
+		return
+	for area in get_overlapping_areas():
+		_on_area_entered(area)
 
 func _on_area_entered(area: Area2D) -> void:
 	if not area.is_in_group("hurtbox"):

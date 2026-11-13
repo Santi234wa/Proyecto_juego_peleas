@@ -1,4 +1,4 @@
-﻿[gd_scene format=3 uid="uid://naruto_scene_v1"]
+[gd_scene format=3 uid="uid://naruto_scene_v1"]
 
 [ext_resource type="Script" uid="uid://c6narutotscript" path="res://scripts/characters/naruto.gd" id="1_naruto"]
 [ext_resource type="Resource" uid="uid://b6y8k2m7naruto" path="res://resources/characters/naruto.tres" id="2_naruto"]
@@ -378,8 +378,8 @@ script = ExtResource("13_trans")
 
 [node name="Hitbox" type="Area2D" parent="."]
 position = Vector2(2, 4)
-collision_layer = 8
-collision_mask = 4
+collision_layer = 2
+collision_mask = 16
 script = ExtResource("11_gkl1l")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
@@ -392,7 +392,7 @@ shape = SubResource("RectangleShape2D_punch")
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 16
-collision_mask = 2
+collision_mask = 0
 script = ExtResource("12_gu68j")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
