@@ -4,3 +4,4 @@
 
 [node name="TestStage2aEcos" type="Node"]
 script = ExtResource("1_test")
+

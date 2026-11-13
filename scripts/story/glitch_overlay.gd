@@ -28,3 +28,4 @@ func _draw() -> void:
 	draw_rect(Rect2(0, band_y, rect_size.x, 6.0), Color(0.2, 0.8, 1.0, 0.2))
 	var band_y2: float = fmod(_timer * 61.0, rect_size.y)
 	draw_rect(Rect2(0, band_y2, rect_size.x, 3.0), Color(1.0, 0.2, 0.4, 0.15))
+

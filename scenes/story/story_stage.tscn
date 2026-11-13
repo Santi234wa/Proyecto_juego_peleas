@@ -384,3 +384,4 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button")
 text = "CONTINUAR AL MENÚ"
 
 [connection signal="pressed" from="ChapterCompleteLayer/BannerPanel/ContinueButton" to="." method="_on_continue_button_pressed"]
+

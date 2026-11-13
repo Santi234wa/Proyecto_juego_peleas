@@ -69,8 +69,10 @@ func load_game() -> void:
 
 	# --- Progreso general ---
 	GameData.unlocked_character_ids = cfg.get_value(
-		"progress", "unlocked_characters", ["goku", "naruto"]
+		"progress", "unlocked_characters", ["goku", "naruto", "madara"]
 	)
+	if not "madara" in GameData.unlocked_character_ids:
+		GameData.unlocked_character_ids.append("madara")
 	GameData.unlocked_map_ids = cfg.get_value(
 		"progress", "unlocked_maps", ["valley_of_end", "tournament"]
 	)

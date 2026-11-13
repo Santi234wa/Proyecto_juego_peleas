@@ -42,3 +42,4 @@ func _draw() -> void:
 	# 4. Rayas y destellos de energía dimensional
 	draw_line(Vector2(0, -height * 1.15), Vector2(0, height * 1.15), Color(1.0, 1.0, 1.0, 0.9), 2.0)
 	draw_line(Vector2(-width_pulse * 1.8, 0), Vector2(width_pulse * 1.8, 0), Color(0.2, 0.9, 1.0, 0.5), 1.5)
+

@@ -190,12 +190,14 @@ func _load_available_characters() -> void:
 		if gdata:
 			gdata.all_characters = _characters.duplicate()
 
-	# Orden prioritario: Goku, luego Naruto, luego el resto por ID
+	# Orden prioritario: Goku, luego Naruto, luego Madara, luego el resto por ID
 	_characters.sort_custom(func(a, b):
 		if a.id == "goku": return true
 		if b.id == "goku": return false
 		if a.id == "naruto": return true
 		if b.id == "naruto": return false
+		if a.id == "madara": return true
+		if b.id == "madara": return false
 		return a.id < b.id
 	)
 
@@ -1157,6 +1159,8 @@ func _get_feet_offset(char_id: String) -> float:
 			return 23.0
 		"naruto":
 			return 21.0
+		"madara":
+			return 23.0
 		_:
 			return feet_y_offset
 

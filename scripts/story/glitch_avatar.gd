@@ -35,3 +35,4 @@ func _draw() -> void:
 
 	# Borde del cuadro
 	draw_rect(Rect2(Vector2.ZERO, s), Color(0.2, 0.85, 0.95), false, 2.0)
+
