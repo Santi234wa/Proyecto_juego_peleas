@@ -1,15 +1,14 @@
 [gd_scene format=3 uid="uid://cscujbicxkd85"]
 
-[ext_resource type="PackedScene" uid="uid://c5pbf144hl3uu" path="res://dummy.tscn" id="2_6qg6x"]
+[ext_resource type="Script" path="res://scripts/maps/combat_stage.gd" id="1_stage"]
 [ext_resource type="Script" uid="uid://dm21o2burc2i5" path="res://scripts/ui/health_bar_ui.gd" id="3_t1lok"]
-[ext_resource type="PackedScene" uid="uid://cmx5akjfjgexa" path="res://scenes/characters/goku.tscn" id="4_r8awe"]
 [ext_resource type="Script" uid="uid://o83hy2l6ax0m" path="res://scripts/ui/energy_bar_ui.gd" id="4_t1lok"]
-[ext_resource type="PackedScene" uid="uid://dwe8jt4232un3" path="res://resources/characters/naruto.tscn" id="5_r8awe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5m0q7"]
 size = Vector2(819, 20)
 
 [node name="TestMap" type="Node2D" unique_id=543809311]
+script = ExtResource("1_stage")
 
 [node name="Ground" type="StaticBody2D" parent="." unique_id=1320067994]
 
@@ -26,16 +25,12 @@ color = Color(0.007843138, 0.9764706, 0.2901961, 1)
 [node name="Camera2D" type="Camera2D" parent="." unique_id=961781016]
 position = Vector2(411, 0)
 
-[node name="Dummy" parent="." unique_id=886917894 instance=ExtResource("2_6qg6x")]
-position = Vector2(398, -9)
-
-[node name="DummyHealthBar" type="ProgressBar" parent="." unique_id=1854077790]
-offset_left = 337.0
-offset_top = -112.0
-offset_right = 459.0
-offset_bottom = -85.0
+[node name="Vida_Goku" type="ProgressBar" parent="." unique_id=1643517070]
+offset_left = 31.0
+offset_top = -196.0
+offset_right = 153.0
+offset_bottom = -169.0
 script = ExtResource("3_t1lok")
-character_path = NodePath("../Dummy")
 bar_color = Color(0.53928953, 0.082032196, 0.024856308, 1)
 
 [node name="GokuEnergyBar" type="ProgressBar" parent="." unique_id=214806210]
@@ -44,13 +39,6 @@ offset_top = -314.0
 offset_right = 179.0
 offset_bottom = -287.0
 script = ExtResource("4_t1lok")
-character_path = NodePath("../goku")
-
-[node name="goku" parent="." unique_id=763281003 instance=ExtResource("4_r8awe")]
-position = Vector2(85, 27)
-
-[node name="naruto" parent="." unique_id=282265705 instance=ExtResource("5_r8awe")]
-position = Vector2(733, 31)
 
 [node name="Vida_Naruto" type="ProgressBar" parent="." unique_id=2063640424]
 offset_left = 695.0
@@ -58,16 +46,6 @@ offset_top = -176.0
 offset_right = 817.0
 offset_bottom = -149.0
 script = ExtResource("3_t1lok")
-character_path = NodePath("../naruto")
-bar_color = Color(0.53928953, 0.082032196, 0.024856308, 1)
-
-[node name="Vida_Goku" type="ProgressBar" parent="." unique_id=1643517070]
-offset_left = 31.0
-offset_top = -196.0
-offset_right = 153.0
-offset_bottom = -169.0
-script = ExtResource("3_t1lok")
-character_path = NodePath("../goku")
 bar_color = Color(0.53928953, 0.082032196, 0.024856308, 1)
 
 [node name="Chacra_Naruto" type="ProgressBar" parent="." unique_id=1541013477]
@@ -76,4 +54,3 @@ offset_top = -301.0
 offset_right = 826.0
 offset_bottom = -274.0
 script = ExtResource("4_t1lok")
-character_path = NodePath("../naruto")

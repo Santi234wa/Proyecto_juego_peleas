@@ -63,9 +63,53 @@ func _ready() -> void:
 	if auto_spawn_timer and not is_player_2:
 		call_deferred("_ensure_round_timer")
 
+func bind_character(target: Node) -> void:
+	if not target:
+		return
+	_character_node = target
+	character_path = target.get_path()
+	if target.get("player_id") == 2:
+		is_player_2 = true
+
+	if _character_node.has_signal("health_changed") and not _character_node.health_changed.is_connected(_on_health_changed):
+		_character_node.health_changed.connect(_on_health_changed)
+
+	max_value = _character_node.data.max_health if (_character_node.get("data") and _character_node.data) else 100.0
+	value = _character_node.get("current_health") if _character_node.get("current_health") != null else max_value
+
+	if _ghost_bar:
+		_ghost_bar.max_value = max_value
+		_ghost_bar.value = value
+		_ghost_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN if is_player_2 else ProgressBar.FILL_BEGIN_TO_END
+
+	fill_mode = ProgressBar.FILL_END_TO_BEGIN if is_player_2 else ProgressBar.FILL_BEGIN_TO_END
+
+	# Actualizar inicial en retrato
+	if _portrait_panel:
+		var py: float = (size.y - portrait_size.y) / 2.0
+		if is_player_2:
+			_portrait_panel.position = Vector2(size.x + 8.0, py)
+		else:
+			_portrait_panel.position = Vector2(-portrait_size.x - 8.0, py)
+
+		var lbl: Label = null
+		for c in _portrait_panel.get_children():
+			if c is Label:
+				lbl = c
+				break
+		if lbl:
+			var dname: String = _character_node.data.display_name if (_character_node.get("data") and _character_node.data) else _character_node.name
+			lbl.text = dname.substr(0, 1).to_upper() if dname.length() > 0 else "?"
+			lbl.modulate = Color(1.0, 0.9, 0.3) if not is_player_2 else Color(1.0, 0.55, 0.2)
+
+	# Actualizar nombre
+	if _name_label:
+		var dname: String = _character_node.data.display_name if (_character_node.get("data") and _character_node.data) else _character_node.name
+		_name_label.text = dname.to_upper()
+		_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT if is_player_2 else HORIZONTAL_ALIGNMENT_LEFT
+
 func _connect_to_character() -> void:
 	if character_path.is_empty():
-		push_warning("HealthBarUI: 'character_path' no asignado en el Inspector.")
 		return
 
 	_character_node = get_node_or_null(character_path)

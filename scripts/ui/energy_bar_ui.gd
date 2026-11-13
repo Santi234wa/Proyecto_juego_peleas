@@ -62,9 +62,44 @@ func _ready() -> void:
 	if auto_align_below_health:
 		call_deferred("_align_below_health_bar")
 
+func bind_character(target: Node) -> void:
+	if not target:
+		return
+	_character_node = target
+	character_path = target.get_path()
+	if target.get("player_id") == 2:
+		is_player_2 = true
+
+	if _character_node.get("data") and _character_node.data:
+		_cost_transform = _character_node.data.energy_cost_transform
+		max_value = _character_node.data.max_energy
+	else:
+		_cost_transform = 40.0
+		max_value = 100.0
+
+	value = _character_node.get("current_energy") if _character_node.get("current_energy") != null else 0.0
+
+	if _character_node.has_signal("energy_changed") and not _character_node.energy_changed.is_connected(_on_energy_changed):
+		_character_node.energy_changed.connect(_on_energy_changed)
+	if _character_node.has_signal("transformation_started") and not _character_node.transformation_started.is_connected(_on_transformation_started):
+		_character_node.transformation_started.connect(_on_transformation_started)
+	if _character_node.has_signal("transformation_ended") and not _character_node.transformation_ended.is_connected(_on_transformation_ended):
+		_character_node.transformation_ended.connect(_on_transformation_ended)
+
+	if _threshold_marker:
+		var ratio: float = clampf(_cost_transform / maxf(1.0, max_value), 0.0, 1.0)
+		var mark_x: float = size.x * (1.0 - ratio) if is_player_2 else size.x * ratio
+		_threshold_marker.position = Vector2(mark_x - 1.0, -2.0)
+
+	if _hint_label:
+		_hint_label.text = key_hint_p2 if is_player_2 else key_hint_p1
+		_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT if is_player_2 else HORIZONTAL_ALIGNMENT_LEFT
+		_hint_label.position = Vector2(size.x - 100.0 if is_player_2 else 0.0, bar_height + 3.0)
+
+	fill_mode = ProgressBar.FILL_END_TO_BEGIN if is_player_2 else ProgressBar.FILL_BEGIN_TO_END
+
 func _connect_to_character() -> void:
 	if character_path.is_empty():
-		push_warning("EnergyBarUI: 'character_path' no asignado en el Inspector.")
 		return
 
 	_character_node = get_node_or_null(character_path)
