@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cnarutorasenshuriken"]
+[gd_scene format=3 uid="uid://c70s7j2402cdx"]
 
 [ext_resource type="Script" path="res://scripts/effects/naruto_rasenshuriken.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/effects/naruto_rasenshuriken/rasenshuriken_00.png" id="2_rs00"]
@@ -70,3 +70,4 @@ initial_velocity_max = 95.0
 scale_amount_min = 2.0
 scale_amount_max = 4.0
 color = Color(0.4, 0.92, 1, 0.9)
+

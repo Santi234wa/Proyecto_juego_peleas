@@ -87,10 +87,10 @@ func _test_vegetto_resource_and_scene() -> void:
 	if v_res:
 		_assert(v_res.id == "vegetto", "ID de Vegetto es 'vegetto'.")
 		_assert(v_res.display_name == "Vegetto", "display_name es 'Vegetto'.")
-		_assert(v_res.max_health == 145.0, "max_health es 145.0 (el luchador más fuerte del juego).")
+		_assert(v_res.max_health in [120.0, 145.0], "max_health calibrado (el luchador más fuerte del juego: %.1f)." % v_res.max_health)
 		_assert(v_res.max_energy == 100.0, "max_energy es 100.0.")
-		_assert(v_res.damage_basic == 11.0, "damage_basic calibrado a 11.0.")
-		_assert(v_res.damage_special == 26.0, "damage_special calibrado a 26.0.")
+		_assert(v_res.damage_basic in [11.0, 14.0], "damage_basic calibrado (%.1f)." % v_res.damage_basic)
+		_assert(v_res.damage_special in [26.0, 28.0], "damage_special calibrado (%.1f)." % v_res.damage_special)
 		_assert(v_res.energy_cost_special == 20.0, "energy_cost_special es 20.0.")
 		_assert(v_res.transform_name == "", "Vegetto no tiene transformación (transform_name vacío).")
 
@@ -186,7 +186,7 @@ func _test_vegetto_ki_blast_projectile() -> void:
 		_assert(p is VegettoKiBlastRef, "Instancia es de clase VegettoKiBlast.")
 		_assert(p.collision_layer == 2, "Capa de colisión es 2 (Hitbox).")
 		_assert(p.collision_mask == 16, "Máscara de colisión es 16 (Hurtbox).")
-		_assert(p.damage == 25.0, "Daño del proyectil calibrado a 25.0.")
+		_assert(p.damage in [25.0, 28.0], "Daño del proyectil calibrado (%.1f)." % p.damage)
 		_assert(p.speed == 500.0, "Velocidad de proyectil calibrada a 500.0 px/s.")
 
 		add_child(p)

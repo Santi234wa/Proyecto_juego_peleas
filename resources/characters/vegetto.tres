@@ -6,10 +6,10 @@
 script = ExtResource("1_cdata")
 id = "vegetto"
 display_name = "Vegetto"
-max_health = 145.0
-move_speed = 210.0
-damage_basic = 11.0
-damage_special = 26.0
+max_health = 120.0
+move_speed = 215.0
+damage_basic = 14.0
+damage_special = 28.0
 energy_cost_special = 20.0
 energy_cost_transform = 0.0
 attack_duration = 0.35

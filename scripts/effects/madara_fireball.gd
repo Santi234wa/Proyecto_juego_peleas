@@ -21,6 +21,8 @@ var _has_hit: bool = false
 @onready var _trail: CPUParticles2D = get_node_or_null("FireTrail")
 
 func _ready() -> void:
+	if owner_character and owner_character.data and owner_character.data.damage_special > 0.0:
+		damage = owner_character.data.damage_special
 	monitoring = true
 	monitorable = false
 	collision_layer = 2   # Capa de Hitbox

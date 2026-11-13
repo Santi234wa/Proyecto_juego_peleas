@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cgokukamehamehaproj"]
+[gd_scene format=3 uid="uid://cu84mfgp7ywlt"]
 
 [ext_resource type="Script" path="res://scripts/effects/goku_kamehameha.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/effects/goku_kamehameha/kamehameha_00.png" id="2_kh00"]
@@ -70,3 +70,4 @@ initial_velocity_max = 90.0
 scale_amount_min = 2.0
 scale_amount_max = 4.0
 color = Color(0.25, 0.75, 1, 0.85)
+

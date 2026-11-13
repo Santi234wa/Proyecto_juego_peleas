@@ -6,7 +6,7 @@ extends CharacterBase
 
 const MadaraAttackStateRef = preload("res://scripts/states/madara_attack_state.gd")
 const MadaraFireballStateRef = preload("res://scripts/states/madara_fireball_state.gd")
-const SharinganTransformingStateRef = preload("res://scripts/states/sharingan_transforming_state.gd")
+const EcosMadaraTransformingStateRef = preload("res://scripts/states/ecos_madara_transforming_state.gd")
 
 var _sharingan_particles: CPUParticles2D = null
 
@@ -33,9 +33,16 @@ func _setup_state_machine() -> void:
 		atk_node.name = "Attack"
 		state_machine.add_child(atk_node)
 
-	# Estado de Transformación Sharingan
+	# Estado de Transformación Sharingan (con anillo ocular carmesí ECOS)
 	if not state_machine.has_node("Transforming"):
-		var trans_node = SharinganTransformingStateRef.new()
+		var trans_node = EcosMadaraTransformingStateRef.new()
+		trans_node.name = "Transforming"
+		state_machine.add_child(trans_node)
+	elif not (state_machine.get_node("Transforming") is EcosMadaraTransformingStateRef):
+		var old_t = state_machine.get_node("Transforming")
+		old_t.name = "OldTransforming"
+		old_t.queue_free()
+		var trans_node = EcosMadaraTransformingStateRef.new()
 		trans_node.name = "Transforming"
 		state_machine.add_child(trans_node)
 

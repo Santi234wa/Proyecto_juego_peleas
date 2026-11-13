@@ -131,12 +131,13 @@ func test_05_three_hit_combo_loop() -> void:
 	var sprite: AnimatedSprite2D = inst.get_node("AnimatedSprite2D")
 
 	# Golpe 1: Puño derecho
+	var base_dmg: float = inst.data.damage_basic if inst.data else 10.0
 	atk_state.combo_step = 1
 	atk_state.enter()
 	assert_true(atk_state.combo_step == 1, "Paso 1 es combo_step 1")
 	assert_true(atk_state._step_anim == "punch_1", "Paso 1 usa animación 'punch_1'")
 	assert_true(sprite.animation == "punch_1", "Sprite reproduciendo 'punch_1'")
-	assert_true(atk_state._step_damage == 8.0, "Daño del puñetazo 1 es 8.0")
+	assert_true(atk_state._step_damage == base_dmg, "Daño del puñetazo 1 es %.1f" % base_dmg)
 
 	# Simular avance a Golpe 2
 	atk_state._advance_combo()
@@ -144,7 +145,7 @@ func test_05_three_hit_combo_loop() -> void:
 	atk_state.enter()
 	assert_true(atk_state._step_anim == "punch_2", "Paso 2 usa animación 'punch_2'")
 	assert_true(sprite.animation == "punch_2", "Sprite reproduciendo 'punch_2'")
-	assert_true(is_equal_approx(atk_state._step_damage, 8.0 * 1.15), "Daño del puñetazo 2 es 9.2 (+15%)")
+	assert_true(is_equal_approx(atk_state._step_damage, base_dmg * 1.15), "Daño del puñetazo 2 es %.1f (+15%%)" % (base_dmg * 1.15))
 
 	# Simular avance a Golpe 3
 	atk_state._advance_combo()
@@ -152,7 +153,7 @@ func test_05_three_hit_combo_loop() -> void:
 	atk_state.enter()
 	assert_true(atk_state._step_anim == "kick", "Paso 3 usa animación 'kick'")
 	assert_true(sprite.animation == "kick", "Sprite reproduciendo 'kick'")
-	assert_true(is_equal_approx(atk_state._step_damage, 8.0 * 1.65), "Daño de la patada es 13.2 (+65%)")
+	assert_true(is_equal_approx(atk_state._step_damage, base_dmg * 1.65), "Daño de la patada es %.1f (+65%%)" % (base_dmg * 1.65))
 	assert_true(atk_state._step_knockback.y < 0, "Patada rematadora aplica impulso vertical ascendente")
 
 	# Simular avance tras Golpe 3: Bucle de regreso a Golpe 1

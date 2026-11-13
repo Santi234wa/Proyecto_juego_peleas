@@ -8,7 +8,7 @@ extends Area2D
 signal exploded()
 
 @export var speed: float = 520.0
-@export var damage: float = 20.0
+@export var damage: float = 24.0
 @export var lifetime: float = 2.4
 @export var knockback_force: Vector2 = Vector2(130.0, -25.0)
 
@@ -21,6 +21,8 @@ var _has_hit: bool = false
 @onready var _trail: CPUParticles2D = get_node_or_null("KiTrail")
 
 func _ready() -> void:
+	if owner_character and owner_character.data and owner_character.data.damage_special > 0.0:
+		damage = owner_character.data.damage_special
 	monitoring = true
 	monitorable = false
 	collision_layer = 2   # Capa de Hitbox
@@ -71,3 +73,4 @@ func _on_area_entered(area: Area2D) -> void:
 
 	emit_signal("exploded")
 	queue_free()
+

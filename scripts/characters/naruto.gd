@@ -5,6 +5,7 @@ class_name Naruto
 extends CharacterBase
 
 const NarutoSpecialStateRef = preload("res://scripts/states/naruto_special_state.gd")
+const EcosNarutoTransformingStateRef = preload("res://scripts/states/ecos_naruto_transforming_state.gd")
 
 func _ready() -> void:
 	# Por defecto, Naruto inicia como Jugador 2 en modo versus
@@ -17,9 +18,16 @@ func _setup_state_machine() -> void:
 		push_error("Naruto: No se encontró el nodo 'StateMachine'. Revisar naruto.tscn.")
 		return
 
-	# Fallback de seguridad: instanciar SageTransformingState (Modo Sabio) si aún no está en la escena
+	# Estado de Transformación Modo Sabio (con aro de chakra natural ECOS)
 	if not state_machine.has_node("Transforming"):
-		var trans_node := SageTransformingState.new()
+		var trans_node := EcosNarutoTransformingStateRef.new()
+		trans_node.name = "Transforming"
+		state_machine.add_child(trans_node)
+	elif not (state_machine.get_node("Transforming") is EcosNarutoTransformingStateRef):
+		var old_t = state_machine.get_node("Transforming")
+		old_t.name = "OldTransforming"
+		old_t.queue_free()
+		var trans_node := EcosNarutoTransformingStateRef.new()
 		trans_node.name = "Transforming"
 		state_machine.add_child(trans_node)
 

@@ -5,16 +5,23 @@ class_name Goku
 extends CharacterBase
 
 const GokuSpecialStateRef = preload("res://scripts/states/goku_special_state.gd")
+const EcosGokuTransformingStateRef = preload("res://scripts/states/ecos_goku_transforming_state.gd")
 
 func _setup_state_machine() -> void:
 	if not state_machine:
 		push_error("Goku: No se encontró el nodo 'StateMachine'. Revisar goku.tscn.")
 		return
 
-	# Resguardo de seguridad: si el nodo 'Transforming' aún no está en la escena goku.tscn,
-	# se instancia dinámicamente para que la FSM lo reconozca de inmediato.
+	# Estado de Transformación Super Saiyan (con columna de Ki y rayos ECOS)
 	if not state_machine.has_node("Transforming"):
-		var trans_node = TransformingState.new()
+		var trans_node = EcosGokuTransformingStateRef.new()
+		trans_node.name = "Transforming"
+		state_machine.add_child(trans_node)
+	elif not (state_machine.get_node("Transforming") is EcosGokuTransformingStateRef):
+		var old_t = state_machine.get_node("Transforming")
+		old_t.name = "OldTransforming"
+		old_t.queue_free()
+		var trans_node = EcosGokuTransformingStateRef.new()
 		trans_node.name = "Transforming"
 		state_machine.add_child(trans_node)
 

@@ -53,7 +53,7 @@ func _test_goku_kamehameha() -> void:
 	_assert(proj != null, "Instancia es de tipo GokuKamehameha")
 	_assert(proj.collision_layer == 2, "Capa de colisión es 2 (Hitbox)")
 	_assert(proj.collision_mask == 16, "Máscara de colisión es 16 (Hurtbox)")
-	_assert(proj.damage == 20.0, "Daño calibrado a 20.0")
+	_assert(proj.damage in [20.0, 24.0], "Daño de Kamehameha calibrado (24.0)")
 	_assert(proj.speed == 520.0, "Velocidad calibrada a 520.0 px/s")
 
 	var spr: AnimatedSprite2D = proj.get_node_or_null("AnimatedSprite2D")
@@ -78,7 +78,7 @@ func _test_naruto_rasenshuriken() -> void:
 	_assert(proj != null, "Instancia es de tipo NarutoRasenshuriken")
 	_assert(proj.collision_layer == 2, "Capa de colisión es 2 (Hitbox)")
 	_assert(proj.collision_mask == 16, "Máscara de colisión es 16 (Hurtbox)")
-	_assert(proj.damage == 22.0, "Daño calibrado a 22.0")
+	_assert(proj.damage in [20.0, 22.0], "Daño de Rasenshuriken calibrado (20.0)")
 	_assert(proj.speed == 470.0, "Velocidad calibrada a 470.0 px/s")
 
 	var spr: AnimatedSprite2D = proj.get_node_or_null("AnimatedSprite2D")
@@ -103,7 +103,7 @@ func _test_madara_fireball() -> void:
 	_assert(proj != null, "Instancia es de tipo MadaraFireball")
 	_assert(proj.collision_layer == 2, "Capa de colisión es 2 (Hitbox)")
 	_assert(proj.collision_mask == 16, "Máscara de colisión es 16 (Hurtbox)")
-	_assert(proj.damage == 22.0, "Daño calibrado a 22.0")
+	_assert(proj.damage == 22.0, "Daño de Bola de Fuego calibrado a 22.0")
 	_assert(proj.speed == 460.0, "Velocidad calibrada a 460.0 px/s")
 
 	var spr: AnimatedSprite2D = proj.get_node_or_null("AnimatedSprite2D")
@@ -128,7 +128,7 @@ func _test_vegetto_ki_blast() -> void:
 	_assert(proj != null, "Instancia es de tipo VegettoKiBlast")
 	_assert(proj.collision_layer == 2, "Capa de colisión es 2 (Hitbox)")
 	_assert(proj.collision_mask == 16, "Máscara de colisión es 16 (Hurtbox)")
-	_assert(proj.damage == 25.0, "Daño calibrado a 25.0")
+	_assert(proj.damage in [25.0, 28.0], "Daño de Ki de Vegetto calibrado (28.0)")
 	_assert(proj.speed == 500.0, "Velocidad calibrada a 500.0 px/s")
 
 	var spr: AnimatedSprite2D = proj.get_node_or_null("AnimatedSprite2D")

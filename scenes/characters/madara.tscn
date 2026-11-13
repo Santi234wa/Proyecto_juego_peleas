@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://dmaw6h7f15dkd" path="res://scripts/states/hurt_state.gd" id="ext_8"]
 [ext_resource type="Script" uid="uid://b8vp81j44bq70" path="res://scripts/states/ko_state.gd" id="ext_9"]
 [ext_resource type="Script" uid="uid://yj6urpfcrhmd" path="res://scripts/states/block_state.gd" id="ext_10"]
-[ext_resource type="Script" uid="uid://166rv34ka4ry" path="res://scripts/states/sharingan_transforming_state.gd" id="ext_11"]
+[ext_resource type="Script" path="res://scripts/states/ecos_madara_transforming_state.gd" id="ext_11"]
 [ext_resource type="Script" uid="uid://2ipip1e7ygr6" path="res://scripts/utils/hitbox.gd" id="ext_12"]
 [ext_resource type="Script" uid="uid://sn6wyjvs3f1a" path="res://scripts/utils/hurtbox.gd" id="ext_13"]
 [ext_resource type="Texture2D" uid="uid://cpi52u6cwe7bb" path="res://assets/sprites/madara/idle/idle_00.png" id="ext_14"]

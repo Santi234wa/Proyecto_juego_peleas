@@ -22,6 +22,7 @@
 [ext_resource type="Script" uid="uid://yj6urpfcrhmd" path="res://scripts/states/block_state.gd" id="11_gu68j"]
 [ext_resource type="Texture2D" uid="uid://emrkk3qlx5iu" path="res://assets/sprites/goku/idle/idle_02.png" id="12_0l7mt"]
 [ext_resource type="Script" uid="uid://sn6wyjvs3f1a" path="res://scripts/utils/hurtbox.gd" id="12_gu68j"]
+[ext_resource type="Script" path="res://scripts/states/ecos_goku_transforming_state.gd" id="ext_ecos_goku"]
 [ext_resource type="Texture2D" uid="uid://ck5gcj1crqrur" path="res://assets/sprites/goku/idle/idle_03.png" id="13_2nly2"]
 [ext_resource type="Texture2D" uid="uid://ce8mx4b7xf4kl" path="res://assets/sprites/goku/idle/idle_04.png" id="14_r3pc8"]
 [ext_resource type="Texture2D" uid="uid://cowns1gt3r8ii" path="res://assets/sprites/goku/idle/idle_05.png" id="15_dxn1t"]
@@ -356,6 +357,9 @@ script = ExtResource("10_j04nu")
 
 [node name="Blocking" type="Node" parent="StateMachine" unique_id=1610234854]
 script = ExtResource("11_gu68j")
+
+[node name="Transforming" type="Node" parent="StateMachine"]
+script = ExtResource("ext_ecos_goku")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=223512891]
 position = Vector2(2, 4)

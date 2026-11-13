@@ -76,3 +76,4 @@ func _spawn_kamehameha() -> void:
 
 func exit() -> void:
 	_has_spawned = false
+

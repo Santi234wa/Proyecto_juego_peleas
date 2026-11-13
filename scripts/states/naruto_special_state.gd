@@ -76,3 +76,4 @@ func _spawn_rasenshuriken() -> void:
 
 func exit() -> void:
 	_has_spawned = false
+
