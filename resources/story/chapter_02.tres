@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="StoryChapter" format=3]
+
+[ext_resource type="Script" path="res://scripts/story/story_chapter.gd" id="1_chapter"]
+
+[resource]
+script = ExtResource("1_chapter")
+chapter_id = "chapter_02"
+chapter_number = 2
+title = "Encuentro entre mundos"
+description = "Una figura envuelta en energía anaranjada surge del vórtice dimensional. Desorientados por la colisión temporal, Goku y Naruto cruzan puños."
+player_character_id = "goku"
+opponent_character_id = "naruto"
+map_id = "test_map"
+ai_difficulty = 1
+intro_dialogue = [{
+"portrait": "naruto_defensive",
+"side": "right",
+"speaker": "Naruto",
+"text": "¿Quién eres tú? ¡Este no es el Valle del Fin! ¿Acaso eres un subordinado de Akatsuki?"
+}, {
+"portrait": "goku_smile",
+"side": "left",
+"speaker": "Goku",
+"text": "¿Akatsuki? No sé de qué hablas, pero siento un poder muy interesante saliendo de ti. ¡Muéstrame lo que sabes hacer!"
+}]
+win_dialogue = [{
+"portrait": "naruto_smile",
+"side": "right",
+"speaker": "Naruto",
+"text": "Vaya... no eres un enemigo ordinario. Tus técnicas no se parecen a nada que haya visto."
+}, {
+"portrait": "goku_smile",
+"side": "left",
+"speaker": "Goku",
+"text": "¡Tú tampoco te quedas atrás! Tienes una determinación increíble. Parece que ambos estamos atrapados en la misma grieta."
+}]
+lose_dialogue = [{
+"portrait": "goku_hurt",
+"side": "left",
+"speaker": "Goku",
+"text": "Vaya... sus movimientos son rápidos e impredecibles. No puedo bajar la guardia."
+}]
+has_decision = false
+decision_prompt = ""
+decision_options = []
+next_chapter_id = "chapter_03"
+

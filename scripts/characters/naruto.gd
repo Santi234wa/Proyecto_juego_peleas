@@ -21,6 +21,11 @@ func _setup_state_machine() -> void:
 		trans_node.name = "Transforming"
 		state_machine.add_child(trans_node)
 
+	if not state_machine.has_node("Ultimate"):
+		var ult_node := UltimateState.new()
+		ult_node.name = "Ultimate"
+		state_machine.add_child(ult_node)
+
 	state_machine.init(self, "Idle")
 
 	if not state_machine.state_changed.is_connected(_on_state_changed):

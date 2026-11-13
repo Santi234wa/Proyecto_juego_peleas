@@ -96,6 +96,11 @@ classDiagram
         +get_effective_speed() float
         +get_effective_damage(base) float
         +set_facing(right)
+        +opponent: Node2D
+        +get_opponent() Node2D
+        +apply_knockback(force)
+        +can_ultimate() bool
+        +begin_ultimate() bool
         ~_setup_state_machine()
     }
 
@@ -173,23 +178,47 @@ classDiagram
         +exit()
         +physics_update(delta)
     }
+    class UltimateState {
+        +ultimate_name: String
+        +portrait: Texture2D
+        +font: Font
+        +damage: float
+        +knockback: float
+        +tint_color: Color
+        +beam_color: Color
+        +beam_core_color: Color
+        +hand_offset: Vector2
+        +beam_length: float
+        -_rival: Node2D
+        +enter()
+        -_get_rival()
+        -_play_sequence()
+        -_closeup(vp)
+        -_fire_beam()
+        -_impact(vp, dark, bars)
+        -_show_banner(vp)
+    }
     class TransformedState
     class KOState
 
     %% ── IA ──────────────────────────────────────────────────────────────
     class EnemyAI {
         +difficulty: int
-        +target: CharacterBase
-        -_think_timer: float
-        +update(delta)
-        -_decide_action()
-    }
-
-    class AIState {
+        +enabled: bool
+        +attack_range: float
+        +spacing_distance: float
         +character: CharacterBase
-        +ai: EnemyAI
-        +enter()
-        +update(delta) String
+        +target: CharacterBase
+        +current_ai_state: String
+        -_think_timer: float
+        -_think_interval: float
+        -_block_timer: float
+        -_state_timer: float
+        +_calibrate_difficulty()
+        +_process_ai_state(delta)
+        +_decide_next_action(abs_dist, dir)
+        +_execute_attack()
+        +_is_target_attacking() bool
     }
 
     %% ── Relaciones ──────────────────────────────────────────────────────
@@ -214,6 +243,7 @@ classDiagram
     CharacterState <|-- HurtState
     CharacterState <|-- TransformingState
     TransformingState <|-- SageTransformingState
+    TransformingState <|-- UltimateState
     CharacterState <|-- TransformedState
     CharacterState <|-- KOState
 
@@ -270,10 +300,53 @@ classDiagram
         -_on_menu_pressed()
     }
 
+    class MainMenu {
+        +game_title: String
+        +local_map_scene_path: String
+        +panel_enter_time: float
+        +title_enter_time: float
+        +option_stagger_delay: float
+        +option_slide_time: float
+        +breath_cycle_time: float
+        -_current_index: int
+        -_option_nodes: Array
+        +start_local_mode() signal
+        +option_selected(name) signal
+        +menu_exited() signal
+        -_rescale_canvas()
+        -_set_selection(index)
+        -_activate_current_option()
+    }
+
+    class CharacterSelect {
+        +combat_scene_path: String
+        +main_menu_scene_path: String
+        +show_empty_slots: bool
+        +grid_columns: int
+        +slot_size: float
+        +character_scale: Vector2
+        +ground_y: float
+        -_p1_index: int
+        -_p2_index: int
+        -_p1_ready: bool
+        -_p2_ready: bool
+        +characters_confirmed(p1, p2) signal
+        +back_to_menu_requested() signal
+        -_rescale_canvas()
+        -_update_cursors_visuals()
+        -_update_p1_display()
+        -_update_p2_display()
+        -_start_match()
+    }
+
     CharacterBase ..> HealthBarUI : emite health_changed (Observer)
     CharacterBase ..> EnergyBarUI : emite energy_changed y transformation (Observer)
     GameData ..> RoundTimerUI : emite round_ended (Observer)
     GameData ..> VictoryScreenUI : emite match_finished (Observer)
+    VictoryScreenUI ..> MainMenu : transiciona a res://scenes/ui/main_menu.tscn
+    MainMenu ..> CharacterSelect : transiciona a res://scenes/ui/character_select.tscn
+    CharacterSelect ..> GameData : almacena player1_data y player2_data
+    CharacterSelect ..> CharacterData : lee estadísticas y alt_tint
 
     EnemyAI "1" o-- "1" CharacterBase
     EnemyAI "1" *-- "*" AIState
@@ -299,14 +372,17 @@ stateDiagram-v2
     Idle --> Special     : special presionado & energía suficiente
     Idle --> Blocking    : block sostenido
     Idle --> Transforming: transform presionado & can_transform()
+    Idle --> Ultimate    : ultimate presionado & can_ultimate() (Ki 100%)
 
     Walk --> Idle        : eje horizontal = 0
     Walk --> Jump        : jump presionado & en suelo
     Walk --> Attack      : attack presionado
     Walk --> Blocking    : block sostenido
     Walk --> Transforming: transform presionado & can_transform()
+    Walk --> Ultimate    : ultimate presionado & can_ultimate() (Ki 100%)
 
     Transforming --> Idle: intro finalizada & finish_transform() (SSJ activo)
+    Ultimate --> Idle    : secuencia finalizada (~3.5s) & daño/empuje aplicado
 
     Jump --> Idle        : aterriza en suelo
     Jump --> Hurt        : recibe golpe en el aire
@@ -330,6 +406,17 @@ stateDiagram-v2
         - Temblor de sprite + aura de partículas + temblor de cámara
         - Flash blanco cinemático de pantalla completa
         - finish_transform(): aplica buffs de daño/velocidad
+    end note
+
+    note right of Ultimate
+        Cinemática definitiva "Rayo del amanecer" (~3.5s):
+        - Requiere Ki al 100% (lleno) -> begin_ultimate() gasta todo el Ki
+        - Invulnerable = true durante la cinemática
+        - Fase 1 (Despertar SSJ): bandas negras, oscurecimiento, Goku se transforma a SSJ con animación frontal de carga (ssj_charge_south) y chispas
+        - Fase 2 (Primer plano): líneas de velocidad dinámicas y retrato frontal SSJ (ssj_select_idle)
+        - Fase 3 (Carga y Rayo): postura de combate este (ssj_ultimate_east), esfera de partículas y haz de energía dorada con astillas
+        - Fase 4 (Impacto y Salida): flash masivo, ondas, daño (40.0), knockback al rival y banner con nombre
+        - Al terminar: Goku permanece en Super Saiyajin (is_transformed = true) con 40 Ki activo
     end note
 
     note right of Idle
@@ -372,11 +459,34 @@ stateDiagram-v2
 
 ---
 
-## 4. Diagrama de Estados — Ciclo de la Partida (Match Flow)
+## 4. Diagrama de Estados — Ciclo de la Partida y Menú Principal (Game & Match Flow)
 
 ```mermaid
 stateDiagram-v2
-    [*] --> IniciarPartida : Inicia combate (0 - 0)
+    [*] --> MenuPrincipal : Inicio de la aplicación
+
+    state MenuPrincipal {
+        [*] --> NavegandoOpciones
+        NavegandoOpciones --> TransicionModoLocal : Opción "Modo local" (start_local_mode)
+        NavegandoOpciones --> SalirJuego : Opción "Salir" (menu_exited)
+    }
+
+    SalirJuego --> [*] : get_tree().quit()
+    TransicionModoLocal --> SeleccionPersonaje : change_scene_to_file(character_select)
+
+    state SeleccionPersonaje {
+        [*] --> EligiendoLuchadores
+        EligiendoLuchadores --> P1Listo : J1 confirma (Enter / Space / J)
+        EligiendoLuchadores --> P2Listo : J2 confirma (Numpad 1 / K)
+        P1Listo --> AmbosListos : J2 confirma
+        P2Listo --> AmbosListos : J1 confirma
+        EligiendoLuchadores --> CancelarYVolver : Esc / p1_block
+        P1Listo --> EligiendoLuchadores : J1 cancela (Esc / p1_block)
+        P2Listo --> EligiendoLuchadores : J2 cancela (p2_block)
+    }
+
+    CancelarYVolver --> MenuPrincipal : Regresa a res://scenes/ui/main_menu.tscn
+    AmbosListos --> IniciarPartida : GameData.player1_data y player2_data configurados
 
     state IniciarPartida {
         [*] --> RondaEnCurso
@@ -399,7 +509,7 @@ stateDiagram-v2
     }
 
     ReiniciarCombate --> IniciarPartida : Partida en 0-0, vida y Ki restablecidos
-    SalirAlMenu --> [*] : Carga menú principal cuando exista
+    SalirAlMenu --> MenuPrincipal : Carga res://scenes/ui/main_menu.tscn
 ```
 
 

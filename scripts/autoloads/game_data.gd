@@ -69,7 +69,9 @@ func report_round_winner(winner_key: String) -> void:
 	if round_wins[winner_key] >= rounds_to_win:
 		emit_signal("match_finished", winner_key)
 		emit_signal("match_ended", winner_key)
-		_spawn_victory_screen(winner_key)
+		# En el modo historia ECOS, StoryManager procesa el resultado sin mostrar la UI de victoria local
+		if current_mode != GameMode.STORY:
+			_spawn_victory_screen(winner_key)
 
 ## Retorna el nombre en pantalla del personaje ganador leyendo su CharacterData (Resource).
 func get_character_display_name(winner_key: String) -> String:

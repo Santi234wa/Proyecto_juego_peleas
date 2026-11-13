@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="StoryChapter" format=3]
+
+[ext_resource type="Script" path="res://scripts/story/story_chapter.gd" id="1_chapter"]
+
+[resource]
+script = ExtResource("1_chapter")
+chapter_id = "chapter_06"
+chapter_number = 6
+title = "El último Eco"
+description = "En el epicentro de la grieta, el Cronista manifiesta un reflejo idéntico de Goku moldeado con la esencia del vórtice. Un duelo sobre la identidad, la memoria y el alma que define la existencia del verdadero héroe frente a su réplica perfecta."
+player_character_id = "goku"
+opponent_character_id = "goku_echo"
+map_id = "test_map"
+ai_difficulty = 2
+intro_dialogue = [{
+"portrait": "goku_echo_smirk",
+"side": "right",
+"speaker": "Eco de Goku",
+"text": "Soy el reflejo supremo de cada batalla que has librado. En este vórtice no existen las dudas ni el desgaste. Yo soy el Goku definitivo; tú solo eres un recuerdo que se desvanece."
+}, {
+"portrait": "goku_serious",
+"side": "left",
+"speaker": "Goku",
+"text": "Puede que tengas mi aspecto y mis técnicas... pero tus ojos no tienen brillo. El corazón, los tropiezos y las promesas con mis amigos no se pueden duplicar en un cascarón vacío."
+}]
+win_dialogue = [{
+"portrait": "goku_echo_fading",
+"side": "right",
+"speaker": "Eco de Goku",
+"text": "Entiendo... Lo que te hace fuerte no son los golpes que recuerdas... sino por quién decides seguir de pie..."
+}, {
+"portrait": "goku_smile",
+"side": "left",
+"speaker": "Goku",
+"text": "El Eco se disuelve en paz. Ya no hay distorsión que temer. La grieta se cierra y nuestros mundos están a salvo."
+}]
+lose_dialogue = [{
+"portrait": "goku_hurt",
+"side": "left",
+"speaker": "Goku",
+"text": "Anticipa cada uno de mis movimientos... Es como pelear contra mi propia sombra. Debo encontrar la chispa que nos diferencia."
+}]
+has_decision = false
+decision_prompt = ""
+decision_options = []
+next_chapter_id = ""

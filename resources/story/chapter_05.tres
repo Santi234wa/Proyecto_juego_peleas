@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="StoryChapter" format=3]
+
+[ext_resource type="Script" path="res://scripts/story/story_chapter.gd" id="1_chapter"]
+
+[resource]
+script = ExtResource("1_chapter")
+chapter_id = "chapter_05"
+chapter_number = 5
+title = "El precio de la confianza"
+description = "Las decisiones tomadas resuenan en el tejido mismo del espacio. Una última prueba de voluntades determinará el desenlace definitivo."
+player_character_id = "goku"
+opponent_character_id = "naruto"
+map_id = "test_map"
+ai_difficulty = 2
+intro_dialogue = [{
+"portrait": "naruto_serious",
+"side": "right",
+"speaker": "Naruto",
+"text": "Goku, el vórtice está a punto de tragarse nuestras dimensiones. Solo una colisión de máxima potencia abrirá el camino de regreso."
+}, {
+"portrait": "goku_serious",
+"side": "left",
+"speaker": "Goku",
+"text": "Entiendo. No nos contendremos. ¡Demos todo en este choque de voluntades!"
+}]
+win_dialogue = [{
+"portrait": "goku_smile",
+"side": "left",
+"speaker": "Goku",
+"text": "¡Ese fue un golpe formidable, Naruto! La puerta hacia el núcleo se ha abierto."
+}]
+lose_dialogue = [{
+"portrait": "goku_hurt",
+"side": "left",
+"speaker": "Goku",
+"text": "La presión del espacio es descomunal... Tengo que concentrarme para el golpe final."
+}]
+has_decision = true
+decision_prompt = "El núcleo del Eco se expone. ¿Cómo responderás a su destino final?"
+decision_options = [{
+"ending_id": "ending_a",
+"id": "unite_echoes",
+"target_chapter_id": "chapter_06",
+"text": "Fusionar los Ecos: Camino hacia la Trascendencia (Final A)"
+}, {
+"ending_id": "ending_b",
+"id": "sever_echoes",
+"target_chapter_id": "chapter_06",
+"text": "Cortar el vínculo dimensional: Camino hacia el Retorno (Final B)"
+}]
+next_chapter_id = "chapter_06"
+

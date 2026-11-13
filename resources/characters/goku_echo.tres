@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/characters/character_data.gd" id="1_cd"]
+
+[resource]
+script = ExtResource("1_cd")
+id = "goku_echo"
+display_name = "Eco de Goku"
+max_health = 100.0
+max_energy = 100.0
+move_speed = 200.0
+jump_force = -500.0
+gravity_scale = 1.0
+damage_basic = 8.0
+damage_special = 20.0
+energy_cost_special = 25.0
+energy_cost_transform = 40.0
+attack_duration = 0.65
+attack_active_start = 0.28
+attack_active_end = 0.48
+hurt_duration = 0.4
+energy_on_hit_dealt = 10.0
+energy_on_hit_taken = 5.0
+transform_name = "Super Saiyan Eco"
+transform_speed_mult = 1.35
+transform_damage_mult = 1.4
+ki_drain_per_second = 8.0
+ki_gain_hit_mult_transformed = 0.5
+transform_cooldown = 10.0
+sprite_dir_select = "res://assets/sprites/goku/select_idle"
+alt_tint = Color(0.45, 0.5, 0.75, 1.0)
+dialogue_key = "goku_echo_story"
+

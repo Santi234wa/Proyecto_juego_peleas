@@ -18,6 +18,12 @@ func physics_update(delta: float) -> void:
 
 	# ── Prioridad de transiciones ─────────────────────────────────────────
 
+	# 0. Ultimate (ataque definitivo con Ki lleno)
+	if InputManager.is_action_just_pressed(character.player_id, "ultimate"):
+		if character.has_method("can_ultimate") and character.can_ultimate():
+			state_machine.transition_to("Ultimate")
+			return
+
 	# 1. Transformación
 	if InputManager.is_action_just_pressed(character.player_id, "transform"):
 		if character.can_transform():

@@ -70,7 +70,9 @@ extends Resource
 @export_group("Sprites")
 @export_dir var sprite_dir_normal: String = ""
 @export_dir var sprite_dir_transform: String = ""
+@export_dir var sprite_dir_select: String = "" ## Directorio con frames mirando al frente para selección
 @export var aura_particle_scene: PackedScene = null
+@export var alt_tint: Color = Color(0.7, 0.9, 1.2, 1.0) ## Tinte para P2 en mirror match (paleta alternativa)
 
 @export_group("Audio")
 @export var sfx_basic_attack: AudioStream = null

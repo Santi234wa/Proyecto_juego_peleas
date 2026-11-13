@@ -16,6 +16,11 @@ func _setup_state_machine() -> void:
 		trans_node.name = "Transforming"
 		state_machine.add_child(trans_node)
 
+	if not state_machine.has_node("Ultimate"):
+		var ult_node := UltimateState.new()
+		ult_node.name = "Ultimate"
+		state_machine.add_child(ult_node)
+
 	state_machine.init(self, "Idle")
 
 	# Debug: imprimir cada transición en la consola para verificar la FSM.

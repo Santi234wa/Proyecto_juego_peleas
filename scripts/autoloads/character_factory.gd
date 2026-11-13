@@ -7,10 +7,12 @@ extends Node
 # Mapeo id → PackedScene. Se carga una sola vez.
 # Las escenas base son compartidas; los datos los diferencia el Resource.
 const _SCENE_MAP: Dictionary = {
-	"goku":    "res://scenes/characters/goku.tscn",
-	"naruto":  "res://scenes/characters/naruto.tscn",
-	"madara":  "res://scenes/characters/madara.tscn",
-	"vegetto": "res://scenes/characters/vegetto.tscn",
+	"goku":      "res://scenes/characters/goku.tscn",
+	"goku_echo": "res://scenes/characters/goku.tscn",
+	"naruto":    "res://scenes/characters/naruto.tscn",
+	"madara":    "res://scenes/characters/madara.tscn",
+	"vegetto":   "res://scenes/characters/vegetto.tscn",
+	"dummy":     "res://scenes/characters/dummy.tscn",
 }
 
 # Cache de escenas ya cargadas para no recargar del disco en cada combate.

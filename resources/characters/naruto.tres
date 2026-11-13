@@ -26,4 +26,6 @@ transform_damage_mult = 1.45
 ki_drain_per_second = 7.5
 ki_gain_hit_mult_transformed = 0.3
 transform_cooldown = 8.0
+sprite_dir_select = "res://assets/sprites/naruto/select_idle"
+alt_tint = Color(0.75, 0.85, 1.25, 1)
 dialogue_key = "naruto_story"

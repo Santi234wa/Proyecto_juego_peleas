@@ -23,6 +23,8 @@ signal transformation_ended()
 # ---------------------------------------------------------------------------
 @export var data: CharacterData = null
 @export var player_id: int = 1
+@export var is_ai: bool = false      ## Si es true, este personaje es gobernado por EnemyAI
+@export var opponent: Node2D = null ## Referencia directa al rival de combate
 
 # ---------------------------------------------------------------------------
 # Estado en tiempo de ejecución
@@ -51,9 +53,42 @@ var _aura_particles: Node = null
 # ---------------------------------------------------------------------------
 
 func _ready() -> void:
+	add_to_group("fighters")
+	_apply_game_data_override()
 	_find_child_nodes()
 	_initialize_stats()
 	_setup_state_machine()
+	_check_and_setup_ai()
+
+func _check_and_setup_ai() -> void:
+	var gdata = get_node_or_null("/root/GameData")
+	var should_be_ai: bool = is_ai
+	if gdata and player_id == 2:
+		if gdata.current_mode in [gdata.GameMode.VS_AI, gdata.GameMode.STORY]:
+			should_be_ai = true
+
+	if should_be_ai:
+		_setup_ai()
+
+func _setup_ai() -> void:
+	is_ai = true
+	if not has_node("EnemyAI"):
+		var ai_script = load("res://scripts/ai/enemy_ai.gd")
+		if ai_script:
+			var ai_node = ai_script.new()
+			ai_node.name = "EnemyAI"
+			add_child(ai_node)
+
+func _apply_game_data_override() -> void:
+	var gdata = get_node_or_null("/root/GameData")
+	if not gdata:
+		return
+	if player_id == 1 and gdata.get("player1_data"):
+		data = gdata.player1_data
+	elif player_id == 2 and gdata.get("player2_data"):
+		data = gdata.player2_data
+		if gdata.get("player1_data") and gdata.player1_data.id == gdata.player2_data.id and data:
+			modulate = data.alt_tint
 
 func _physics_process(delta: float) -> void:
 	if state_machine:
@@ -62,14 +97,15 @@ func _physics_process(delta: float) -> void:
 
 	# ── Drenaje dinámico de Ki mientras está transformado ───────────────
 	if is_transformed:
-		var drain: float = (data.ki_drain_per_second if data else 8.0) * delta
-		current_energy = maxf(0.0, current_energy - drain)
-		var max_e: float = data.max_energy if data else 100.0
-		emit_signal("energy_changed", current_energy, max_e)
+		if not invulnerable:
+			var drain: float = (data.ki_drain_per_second if data else 8.0) * delta
+			current_energy = maxf(0.0, current_energy - drain)
+			var max_e: float = data.max_energy if data else 100.0
+			emit_signal("energy_changed", current_energy, max_e)
 
-		# La transformación termina automáticamente cuando el Ki llega a 0
-		if current_energy <= 0.0:
-			end_transformation()
+			# La transformación termina automáticamente cuando el Ki llega a 0
+			if current_energy <= 0.0:
+				end_transformation()
 
 	# ── Cuenta regresiva de enfriamiento (Cooldown) ─────────────────────
 	if _cooldown_timer > 0.0:
@@ -105,7 +141,23 @@ func _initialize_stats() -> void:
 	current_energy = 0.0
 
 func _setup_state_machine() -> void:
-	pass
+	if state_machine:
+		if not state_machine.has_node("Ultimate"):
+			var ult_node := UltimateState.new()
+			ult_node.name = "Ultimate"
+			state_machine.add_child(ult_node)
+
+func get_opponent() -> Node2D:
+	if opponent and is_instance_valid(opponent):
+		return opponent
+	for n in get_tree().get_nodes_in_group("fighters"):
+		if n != self and n is Node2D:
+			return n
+	return null
+
+## Aplica empuje físico al personaje
+func apply_knockback(force: Vector2) -> void:
+	velocity = force
 
 # ---------------------------------------------------------------------------
 # API pública de combate
@@ -243,6 +295,33 @@ func end_transformation() -> void:
 
 	emit_signal("transformation_ended")
 	print("[%s] 💨 Ki agotado (0 Ki). Fin de la transformación. Cooldown de %.1fs iniciado." % [name, _cooldown_timer])
+
+# ---------------------------------------------------------------------------
+# API de Ultimate (Ataque Definitivo)
+# ---------------------------------------------------------------------------
+
+## Valida si el personaje puede ejecutar su ataque definitivo (Ultimate):
+## Ki al 100% (lleno), con vida y no en ejecución de otro ataque cinemático.
+func can_ultimate() -> bool:
+	if not data:
+		return false
+	if current_health <= 0.0:
+		return false
+	var max_e: float = data.max_energy if data else 100.0
+	return current_energy >= max_e
+
+## Inicia el Ultimate: gasta todo el Ki, activa invulnerabilidad y emite señal Observer.
+func begin_ultimate() -> bool:
+	if not can_ultimate():
+		var max_e: float = data.max_energy if data else 100.0
+		print("[%s] ❌ No puede usar Ultimate (Requiere Ki lleno: %.1f/%.1f)" % [name, current_energy, max_e])
+		return false
+	var max_e: float = data.max_energy if data else 100.0
+	current_energy = 0.0
+	emit_signal("energy_changed", current_energy, max_e)
+	invulnerable = true
+	print("[%s] 💥 begin_ultimate(): Ki consumido por completo (0.0/%.1f). ¡Iniciando Ultimate!" % [name, max_e])
+	return true
 
 # ---------------------------------------------------------------------------
 # Helpers para los estados

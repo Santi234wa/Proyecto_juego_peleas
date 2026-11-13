@@ -77,3 +77,7 @@ func transition_to(state_name: String) -> void:
 	current_state = _states[state_name]
 	current_state.enter()
 	emit_signal("state_changed", previous_name, state_name)
+
+## Alias de transition_to para compatibilidad con estados externos.
+func change_state(state_name: String) -> void:
+	transition_to(state_name)

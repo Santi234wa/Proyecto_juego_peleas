@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="StoryChapter" format=3]
+
+[ext_resource type="Script" path="res://scripts/story/story_chapter.gd" id="1_chapter"]
+
+[resource]
+script = ExtResource("1_chapter")
+chapter_id = "chapter_03"
+chapter_number = 3
+title = "El hombre que recuerda"
+description = "Una presencia sombría observa desde el horizonte quebrado. Los ecos de un conflicto legendario amenazan con consumir el espacio residual."
+player_character_id = "goku"
+opponent_character_id = "madara"
+map_id = "test_map"
+ai_difficulty = 2
+intro_dialogue = [{
+"portrait": "madara_serious",
+"side": "right",
+"speaker": "Madara",
+"text": "Miserables peones atrapados en una ilusión que ni siquiera comprenden. Este mundo de ecos será el escenario de mi dominio."
+}, {
+"portrait": "goku_serious",
+"side": "left",
+"speaker": "Goku",
+"text": "Esa aura tan oscura y opresiva... No permitiré que te salgas con la tuya."
+}]
+win_dialogue = [{
+"portrait": "goku_serious",
+"side": "left",
+"speaker": "Goku",
+"text": "Es fuerte... pero su presencia parece un eco ilusorio alimentado por la grieta. La anomalía sigue creciendo."
+}]
+lose_dialogue = [{
+"portrait": "goku_hurt",
+"side": "left",
+"speaker": "Goku",
+"text": "¡Maldición...! Su control del campo de batalla es formidable. Debo recomponerme."
+}]
+has_decision = false
+decision_prompt = ""
+decision_options = []
+next_chapter_id = "chapter_04"
+

@@ -324,8 +324,9 @@ data = ExtResource("2_j34ol")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=906207952]
 sprite_frames = SubResource("SpriteFrames_gbhp4")
-animation = &"ssj_walk"
-frame_progress = 0.38006657
+animation = &"jump"
+frame = 2
+frame_progress = 0.29990262
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1141331218]
 visible = false

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="StoryChapter" format=3]
+
+[ext_resource type="Script" path="res://scripts/story/story_chapter.gd" id="1_chapter"]
+
+[resource]
+script = ExtResource("1_chapter")
+chapter_id = "chapter_01"
+chapter_number = 1
+title = "El despertar"
+description = "Goku despierta desorientado en un entorno distorsionado. Para estabilizar su energía vital y recordar sus técnicas de combate, debe poner a prueba sus movimientos."
+player_character_id = "goku"
+opponent_character_id = "dummy"
+map_id = "test_map"
+ai_difficulty = 0
+intro_dialogue = [{
+"portrait": "goku_confused",
+"side": "left",
+"speaker": "Goku",
+"text": "¿Dónde estoy...? Todo se siente extraño. Mi Ki está fragmentado... Necesito moverme para recuperar la concentración."
+}]
+win_dialogue = [{
+"portrait": "goku_smile",
+"side": "left",
+"speaker": "Goku",
+"text": "¡Uff! Ya siento mi energía fluyendo con normalidad. Algo perturbador resuena más adelante... Debo investigar."
+}]
+lose_dialogue = [{
+"portrait": "goku_hurt",
+"side": "left",
+"speaker": "Goku",
+"text": "Agh... aún no controlo el flujo de este espacio. Necesito intentarlo de nuevo."
+}]
+has_decision = false
+decision_prompt = ""
+decision_options = []
+next_chapter_id = "chapter_02"
+

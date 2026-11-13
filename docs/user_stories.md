@@ -107,7 +107,7 @@ Como **jugador local**, quiero jugar contra un amigo en el mismo teclado, para c
 - [x] P2 usa el mapeo `p2_*` (Flechas del cursor para movimiento/salto, Flecha abajo para bloqueo, K / Numpad 1 para ataque, P / Numpad 3 para transformación).
 - [x] Los controles no interfieren entre jugadores (leídos independientemente por `player_id` en `InputManager`).
 - [x] `InputManager` auto-registra controles de P2 por defecto sin requerir configuración manual.
-- [ ] Se puede iniciar desde el menú principal con la opción "Local".
+- [x] Se puede iniciar desde el menú principal con la opción "Modo local".
 
 ---
 
@@ -122,37 +122,60 @@ Como **jugador**, quiero jugar 5 combates en orden creciente de dificultad con p
 
 ---
 
-### HU-10 · IA enemiga con 3 niveles 🟡 · S3
+### HU-10 · IA enemiga con 3 niveles (Fase 6 - Paso 1) 🟡 · S3
 Como **jugador**, quiero que la IA tenga 3 niveles de dificultad, para poder aprender y desafiarme progresivamente.
 
 **Criterios de aceptación**
-- [ ] Fácil: la IA actúa con delays largos y solo ataca básico.
-- [ ] Normal: la IA usa ataques especiales y bloquea ocasionalmente.
-- [ ] Difícil: la IA reacciona más rápido, usa transformación y persigue agresivamente.
-- [ ] El nivel se configura en GameData antes de iniciar el combate.
+- [x] Fácil: la IA actúa con delays largos (0.8 s) y solo ataca con golpes básicos.
+- [x] Normal: la IA usa ataques especiales, mide distancias, se transforma y bloquea ocasionalmente (40%).
+- [x] Difícil: la IA reacciona con delays cortos (0.15 s), usa transformación, desata Ultimate al 100% Ki, persigue agresivamente y bloquea ataques con altos reflejos (80%).
+- [x] El nivel se configura en GameData (`GameData.ai_difficulty`) antes de iniciar el combate o mediante la propiedad exportada `difficulty`.
+- [x] Gobernado por `EnemyAI` simulando inputs virtuales en `InputManager` para respetar la física, frame data y StateMachine del personaje sin saltarse reglas.
+- [x] Atajo de prueba con tecla F1 para alternar el control por IA de P2 en cualquier momento durante la partida.
 
 ---
 
 ## Épica 3 — Interfaz y Menús
 
-### HU-11 · Menú principal 🔴 · S2
-Como **jugador**, quiero un menú con opciones claras al iniciar el juego, para navegar fácilmente.
+### HU-11 · Menú principal (Fase 5 - Paso 1) 🔴 · S2
+Como **jugador**, quiero un menú principal estilizado y dinámico al iniciar el juego, para navegar fácilmente entre los modos y opciones disponibles.
 
 **Criterios de aceptación**
-- [ ] Opciones: Historia, Local, Tienda, Salir.
-- [ ] Cada botón lleva a la escena correspondiente.
-- [ ] Hay música de fondo en el menú.
+- [x] Canvas base 680x400 escalable proporcionalmente a cualquier resolución de ventana.
+- [x] Capa 1: Fondo púrpura (`#3A2F55`) con sol naranja (`#E8915A`) y 2 capas de montañas escalonadas (`#5D3F63` y `#46304F`).
+- [x] Capa 2: Panel diagonal naranja (`#F28C28`) con trama halftone (`#D9731A`), 3 líneas de velocidad (`#FFC266`) y franjas paralelas negra (`#151515`) y amarilla (`#FFD23F`).
+- [x] Capa 3: Personaje en pixel art (Goku idle a escala 3x, filtro Nearest) con animación de respiración suave en bucle y pies apoyados en la barra inferior.
+- [x] Capa 4: Banner de título en paralelogramo amarillo inclinado con borde negro de 3 px y texto placeholder personalizable (`game_title`).
+- [x] Capa 5: Opciones escalonadas hacia la derecha (16 px offset X, 50 px Y): "Modo historia", "Modo local", "Tienda", "Opciones", "Salir".
+  - Opción no seleccionada: texto blanco con contorno negro de 4 px (tamaño 22).
+  - Opción seleccionada: texto negro (tamaño 26) sobre franja amarilla con sombra negra desplazada 5 px.
+  - Opciones bloqueadas con etiqueta "(Próximamente)" navegables pero no accionables.
+- [x] Capa 6: Barra inferior negra de 28 px con teclas amarillas ("↑↓", "Enter", "Esc") y etiquetas de ayuda ("Navegar", "Elegir", "Volver").
+- [x] Navegación completa por teclado (flechas / WASD / Enter / Espacio / Esc) y mouse (hover y click).
+- [x] Tweens fluidos: entrada de panel desde la izquierda (0.35 s), caída de banner (0.35 s), entrada escalonada de opciones (0.06 s delay) y deslizamiento elástico (`TRANS_BACK`, 0.12 s).
+- [x] Soporte graceful para AudioStreamPlayer (SFX mover y seleccionar sin fallar si faltan assets).
+- [x] Selección inicial por defecto en "Modo local", que emite `start_local_mode` y transiciona al escenario de combate.
 
 ---
 
-### HU-12 · Selección de personaje y mapa 🔴 · S2
-Como **jugador**, quiero seleccionar mi personaje y el mapa antes de combatir, para personalizar la partida.
+### HU-12 · Selección de personaje (Fase 5 - Paso 2) 🔴 · S2
+Como **jugadores**, queremos una pantalla de selección simultánea de luchadores estilo manga, para elegir a nuestros personajes antes del combate.
 
 **Criterios de aceptación**
-- [ ] Se muestran solo los personajes desbloqueados.
-- [ ] Los personajes bloqueados aparecen con candado y su costo en monedas.
-- [ ] Se puede seleccionar el mapa entre los desbloqueados.
-- [ ] Los datos elegidos se almacenan en `GameData` antes de cargar el combate.
+- [x] Canvas base 680x400 con división manga: mitad izquierda naranja (#F28C28) con trama (#D9731A) para J1, y mitad derecha púrpura (#3A2F55) con trama (#4A3D6B) para J2.
+- [x] Banner central superior inclinado "Elige tu luchador" en amarillo con borde negro de 3 px.
+- [x] Cuadrícula central de 4 columnas, casillas cuadradas de 40 px con 6 px de separación, marco negro de 3 px y fondo #46304F. Casillas vacías (#2A2240) configurables con `show_empty_slots`.
+- [x] Casilla "Aleatorio" con signo "?" como última opción que elige al azar entre los personajes desbloqueados.
+- [x] Cursores independientes: J1 marco amarillo (#FFD23F) de 3 px y J2 marco blanco (#FFFFFF). Visibles concéntricamente cuando ambos están en la misma casilla.
+- [x] Navegación envolvente con wrap-around en filas y columnas para ambos jugadores.
+- [x] Luchadores en grande a los lados y retratos de la cuadrícula con animación frontal (sprites sur mirando de frente, idle con respiración suave, pies sobre línea común `y = 290`). J1 y J2 mirando de frente a la pantalla.
+- [x] Soporte en `CharacterData` para `sprite_dir_select` y auto-conversión de animaciones frontales GIF -> PNG (Goku y Naruto).
+- [x] Paleta alternativa para J2 (`alt_tint`) aplicada automáticamente en caso de mirror match.
+- [x] Banner amarillo inclinado con nombre del personaje y 3 barras de stats planas (Vida, Vel., Daño) leídas de `CharacterData`.
+- [x] Etiquetas de estado debajo de la cuadrícula: "J1 eligiendo / listo" y "J2 eligiendo / listo".
+- [x] Barra inferior de 28 px con etiquetas "J1" y "J2" y sus teclas de control leídas dinámicamente de `InputMap`.
+- [x] Al confirmar ambos jugadores, almacena `player1_data` y `player2_data` en `GameData` y transiciona al combate.
+- [ ] Selección de mapa entre los desbloqueados.
 
 ---
 
@@ -195,8 +218,9 @@ Como **jugador**, quiero que mi progreso se guarde automáticamente, para no per
 Como **jugador**, quiero ver efectos visuales impactantes al transformarme o usar un ultimate, para que el juego se sienta épico.
 
 **Criterios de aceptación**
-- [ ] Al transformarse: congelado de pantalla (0.1 s), zoom de cámara, flash blanco, temblor y activación de partículas.
-- [ ] Al usar el ultimate: secuencia equivalente con duración proporcional.
-- [ ] Los efectos no afectan la lógica de juego (el timer de combate se pausa durante el freeze).
-- [ ] Los efectos corren en 60 FPS sin caídas visibles en hardware objetivo.
+- [x] Al transformarse: congelado de pantalla (0.1 s), zoom de cámara, flash blanco, temblor y activación de partículas.
+- [x] Al usar el ultimate: secuencia cinemática en 4 fases (~3.5 s) con hitstop, oscurecimiento y bandas de cine (letterbox).
+- [x] En el Ultimate de Goku: se transforma en Super Saiyajin durante la cinemática utilizando animación frontal de carga (`ssj_charge_south`), retrato frontal en primer plano con líneas de velocidad (`ssj_select_idle`), postura este de combate al disparar el rayo (`ssj_ultimate_east`), y al concluir permanece en Super Saiyajin con 40 Ki activo.
+- [x] Los efectos no afectan negativamente la lógica de combate: invulnerabilidad temporal y drenaje de Ki pausado durante la cinemática.
+- [x] Los efectos corren en 60 FPS sin caídas visibles en hardware objetivo.
 

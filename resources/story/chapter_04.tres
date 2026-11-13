@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="StoryChapter" format=3]
+
+[ext_resource type="Script" path="res://scripts/story/story_chapter.gd" id="1_chapter"]
+
+[resource]
+script = ExtResource("1_chapter")
+chapter_id = "chapter_04"
+chapter_number = 4
+title = "Una existencia imposible"
+description = "El vórtice temporal se desestabiliza generando la proyección de un guerrero supremo. Una fusión de poderes que pone a prueba la convicción de Goku."
+player_character_id = "goku"
+opponent_character_id = "vegetto"
+map_id = "test_map"
+ai_difficulty = 2
+intro_dialogue = [{
+"portrait": "vegetto_smirk",
+"side": "right",
+"speaker": "Vegetto",
+"text": "¿Así que tú eres el origen de esta resonancia? Demuéstrame si tienes el poder suficiente para soportar la verdad de los Ecos."
+}, {
+"portrait": "goku_shock",
+"side": "left",
+"speaker": "Goku",
+"text": "¿Cómo es posible? ¡¿Un reflejo de nuestra fusión?! Esta distorsión está alcanzando su límite crítico."
+}]
+win_dialogue = [{
+"portrait": "vegetto_smile",
+"side": "right",
+"speaker": "Vegetto",
+"text": "Bien hecho. La grieta responde a tu energía... pero ha llegado la hora de que elijas tu camino."
+}]
+lose_dialogue = [{
+"portrait": "goku_hurt",
+"side": "left",
+"speaker": "Goku",
+"text": "¡Es demasiado veloz y certero! Debo superarme si quiero restaurar las dimensiones."
+}]
+has_decision = true
+decision_prompt = "La fisura te ofrece dos formas de canalizar la energía del Eco:"
+decision_options = [{
+"ending_id": "",
+"id": "trust_resonance",
+"target_chapter_id": "chapter_05",
+"text": "Abrazar la resonancia para potenciar los lazos entre dimensiones"
+}, {
+"ending_id": "",
+"id": "break_illusion",
+"target_chapter_id": "chapter_05",
+"text": "Romper el vórtice por la fuerza antes de que colapse la realidad"
+}]
+next_chapter_id = "chapter_05"
+
