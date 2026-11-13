@@ -81,3 +81,4 @@ func _spawn_fireball() -> void:
 
 func exit() -> void:
 	_has_spawned = false
+

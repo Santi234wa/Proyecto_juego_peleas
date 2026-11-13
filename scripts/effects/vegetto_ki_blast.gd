@@ -1,7 +1,7 @@
 ## vegetto_ki_blast.gd
-## Proyectil de ráfaga de Ki de Vegetto.
-## Se desplaza horizontalmente e impacta en Hurtbox enemigas.
-## Aplica daño calibrado, knockback y se destruye al impactar o salir de rango.
+## Proyectil de ráfaga de Ki de Vegetto (Big Bang Attack / Ki Cannon).
+## Se desplaza horizontalmente con estela de partículas e impacta en Hurtbox enemigas.
+## Se expande limpiamente al nacer y vuela de forma estable sin encogerse.
 class_name VegettoKiBlast
 extends Area2D
 
@@ -18,6 +18,7 @@ var _elapsed: float = 0.0
 var _has_hit: bool = false
 
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var _trail: CPUParticles2D = get_node_or_null("KiTrail")
 
 func _ready() -> void:
 	monitoring = true
@@ -30,8 +31,20 @@ func _ready() -> void:
 
 	if _sprite:
 		_sprite.flip_h = (direction.x < 0.0)
-		if _sprite.sprite_frames and _sprite.sprite_frames.has_animation("fly"):
-			_sprite.play("fly")
+		if _sprite.sprite_frames:
+			if _sprite.sprite_frames.has_animation("spawn"):
+				_sprite.play("spawn")
+				if not _sprite.animation_finished.is_connected(_on_spawn_finished):
+					_sprite.animation_finished.connect(_on_spawn_finished)
+			elif _sprite.sprite_frames.has_animation("fly"):
+				_sprite.play("fly")
+
+	if _trail:
+		_trail.direction = Vector2(-direction.x, 0.0)
+
+func _on_spawn_finished() -> void:
+	if _sprite and _sprite.sprite_frames and _sprite.sprite_frames.has_animation("fly"):
+		_sprite.play("fly")
 
 func _physics_process(delta: float) -> void:
 	position += direction * speed * delta
@@ -67,4 +80,3 @@ func _on_area_entered(area: Area2D) -> void:
 
 	emit_signal("exploded")
 	queue_free()
-
