@@ -19,9 +19,11 @@ func physics_update(delta: float) -> void:
 
 	# ── Prioridad de transiciones ─────────────────────────────────────────
 
-	# 1. Transformación (tecla H: consume Ki y activa Super Saiyajin)
+	# 1. Transformación (tecla H: si tiene Ki suficiente y no está en cooldown)
 	if InputManager.is_action_just_pressed(character.player_id, "transform"):
-		character.try_transform()
+		if character.can_transform():
+			state_machine.transition_to("Transforming")
+			return
 
 	# 2. Bloqueo (guardia sostenida con S)
 	if InputManager.is_action_held(character.player_id, "block"):

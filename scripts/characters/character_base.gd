@@ -30,6 +30,8 @@ signal transformation_ended()
 var current_health: float = 0.0
 var current_energy: float = 0.0
 var is_transformed: bool = false
+var is_transforming: bool = false
+var invulnerable: bool = false
 var is_facing_right: bool = true
 var is_blocked: bool = false
 
@@ -111,6 +113,9 @@ func _setup_state_machine() -> void:
 
 ## Aplica daño. Si está bloqueando, reduce al 50%.
 func take_damage(amount: float) -> void:
+	if invulnerable:
+		return
+
 	var max_hp: float = data.max_health if data else 100.0
 	var effective: float = amount * 0.5 if is_blocked else amount
 	current_health = maxf(0.0, current_health - effective)
@@ -150,52 +155,78 @@ func spend_energy(amount: float) -> bool:
 # API de transformación
 # ---------------------------------------------------------------------------
 
-## Activa la transformación si tiene suficiente Ki acumulado y no está en cooldown
-func try_transform() -> bool:
+## Valida si el personaje cumple las condiciones para transformarse:
+## Ki acumulado >= costo mínimo, sin enfriamiento activo y no transformado actualmente.
+func can_transform() -> bool:
 	if not data:
 		return false
-	if is_transformed:
-		print("[%s] Ya está transformado en %s." % [name, data.transform_name])
+	if is_transformed or is_transforming:
 		return false
-
-	# Validar enfriamiento
 	if _cooldown_timer > 0.0:
-		print("[%s] ⏳ Enfriamiento activo: espera %.1fs para volver a transformar." % [name, _cooldown_timer])
 		return false
+	var min_cost: float = data.energy_cost_transform if data else 40.0
+	return current_energy >= min_cost
 
-	var min_cost: float = data.energy_cost_transform
-	if current_energy < min_cost:
-		print("[%s] ❌ Ki insuficiente para %s: Requiere al menos %s Ki (Tienes %.1f Ki)" % [
-			name, data.transform_name, min_cost, current_energy
+## Paso 1 de la transformación (llamado al entrar al estado Transforming):
+## Valida condiciones, activa invulnerabilidad y prepara al personaje.
+## Nota: El Ki se drena dinámicamente segundo a segundo (ki_drain_per_second) mientras esté activo.
+func begin_transform() -> bool:
+	if not can_transform():
+		var min_cost: float = data.energy_cost_transform if data else 40.0
+		print("[%s] ❌ Ki insuficiente o en cooldown (Requiere %.1f Ki, Tienes %.1f Ki, Cooldown: %.1fs)" % [
+			name, min_cost, current_energy, _cooldown_timer
 		])
 		return false
 
+	is_transforming = true
+	invulnerable = true
+	print("[%s] ⚡ begin_transform(): Iniciando secuencia de transformación en %s..." % [
+		name, data.transform_name if data else "SSJ"
+	])
+	return true
+
+## Paso 2 de la transformación (llamado al culminar el destello en TransformingState):
+## Aplica buffs de daño y velocidad, y activa el estado transformado.
+func finish_transform() -> void:
 	is_transformed = true
-	_speed_mult = data.transform_speed_mult
-	_damage_mult = data.transform_damage_mult
-	modulate = Color(1.0, 1.0, 1.0) # Colores puros de los sprites reales de Super Saiyajin
+	is_transforming = false
+	invulnerable = false
+	_speed_mult = data.transform_speed_mult if data else 1.35
+	_damage_mult = data.transform_damage_mult if data else 1.5
+
+	# Quitar cualquier tinte: colores puros de los sprites reales de Super Saiyajin
+	modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 	if _aura_particles:
 		_aura_particles.set("emitting", true)
 
-	# Actualizar visual inmediatamente al estado transformado
-	if state_machine and state_machine.current_state:
-		play_animation(state_machine.current_state.name.to_lower())
+	# Actualizar animación inmediatamente a la versión Super Saiyajin
+	play_animation("idle")
 
-	emit_signal("transformation_started", data.transform_name)
-	print("[%s] 🔥 ¡TRANSFORMACIÓN ACTIVADA! (%s) | Drenando %.1f Ki/s hasta llegar a 0..." % [
-		name, data.transform_name, data.ki_drain_per_second
+	emit_signal("transformation_started", data.transform_name if data else "Super Saiyajin")
+	print("[%s] 🔥 finish_transform(): ¡%s activado! Buffs listos (Daño x%.2f, Vel x%.2f). Drenando %.1f Ki/s..." % [
+		name, data.transform_name if data else "SSJ", _damage_mult, _speed_mult, data.ki_drain_per_second if data else 8.0
 	])
-	return true
+
+## Helper para activar transformación a través de la StateMachine
+func try_transform() -> bool:
+	if not can_transform():
+		return false
+	if state_machine:
+		state_machine.transition_to("Transforming")
+		return true
+	return false
 
 ## Termina la transformación y restaura todos los valores a la normalidad
 func end_transformation() -> void:
 	if not is_transformed:
 		return
 	is_transformed = false
+	is_transforming = false
+	invulnerable = false
 	_speed_mult = 1.0
 	_damage_mult = 1.0
-	modulate = Color(1.0, 1.0, 1.0)
+	modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 	# Iniciar temporizador de enfriamiento
 	_cooldown_timer = data.transform_cooldown if data else 8.0

@@ -81,13 +81,18 @@ classDiagram
         +current_health: float
         +current_energy: float
         +is_transformed: bool
+        +is_transforming: bool
+        +invulnerable: bool
         +is_facing_right: bool
         +is_blocked: bool
         +take_damage(amount)
         +gain_energy(amount)
         +spend_energy(amount) bool
-        +try_transform() bool
+        +can_transform() bool
+        +begin_transform() bool
+        +finish_transform()
         +end_transformation()
+        +try_transform() bool
         +get_effective_speed() float
         +get_effective_damage(base) float
         +set_facing(right)
@@ -160,6 +165,14 @@ classDiagram
     class SpecialState
     class BlockState
     class HurtState
+    class TransformingState {
+        +duration: float
+        +transformed_frames: SpriteFrames
+        +use_particles: bool
+        +enter()
+        +exit()
+        +physics_update(delta)
+    }
     class TransformedState
     class KOState
 
@@ -199,6 +212,7 @@ classDiagram
     CharacterState <|-- SpecialState
     CharacterState <|-- BlockState
     CharacterState <|-- HurtState
+    CharacterState <|-- TransformingState
     CharacterState <|-- TransformedState
     CharacterState <|-- KOState
 
@@ -225,12 +239,15 @@ stateDiagram-v2
     Idle --> Attack      : attack presionado
     Idle --> Special     : special presionado & energía suficiente
     Idle --> Blocking    : block sostenido
-    Idle --> Transformed : transform presionado & energía suficiente
+    Idle --> Transforming: transform presionado & can_transform()
 
     Walk --> Idle        : eje horizontal = 0
     Walk --> Jump        : jump presionado & en suelo
     Walk --> Attack      : attack presionado
     Walk --> Blocking    : block sostenido
+    Walk --> Transforming: transform presionado & can_transform()
+
+    Transforming --> Idle: intro finalizada & finish_transform() (SSJ activo)
 
     Jump --> Idle        : aterriza en suelo
     Jump --> Hurt        : recibe golpe en el aire
@@ -247,12 +264,21 @@ stateDiagram-v2
     Hurt --> Idle        : hitstun termina
     Hurt --> KO          : vida llega a 0
 
-    Transformed --> Walk     : eje horizontal ≠ 0
-    Transformed --> Jump     : jump presionado
-    Transformed --> Attack   : attack presionado (daño aumentado)
-    Transformed --> Special  : special presionado (daño aumentado)
-    Transformed --> Idle     : Ki llega a 0 (drenaje continuo) -> inicia transform_cooldown
-    Transformed --> Transformed : golpe asestado -> suma fracción de Ki (ki_gain_hit_mult_transformed)
+    note right of Transforming
+        Cinemática procedimental (~1.0s):
+        - Invulnerable = true
+        - Hitstop dramático (0.1s)
+        - Temblor de sprite + aura de partículas + temblor de cámara
+        - Flash blanco cinemático de pantalla completa
+        - finish_transform(): aplica buffs de daño/velocidad
+    end note
+
+    note right of Idle
+        Mientras is_transformed == true:
+        - Drena Ki dinámicamente cada segundo (ki_drain_per_second)
+        - Al llegar a 0 Ki -> end_transformation()
+        - Inicia transform_cooldown (8.0s)
+    end note
 
     KO --> [*]           : ronda termina
 ```

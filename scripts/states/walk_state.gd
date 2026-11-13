@@ -20,7 +20,9 @@ func physics_update(delta: float) -> void:
 
 	# 1. Transformación
 	if InputManager.is_action_just_pressed(character.player_id, "transform"):
-		character.try_transform()
+		if character.can_transform():
+			state_machine.transition_to("Transforming")
+			return
 
 	# 2. Bloqueo
 	if InputManager.is_action_held(character.player_id, "block"):

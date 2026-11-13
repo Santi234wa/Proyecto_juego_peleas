@@ -9,6 +9,13 @@ func _setup_state_machine() -> void:
 		push_error("Goku: No se encontró el nodo 'StateMachine'. Revisar goku.tscn.")
 		return
 
+	# Resguardo de seguridad: si el nodo 'Transforming' aún no está en la escena goku.tscn,
+	# se instancia dinámicamente para que la FSM lo reconozca de inmediato.
+	if not state_machine.has_node("Transforming"):
+		var trans_node = TransformingState.new()
+		trans_node.name = "Transforming"
+		state_machine.add_child(trans_node)
+
 	state_machine.init(self, "Idle")
 
 	# Debug: imprimir cada transición en la consola para verificar la FSM.
