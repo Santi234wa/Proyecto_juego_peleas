@@ -21,6 +21,7 @@ func _ready() -> void:
 	test_07_sharingan_transformation_lifecycle()
 	test_08_unlock_and_select_integration()
 	test_09_madara_attack_hit_and_knockback()
+	test_10_madara_fireball_projectile()
 
 	print("\n=======================================================")
 	print("RESUMEN DE PRUEBAS MADARA:")
@@ -89,10 +90,16 @@ func test_03_sprite_frames_and_animations() -> void:
 		assert_true(sf.has_animation("kick"), "Contiene animación 'kick'")
 		assert_true(sf.has_animation("sharingan_transform"), "Contiene animación 'sharingan_transform'")
 		assert_true(sf.has_animation("select_idle"), "Contiene animación 'select_idle'")
+		assert_true(sf.has_animation("fireball"), "Contiene animación 'fireball' (Katon)")
+		assert_true(sf.has_animation("hurt"), "Contiene animación 'hurt'")
+		assert_true(sf.has_animation("ko"), "Contiene animación 'ko'")
 		assert_true(sf.get_frame_count("punch_1") == 8, "punch_1 tiene 8 frames")
 		assert_true(sf.get_frame_count("punch_2") == 8, "punch_2 tiene 8 frames")
 		assert_true(sf.get_frame_count("kick") == 7, "kick tiene 7 frames")
 		assert_true(sf.get_frame_count("sharingan_transform") == 9, "sharingan_transform tiene 9 frames")
+		assert_true(sf.get_frame_count("fireball") == 6, "fireball tiene 6 frames")
+		assert_true(sf.get_frame_count("hurt") == 6, "hurt tiene 6 frames")
+		assert_true(sf.get_frame_count("ko") == 4, "ko tiene 4 frames")
 
 	inst.queue_free()
 
@@ -252,3 +259,31 @@ func test_09_madara_attack_hit_and_knockback() -> void:
 
 	madara.queue_free()
 	goku.queue_free()
+
+func test_10_madara_fireball_projectile() -> void:
+	print("\n--- TEST 10: Ataque Especial Katon (Gran Bola de Fuego) ---")
+	var scene = load("res://scenes/characters/madara.tscn") as PackedScene
+	var madara = scene.instantiate()
+	add_child(madara)
+
+	assert_true(madara.state_machine.has_node("Special"), "Estado 'Special' presente en la FSM de Madara")
+	var sp_state = madara.state_machine.get_node("Special")
+	assert_true(sp_state is MadaraFireballState, "Nodo Special es MadaraFireballState")
+
+	# Probar instanciación de la bola de fuego
+	var fb_scn = load("res://scenes/effects/madara_fireball.tscn") as PackedScene
+	assert_true(fb_scn != null, "Escena 'madara_fireball.tscn' existe y compila")
+	if fb_scn:
+		var fb = fb_scn.instantiate() as Area2D
+		assert_true(fb is MadaraFireball, "Instancia es de clase MadaraFireball")
+		assert_true(fb.collision_layer == 2, "Capa de colisión es 2 (Hitbox)")
+		assert_true(fb.collision_mask == 16, "Máscara de colisión es 16 (Hurtbox)")
+		assert_true(fb.damage == 22.0, "Daño base de la bola de fuego es 22.0")
+		assert_true(fb.speed == 460.0, "Velocidad de la bola de fuego es 460.0 px/s")
+
+		add_child(fb)
+		fb._physics_process(0.1)
+		assert_true(fb.position.x > 0.0, "Bola de fuego se desplaza horizontalmente hacia adelante")
+		fb.queue_free()
+
+	madara.queue_free()

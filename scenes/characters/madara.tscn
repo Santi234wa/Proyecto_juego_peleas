@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cgfyqq3ahtbhm"]
 
 [ext_resource type="Script" uid="uid://8y3be4a24uhj" path="res://scripts/characters/madara.gd" id="ext_1"]
-[ext_resource type="Resource" path="res://resources/characters/madara.tres" id="ext_2"]
+[ext_resource type="Resource" uid="uid://ca4xvgmi81qfy" path="res://resources/characters/madara.tres" id="ext_2"]
 [ext_resource type="Script" uid="uid://b62lh3r0wglh5" path="res://scripts/states/state_machine.gd" id="ext_3"]
 [ext_resource type="Script" uid="uid://7vk7xj544oko" path="res://scripts/states/idle_state.gd" id="ext_4"]
 [ext_resource type="Script" uid="uid://cgorcm1v17hry" path="res://scripts/states/walk_state.gd" id="ext_5"]
@@ -79,6 +79,23 @@
 [ext_resource type="Texture2D" uid="uid://ckdd3fn0t7qek" path="res://assets/sprites/madara/select_idle/select_idle_06.png" id="ext_77"]
 [ext_resource type="Texture2D" uid="uid://b0i6vgllen0w7" path="res://assets/sprites/madara/select_idle/select_idle_07.png" id="ext_78"]
 [ext_resource type="Texture2D" uid="uid://dvs64c6wenrgx" path="res://assets/sprites/madara/select_idle/select_idle_08.png" id="ext_79"]
+[ext_resource type="Texture2D" uid="uid://cxn0se4p1s7vj" path="res://assets/sprites/madara/fireball/fireball_00.png" id="ext_fb_0"]
+[ext_resource type="Texture2D" uid="uid://b45p36gt4pnbn" path="res://assets/sprites/madara/fireball/fireball_01.png" id="ext_fb_1"]
+[ext_resource type="Texture2D" uid="uid://b3s6k0njonfo0" path="res://assets/sprites/madara/fireball/fireball_02.png" id="ext_fb_2"]
+[ext_resource type="Texture2D" uid="uid://cvbmry4utqnfv" path="res://assets/sprites/madara/fireball/fireball_03.png" id="ext_fb_3"]
+[ext_resource type="Texture2D" uid="uid://bd803cenpi2hk" path="res://assets/sprites/madara/fireball/fireball_04.png" id="ext_fb_4"]
+[ext_resource type="Texture2D" uid="uid://cnky25gug7p2p" path="res://assets/sprites/madara/fireball/fireball_05.png" id="ext_fb_5"]
+[ext_resource type="Texture2D" uid="uid://cstynqfxc5wp0" path="res://assets/sprites/madara/hurt/hurt_00.png" id="ext_ht_0"]
+[ext_resource type="Texture2D" uid="uid://dogt27mxkfe40" path="res://assets/sprites/madara/hurt/hurt_01.png" id="ext_ht_1"]
+[ext_resource type="Texture2D" uid="uid://cb2oje04l1py5" path="res://assets/sprites/madara/hurt/hurt_02.png" id="ext_ht_2"]
+[ext_resource type="Texture2D" uid="uid://bgxfpk6vqct2o" path="res://assets/sprites/madara/hurt/hurt_03.png" id="ext_ht_3"]
+[ext_resource type="Texture2D" uid="uid://omq0wnb5iwts" path="res://assets/sprites/madara/hurt/hurt_04.png" id="ext_ht_4"]
+[ext_resource type="Texture2D" uid="uid://cucjclhqevkqi" path="res://assets/sprites/madara/hurt/hurt_05.png" id="ext_ht_5"]
+[ext_resource type="Texture2D" uid="uid://lfqyeqn8mra7" path="res://assets/sprites/madara/ko/ko_00.png" id="ext_ko_0"]
+[ext_resource type="Texture2D" uid="uid://blulcj34ohe1x" path="res://assets/sprites/madara/ko/ko_01.png" id="ext_ko_1"]
+[ext_resource type="Texture2D" uid="uid://cc3vvd0sdmqls" path="res://assets/sprites/madara/ko/ko_02.png" id="ext_ko_2"]
+[ext_resource type="Texture2D" uid="uid://cxb2kjolq8qxf" path="res://assets/sprites/madara/ko/ko_03.png" id="ext_ko_3"]
+[ext_resource type="Script" uid="uid://dlcxdnq1xkrnu" path="res://scripts/states/madara_fireball_state.gd" id="ext_sp_state"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_madara"]
 animations = [{
@@ -109,6 +126,52 @@ animations = [{
 }],
 "loop": 0,
 "name": &"attack",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_fb_0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_fb_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_fb_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_fb_3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_fb_4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_fb_5")
+}],
+"loop": 0,
+"name": &"fireball",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_ht_0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_ht_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_ht_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_ht_3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_ht_4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_ht_5")
+}],
+"loop": 0,
+"name": &"hurt",
 "speed": 12.0
 }, {
 "frames": [{
@@ -197,6 +260,23 @@ animations = [{
 "loop": 0,
 "name": &"kick",
 "speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_ko_0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_ko_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_ko_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_ko_3")
+}],
+"loop": 0,
+"name": &"ko",
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -391,7 +471,7 @@ radius = 11.0
 height = 42.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_punch"]
-size = Vector2(20, 8)
+size = Vector2(17.666668, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
 size = Vector2(24, 48)
@@ -405,9 +485,8 @@ player_id = 2
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1748599268]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_madara")
-animation = &"kick"
+animation = &"walk"
 autoplay = "idle"
-frame = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=280205670]
 shape = SubResource("CapsuleShape2D_body")
@@ -436,6 +515,9 @@ script = ExtResource("ext_9")
 [node name="Blocking" type="Node" parent="StateMachine" unique_id=2112538596]
 script = ExtResource("ext_10")
 
+[node name="Special" type="Node" parent="StateMachine" unique_id=1665806408]
+script = ExtResource("ext_sp_state")
+
 [node name="Transforming" type="Node" parent="StateMachine" unique_id=2008657054]
 script = ExtResource("ext_11")
 
@@ -450,7 +532,7 @@ position = Vector2(-2, -4)
 shape = SubResource("CapsuleShape2D_hit1")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitbox" unique_id=1789830178]
-position = Vector2(18, -6)
+position = Vector2(16.833334, -6)
 shape = SubResource("RectangleShape2D_punch")
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=1665710789]

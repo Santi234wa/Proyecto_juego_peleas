@@ -1,15 +1,13 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://c7cku4dphnoek"]
 
-[ext_resource type="Script" path="res://scripts/characters/character_data.gd" id="1_cdata"]
+[ext_resource type="Script" uid="uid://dnidmi20ukc3t" path="res://scripts/characters/character_data.gd" id="1_cdata"]
 
 [resource]
 script = ExtResource("1_cdata")
 id = "vegetto"
 display_name = "Vegetto"
 max_health = 145.0
-max_energy = 100.0
 move_speed = 210.0
-jump_force = -680.0
 damage_basic = 11.0
 damage_special = 26.0
 energy_cost_special = 20.0
@@ -19,7 +17,6 @@ attack_active_start = 0.08
 attack_active_end = 0.22
 hurt_duration = 0.38
 energy_on_hit_dealt = 12.0
-energy_on_hit_taken = 5.0
 transform_name = ""
 transform_speed_mult = 1.0
 transform_damage_mult = 1.0

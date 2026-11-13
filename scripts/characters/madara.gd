@@ -5,6 +5,7 @@ class_name Madara
 extends CharacterBase
 
 const MadaraAttackStateRef = preload("res://scripts/states/madara_attack_state.gd")
+const MadaraFireballStateRef = preload("res://scripts/states/madara_fireball_state.gd")
 const SharinganTransformingStateRef = preload("res://scripts/states/sharingan_transforming_state.gd")
 
 var _sharingan_particles: CPUParticles2D = null
@@ -38,6 +39,12 @@ func _setup_state_machine() -> void:
 		trans_node.name = "Transforming"
 		state_machine.add_child(trans_node)
 
+	# Estado de Ataque Especial (Katon: Gran Bola de Fuego)
+	if not state_machine.has_node("Special"):
+		var sp_node = MadaraFireballStateRef.new()
+		sp_node.name = "Special"
+		state_machine.add_child(sp_node)
+
 	# Estado Ultimate
 	if not state_machine.has_node("Ultimate"):
 		var ult_node := UltimateState.new()
@@ -48,6 +55,26 @@ func _setup_state_machine() -> void:
 
 	if not state_machine.state_changed.is_connected(_on_state_changed):
 		state_machine.state_changed.connect(_on_state_changed)
+
+func _physics_process(delta: float) -> void:
+	# Lanzamiento de Ataque Especial desde estados libres (Idle/Walk)
+	if state_machine and state_machine.current_state:
+		var s_name: String = state_machine.current_state.name
+		if s_name in ["Idle", "Walk"]:
+			if InputManager.is_action_just_pressed(player_id, "special"):
+				var cost: float = data.energy_cost_special if data else 20.0
+				if current_energy >= cost:
+					state_machine.transition_to("Special")
+					return
+
+	super._physics_process(delta)
+
+func on_fireball_spawned() -> void:
+	var ki_node = get_node_or_null("SFX/KiShoot")
+	if ki_node and ki_node is AudioStreamPlayer2D and ki_node.stream:
+		ki_node.play()
+	elif AudioManager and data and data.sfx_special_attack:
+		AudioManager.play_sfx(data.sfx_special_attack)
 
 func _on_state_changed(previous: String, next: String) -> void:
 	print("[Madara P%d] %s → %s" % [player_id, previous, next])
