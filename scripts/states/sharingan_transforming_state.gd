@@ -181,3 +181,4 @@ func _burst_sharingan_chakra() -> void:
 	character.add_child(p)
 	p.emitting = true
 	_temp.append(p)
+

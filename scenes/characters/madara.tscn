@@ -1,4 +1,4 @@
-﻿[gd_scene format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/characters/madara.gd" id="ext_1"]
 [ext_resource type="Resource" path="res://resources/characters/madara.tres" id="ext_2"]

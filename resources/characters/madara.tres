@@ -29,3 +29,4 @@ transform_cooldown = 8.0
 sprite_dir_select = "res://assets/sprites/madara/select_idle"
 alt_tint = Color(0.85, 0.7, 0.9, 1)
 dialogue_key = "madara_story"
+
