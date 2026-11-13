@@ -10,7 +10,7 @@ title = "El hombre que recuerda"
 description = "Una presencia sombría observa desde el horizonte quebrado. Los ecos de un conflicto legendario amenazan con consumir el espacio residual."
 player_character_id = "goku"
 opponent_character_id = "madara"
-map_id = "test_map"
+map_id = "valle_del_fin"
 ai_difficulty = 2
 intro_dialogue = [{
 "portrait": "madara_serious",

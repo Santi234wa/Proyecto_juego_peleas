@@ -190,7 +190,7 @@ func _load_available_characters() -> void:
 		if gdata:
 			gdata.all_characters = _characters.duplicate()
 
-	# Orden prioritario: Goku, luego Naruto, luego Madara, luego el resto por ID
+	# Orden prioritario: Goku, luego Naruto, luego Madara, luego Vegetto, luego el resto por ID
 	_characters.sort_custom(func(a, b):
 		if a.id == "goku": return true
 		if b.id == "goku": return false
@@ -198,6 +198,8 @@ func _load_available_characters() -> void:
 		if b.id == "naruto": return false
 		if a.id == "madara": return true
 		if b.id == "madara": return false
+		if a.id == "vegetto": return true
+		if b.id == "vegetto": return false
 		return a.id < b.id
 	)
 
@@ -1247,7 +1249,12 @@ func _check_both_ready() -> void:
 		tw.tween_interval(0.7)
 		tw.tween_callback(func():
 			var target_scene := combat_scene_path
-			if not ResourceLoader.exists(target_scene) and ResourceLoader.exists("res://scenes/maps/test_map.tscn"):
+			var factory = get_node_or_null("/root/CharacterFactory")
+			if gdata and factory and factory.has_method("get_map_scene_path"):
+				target_scene = factory.get_map_scene_path(gdata.selected_map_id)
+			elif not ResourceLoader.exists(target_scene) and ResourceLoader.exists("res://scenes/maps/valle_del_fin.tscn"):
+				target_scene = "res://scenes/maps/valle_del_fin.tscn"
+			elif not ResourceLoader.exists(target_scene) and ResourceLoader.exists("res://scenes/maps/test_map.tscn"):
 				target_scene = "res://scenes/maps/test_map.tscn"
 			if ResourceLoader.exists(target_scene):
 				get_tree().change_scene_to_file(target_scene)

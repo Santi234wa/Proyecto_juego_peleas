@@ -133,4 +133,3 @@ func exit() -> void:
 		_hitbox.deactivate()
 	_hitbox_was_active = false
 	_buffered_next_attack = false
-

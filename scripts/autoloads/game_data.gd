@@ -11,10 +11,10 @@ extends Node
 var all_characters: Array[CharacterData] = []
 
 ## Lista de ids desbloqueados por el jugador.
-var unlocked_character_ids: Array[String] = ["goku", "naruto", "madara"]
+var unlocked_character_ids: Array[String] = ["goku", "naruto", "madara", "vegetto"]
 
 ## Lista de ids de mapas desbloqueados.
-var unlocked_map_ids: Array[String] = ["valley_of_end", "tournament"]
+var unlocked_map_ids: Array[String] = ["valle_del_fin", "torneo", "dimension_ecos", "valley_of_end", "tournament"]
 
 # ---------------------------------------------------------------------------
 # Sesión de combate actual

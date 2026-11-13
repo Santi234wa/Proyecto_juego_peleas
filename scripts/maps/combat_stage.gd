@@ -83,24 +83,24 @@ func _spawn_selected_fighters() -> void:
 
 func _bind_combat_hud() -> void:
 	# Enlazar barras de P1
-	var p1_hp = get_node_or_null("Vida_Goku")
-	if not p1_hp: p1_hp = get_node_or_null("P1_HealthBar")
+	var p1_hp = find_child("Vida_Goku", true, false)
+	if not p1_hp: p1_hp = find_child("P1_HealthBar", true, false)
 	if p1_hp and player1 and p1_hp.has_method("bind_character"):
 		p1_hp.bind_character(player1)
 
-	var p1_energy = get_node_or_null("GokuEnergyBar")
-	if not p1_energy: p1_energy = get_node_or_null("P1_EnergyBar")
+	var p1_energy = find_child("GokuEnergyBar", true, false)
+	if not p1_energy: p1_energy = find_child("P1_EnergyBar", true, false)
 	if p1_energy and player1 and p1_energy.has_method("bind_character"):
 		p1_energy.bind_character(player1)
 
 	# Enlazar barras de P2
-	var p2_hp = get_node_or_null("Vida_Naruto")
-	if not p2_hp: p2_hp = get_node_or_null("P2_HealthBar")
+	var p2_hp = find_child("Vida_Naruto", true, false)
+	if not p2_hp: p2_hp = find_child("P2_HealthBar", true, false)
 	if p2_hp and player2 and p2_hp.has_method("bind_character"):
 		p2_hp.bind_character(player2)
 
-	var p2_energy = get_node_or_null("Chacra_Naruto")
-	if not p2_energy: p2_energy = get_node_or_null("P2_EnergyBar")
+	var p2_energy = find_child("Chacra_Naruto", true, false)
+	if not p2_energy: p2_energy = find_child("P2_EnergyBar", true, false)
 	if p2_energy and player2 and p2_energy.has_method("bind_character"):
 		p2_energy.bind_character(player2)
 

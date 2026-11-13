@@ -10,7 +10,7 @@ title = "El precio de la confianza"
 description = "Las decisiones tomadas resuenan en el tejido mismo del espacio. Una última prueba de voluntades determinará el desenlace definitivo."
 player_character_id = "goku"
 opponent_character_id = "naruto"
-map_id = "test_map"
+map_id = "torneo"
 ai_difficulty = 2
 intro_dialogue = [{
 "portrait": "naruto_serious",

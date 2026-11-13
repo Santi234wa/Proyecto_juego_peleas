@@ -10,7 +10,7 @@ title = "El último Eco"
 description = "En el epicentro de la grieta, el Cronista manifiesta un reflejo idéntico de Goku moldeado con la esencia del vórtice. Un duelo sobre la identidad, la memoria y el alma que define la existencia del verdadero héroe frente a su réplica perfecta."
 player_character_id = "goku"
 opponent_character_id = "goku_echo"
-map_id = "test_map"
+map_id = "dimension_ecos"
 ai_difficulty = 2
 intro_dialogue = [{
 "portrait": "goku_echo_smirk",

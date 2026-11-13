@@ -10,7 +10,7 @@ title = "Encuentro entre mundos"
 description = "Una figura envuelta en energía anaranjada surge del vórtice dimensional. Desorientados por la colisión temporal, Goku y Naruto cruzan puños."
 player_character_id = "goku"
 opponent_character_id = "naruto"
-map_id = "test_map"
+map_id = "torneo"
 ai_difficulty = 1
 intro_dialogue = [{
 "portrait": "naruto_defensive",

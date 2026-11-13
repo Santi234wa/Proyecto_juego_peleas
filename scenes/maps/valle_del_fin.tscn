@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://btghvcjmwcsl1"]
+
+[ext_resource type="Script" path="res://scripts/maps/combat_stage.gd" id="1_stage"]
+[ext_resource type="Texture2D" path="res://assets/maps/valle_del_fin.png" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/ui/health_bar_ui.gd" id="3_health"]
+[ext_resource type="Script" path="res://scripts/ui/energy_bar_ui.gd" id="4_energy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(1300, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 700)
+
+[node name="ValleDelFin" type="Node2D"]
+script = ExtResource("1_stage")
+p1_spawn_pos = Vector2(260, 480)
+p2_spawn_pos = Vector2(892, 480)
+
+[node name="Background" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(576, 324)
+texture = ExtResource("2_bg")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(576, 560)
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+position = Vector2(-20, 324)
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+position = Vector2(1172, 324)
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Vida_Goku" type="ProgressBar" parent="HUD"]
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 280.0
+offset_bottom = 54.0
+script = ExtResource("3_health")
+bar_color = Color(0.2, 0.85, 0.3, 1)
+
+[node name="GokuEnergyBar" type="ProgressBar" parent="HUD"]
+offset_left = 40.0
+offset_top = 62.0
+offset_right = 240.0
+offset_bottom = 78.0
+script = ExtResource("4_energy")
+
+[node name="Vida_Naruto" type="ProgressBar" parent="HUD"]
+offset_left = 872.0
+offset_top = 28.0
+offset_right = 1112.0
+offset_bottom = 54.0
+script = ExtResource("3_health")
+bar_color = Color(0.2, 0.85, 0.3, 1)
+
+[node name="Chacra_Naruto" type="ProgressBar" parent="HUD"]
+offset_left = 912.0
+offset_top = 62.0
+offset_right = 1112.0
+offset_bottom = 78.0
+script = ExtResource("4_energy")

@@ -10,7 +10,7 @@ title = "Una existencia imposible"
 description = "El vórtice temporal se desestabiliza generando la proyección de un guerrero supremo. Una fusión de poderes que pone a prueba la convicción de Goku."
 player_character_id = "goku"
 opponent_character_id = "vegetto"
-map_id = "test_map"
+map_id = "dimension_ecos"
 ai_difficulty = 2
 intro_dialogue = [{
 "portrait": "vegetto_smirk",

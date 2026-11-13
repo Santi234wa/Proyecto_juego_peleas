@@ -21,6 +21,7 @@ SaveManager="*res://scripts/autoloads/save_manager.gd"
 CharacterFactory="*res://scripts/autoloads/character_factory.gd"
 InputManager="*res://scripts/autoloads/input_manager.gd"
 StoryManager="*res://scripts/story/story_manager.gd"
+AudioManager="*res://scripts/autoloads/audio_manager.gd"
 
 [display]
 

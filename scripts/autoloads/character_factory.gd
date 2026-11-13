@@ -15,6 +15,16 @@ const _SCENE_MAP: Dictionary = {
 	"dummy":     "res://scenes/characters/dummy.tscn",
 }
 
+# Mapeo id_mapa → PackedScene
+const _MAP_SCENE_MAP: Dictionary = {
+	"valle_del_fin":  "res://scenes/maps/valle_del_fin.tscn",
+	"valley_of_end":  "res://scenes/maps/valle_del_fin.tscn",
+	"torneo":         "res://scenes/maps/torneo.tscn",
+	"tournament":     "res://scenes/maps/torneo.tscn",
+	"dimension_ecos": "res://scenes/maps/dimension_ecos.tscn",
+	"test_map":       "res://scenes/maps/test_map.tscn",
+}
+
 # Cache de escenas ya cargadas para no recargar del disco en cada combate.
 var _scene_cache: Dictionary = {}
 
@@ -43,6 +53,16 @@ func create_character(char_data: CharacterData) -> CharacterBase:
 func preload_all() -> void:
 	for id in _SCENE_MAP.keys():
 		_get_or_load_scene(id)
+
+## Obtiene la ruta de escena correspondiente a un map_id con fallback seguro
+func get_map_scene_path(map_id: String) -> String:
+	if _MAP_SCENE_MAP.has(map_id):
+		var p: String = _MAP_SCENE_MAP[map_id]
+		if ResourceLoader.exists(p):
+			return p
+	if ResourceLoader.exists("res://scenes/maps/test_map.tscn"):
+		return "res://scenes/maps/test_map.tscn"
+	return "res://resources/characters/test_map.tscn"
 
 # ---------------------------------------------------------------------------
 # Interno

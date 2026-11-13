@@ -43,7 +43,8 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Registra automáticamente los controles por defecto de Player 1 y 2 si no están configurados en project.godot
 func _register_default_p2_actions() -> void:
 	var defaults: Dictionary = {
-		"p1_ultimate":  [KEY_U, KEY_G, KEY_Y],
+		"p1_special":   [KEY_G, KEY_R],
+		"p1_ultimate":  [KEY_U, KEY_Y],
 		"p2_left":      [KEY_LEFT],
 		"p2_right":     [KEY_RIGHT],
 		"p2_jump":      [KEY_UP],

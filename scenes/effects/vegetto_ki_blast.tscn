@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://dxsr4yg3prsdw"]
+
+[ext_resource type="Script" path="res://scripts/effects/vegetto_ki_blast.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_00.png" id="2_ki00"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_01.png" id="3_ki01"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_02.png" id="4_ki02"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_03.png" id="5_ki03"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_04.png" id="6_ki04"]
+[ext_resource type="Texture2D" path="res://assets/effects/vegetto_ki/ki_05.png" id="7_ki05"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ki"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ki00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ki01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ki02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ki03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ki04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_ki05")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 12.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ki"]
+radius = 14.0
+
+[node name="VegettoKiBlast" type="Area2D"]
+collision_layer = 2
+collision_mask = 16
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_ki")
+animation = &"fly"
+autoplay = "fly"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(4, 0)
+shape = SubResource("CircleShape2D_ki")

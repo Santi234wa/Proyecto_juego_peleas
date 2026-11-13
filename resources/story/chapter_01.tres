@@ -10,7 +10,7 @@ title = "El despertar"
 description = "Goku despierta desorientado en un entorno distorsionado que asemeja al Valle del Fin. Una entidad desconocida pone a prueba su capacidad de combate antes de abrir una brecha dimensional."
 player_character_id = "goku"
 opponent_character_id = "dummy"
-map_id = "test_map"
+map_id = "valle_del_fin"
 ai_difficulty = 0
 intro_dialogue = [{
 "event": "fade_in_valley",

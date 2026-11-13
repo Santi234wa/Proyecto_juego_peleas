@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cx1wpwipyf6g3"]
+
+[ext_resource type="Script" path="res://tests/test_stage3_vegetto_maps.gd" id="1_test"]
+
+[node name="TestStage3VegettoMaps" type="Node2D"]
+script = ExtResource("1_test")

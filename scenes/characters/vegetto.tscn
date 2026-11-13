@@ -1,0 +1,557 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/characters/vegetto.gd" id="ext_1"]
+[ext_resource type="Resource" path="res://resources/characters/vegetto.tres" id="ext_2"]
+[ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="ext_3"]
+[ext_resource type="Script" path="res://scripts/states/idle_state.gd" id="ext_4"]
+[ext_resource type="Script" path="res://scripts/states/walk_state.gd" id="ext_5"]
+[ext_resource type="Script" path="res://scripts/states/jump_state.gd" id="ext_6"]
+[ext_resource type="Script" path="res://scripts/states/vegetto_attack_state.gd" id="ext_7"]
+[ext_resource type="Script" path="res://scripts/states/vegetto_ki_state.gd" id="ext_8"]
+[ext_resource type="Script" path="res://scripts/states/hurt_state.gd" id="ext_9"]
+[ext_resource type="Script" path="res://scripts/states/ko_state.gd" id="ext_10"]
+[ext_resource type="Script" path="res://scripts/states/block_state.gd" id="ext_11"]
+[ext_resource type="Script" path="res://scripts/states/vegetto_transforming_state.gd" id="ext_12"]
+[ext_resource type="Script" path="res://scripts/states/ultimate_state.gd" id="ext_13"]
+[ext_resource type="Script" path="res://scripts/utils/hitbox.gd" id="ext_14"]
+[ext_resource type="Script" path="res://scripts/utils/hurtbox.gd" id="ext_15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/idle/idle_00.png" id="ext_16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/idle/idle_01.png" id="ext_17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/idle/idle_02.png" id="ext_18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/idle/idle_03.png" id="ext_19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/idle/idle_04.png" id="ext_20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/walk/walk_00.png" id="ext_21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/walk/walk_01.png" id="ext_22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/walk/walk_02.png" id="ext_23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/walk/walk_03.png" id="ext_24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/walk/walk_04.png" id="ext_25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/run/run_00.png" id="ext_26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/run/run_01.png" id="ext_27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/run/run_02.png" id="ext_28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/run/run_03.png" id="ext_29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/run/run_04.png" id="ext_30"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/jump/jump_00.png" id="ext_31"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/jump/jump_01.png" id="ext_32"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/jump/jump_02.png" id="ext_33"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/jump/jump_03.png" id="ext_34"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/jump/jump_04.png" id="ext_35"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/fall/fall_00.png" id="ext_36"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/fall/fall_01.png" id="ext_37"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/fall/fall_02.png" id="ext_38"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/fall/fall_03.png" id="ext_39"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/fall/fall_04.png" id="ext_40"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/punch_1/punch_1_00.png" id="ext_41"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/punch_1/punch_1_01.png" id="ext_42"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/punch_1/punch_1_02.png" id="ext_43"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/punch_1/punch_1_03.png" id="ext_44"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/punch_2/punch_2_00.png" id="ext_45"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/punch_2/punch_2_01.png" id="ext_46"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/punch_2/punch_2_02.png" id="ext_47"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/punch_2/punch_2_03.png" id="ext_48"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/kick/kick_00.png" id="ext_49"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/kick/kick_01.png" id="ext_50"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/kick/kick_02.png" id="ext_51"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/kick/kick_03.png" id="ext_52"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/combo/combo_00.png" id="ext_53"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/combo/combo_01.png" id="ext_54"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/combo/combo_02.png" id="ext_55"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/combo/combo_03.png" id="ext_56"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/combo/combo_04.png" id="ext_57"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/combo/combo_05.png" id="ext_58"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/hurt/hurt_00.png" id="ext_59"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/hurt/hurt_01.png" id="ext_60"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/hurt/hurt_02.png" id="ext_61"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/hurt/hurt_03.png" id="ext_62"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ko/ko_00.png" id="ext_63"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ko/ko_01.png" id="ext_64"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ko/ko_02.png" id="ext_65"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ko/ko_03.png" id="ext_66"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ko/ko_04.png" id="ext_67"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/transform/transform_00.png" id="ext_68"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/transform/transform_01.png" id="ext_69"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/transform/transform_02.png" id="ext_70"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/transform/transform_03.png" id="ext_71"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/transform/transform_04.png" id="ext_72"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_idle/ssj_idle_00.png" id="ext_73"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_idle/ssj_idle_01.png" id="ext_74"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_idle/ssj_idle_02.png" id="ext_75"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_idle/ssj_idle_03.png" id="ext_76"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_walk/ssj_walk_00.png" id="ext_77"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_walk/ssj_walk_01.png" id="ext_78"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_walk/ssj_walk_02.png" id="ext_79"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_walk/ssj_walk_03.png" id="ext_80"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_run/ssj_run_00.png" id="ext_81"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_run/ssj_run_01.png" id="ext_82"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_run/ssj_run_02.png" id="ext_83"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_run/ssj_run_03.png" id="ext_84"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_punch/ssj_punch_00.png" id="ext_85"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_punch/ssj_punch_01.png" id="ext_86"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_punch/ssj_punch_02.png" id="ext_87"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_punch/ssj_punch_03.png" id="ext_88"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_kick/ssj_kick_00.png" id="ext_89"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_kick/ssj_kick_01.png" id="ext_90"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_kick/ssj_kick_02.png" id="ext_91"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_kick/ssj_kick_03.png" id="ext_92"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_combo/ssj_combo_00.png" id="ext_93"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_combo/ssj_combo_01.png" id="ext_94"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_combo/ssj_combo_02.png" id="ext_95"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vegetto/ssj_combo/ssj_combo_03.png" id="ext_96"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vegetto"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_16")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_17")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_19")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_20")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_21")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_23")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_24")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_25")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_26")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_27")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_28")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_29")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_30")
+}],
+"loop": true,
+"name": &"run",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_31")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_32")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_33")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_34")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_35")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_36")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_37")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_38")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_39")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_40")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_41")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_42")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_43")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_44")
+}],
+"loop": false,
+"name": &"punch_1",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_45")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_46")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_47")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_48")
+}],
+"loop": false,
+"name": &"punch_2",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_49")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_50")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_51")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_52")
+}],
+"loop": false,
+"name": &"kick",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_53")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_54")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_55")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_56")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_57")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_58")
+}],
+"loop": false,
+"name": &"combo",
+"speed": 12
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_41")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_42")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_43")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_44")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_59")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_60")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_61")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_62")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_63")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_64")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_65")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_66")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_67")
+}],
+"loop": false,
+"name": &"ko",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_68")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_69")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_70")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_71")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_72")
+}],
+"loop": false,
+"name": &"transform",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_16")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_17")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_19")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_20")
+}],
+"loop": true,
+"name": &"select_idle",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_73")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_74")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_75")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_76")
+}],
+"loop": true,
+"name": &"ssj_idle",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_77")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_78")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_79")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_80")
+}],
+"loop": true,
+"name": &"ssj_walk",
+"speed": 8
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_81")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_82")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_83")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_84")
+}],
+"loop": true,
+"name": &"ssj_run",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_85")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_86")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_87")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_88")
+}],
+"loop": false,
+"name": &"ssj_punch",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_89")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_90")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_91")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_92")
+}],
+"loop": false,
+"name": &"ssj_kick",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ext_93")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_94")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_95")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ext_96")
+}],
+"loop": false,
+"name": &"ssj_combo",
+"speed": 12
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 12.0
+height = 42.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hit"]
+radius = 16.0
+height = 36.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(24, 46)
+
+[node name="vegetto" type="CharacterBody2D"]
+collision_layer = 1
+script = ExtResource("ext_1")
+data = ExtResource("ext_2")
+player_id = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_vegetto")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("ext_3")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("ext_4")
+
+[node name="Walk" type="Node" parent="StateMachine"]
+script = ExtResource("ext_5")
+
+[node name="Jump" type="Node" parent="StateMachine"]
+script = ExtResource("ext_6")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("ext_7")
+
+[node name="Special" type="Node" parent="StateMachine"]
+script = ExtResource("ext_8")
+
+[node name="Hurt" type="Node" parent="StateMachine"]
+script = ExtResource("ext_9")
+
+[node name="KO" type="Node" parent="StateMachine"]
+script = ExtResource("ext_10")
+
+[node name="Blocking" type="Node" parent="StateMachine"]
+script = ExtResource("ext_11")
+
+[node name="Transforming" type="Node" parent="StateMachine"]
+script = ExtResource("ext_12")
+
+[node name="Ultimate" type="Node" parent="StateMachine"]
+script = ExtResource("ext_13")
+
+[node name="Hitbox" type="Area2D" parent="."]
+position = Vector2(18, 0)
+collision_layer = 2
+collision_mask = 16
+script = ExtResource("ext_14")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CapsuleShape2D_hit")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("ext_15")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_hurt")
+
+[node name="SFX" type="Node2D" parent="."]
+
+[node name="Hit" type="AudioStreamPlayer2D" parent="SFX"]
+bus = &"SFX"
+
+[node name="KiShoot" type="AudioStreamPlayer2D" parent="SFX"]
+bus = &"SFX"
+
+[node name="Transform" type="AudioStreamPlayer2D" parent="SFX"]
+bus = &"SFX"
