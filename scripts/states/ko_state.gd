@@ -16,6 +16,24 @@ func enter() -> void:
 	var char_name: String = character.data.display_name if character.data else character.name
 	print("💀💀 ¡K.O.! [%s] HA SIDO DERROTADO 💀💀" % char_name)
 
+	# Si es el Dummy de entrenamiento, no computar como ronda competitiva
+	if character.name.to_lower().begins_with("dummy"):
+		return
+
+	# Determinar quién ganó la ronda (el oponente del personaje caído)
+	var winner_key: String = "player2" if character.player_id == 1 else "player1"
+
+	var game_data = character.get_node_or_null("/root/GameData")
+	if game_data and game_data.has_method("report_round_winner"):
+		game_data.report_round_winner(winner_key)
+		# Si el ganador alcanzó el total de rondas para ganar la partida,
+		# la pantalla de victoria (VictoryScreenUI) toma el control automáticamente.
+		var rw = game_data.get("round_wins")
+		var target_wins: int = int(game_data.get("rounds_to_win")) if game_data.get("rounds_to_win") != null else 2
+		if rw is Dictionary and rw.get(winner_key, 0) >= target_wins:
+			return
+
+	# Si la partida continúa hacia la siguiente ronda, mostrar banner intermedio
 	_show_ko_banner(char_name)
 
 func physics_update(delta: float) -> void:
@@ -96,9 +114,9 @@ func _show_ko_banner(char_name: String) -> void:
 	spacer.custom_minimum_size = Vector2(0, 6)
 	vbox.add_child(spacer)
 
-	# Instrucción para reiniciar
+	# Instrucción para pasar a la siguiente ronda
 	var lbl_inst := Label.new()
-	lbl_inst.text = "Presiona [ R ] para reiniciar el combate"
+	lbl_inst.text = "Presiona [ R ] para la siguiente ronda"
 	lbl_inst.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_inst.add_theme_font_size_override("font_size", 14)
 	lbl_inst.modulate = Color(1.0, 0.85, 0.3)

@@ -217,6 +217,64 @@ classDiagram
     CharacterState <|-- TransformedState
     CharacterState <|-- KOState
 
+    %% ── HUD y UI (Patrón Observer) ───────────────────────────────────────
+    class HealthBarUI {
+        +character_path: NodePath
+        +is_player_2: bool
+        +health_color: Color
+        +ghost_color: Color
+        +ghost_delay: float
+        +ghost_tween_speed: float
+        -_ghost_bar: ProgressBar
+        -_portrait_panel: Panel
+        -_name_label: Label
+        +_on_health_changed(current, maximum)
+    }
+
+    class EnergyBarUI {
+        +character_path: NodePath
+        +is_player_2: bool
+        +base_energy_color: Color
+        +transformed_color: Color
+        +bar_height: float
+        -_cost_transform: float
+        -_hint_label: Label
+        -_threshold_marker: ColorRect
+        +_on_energy_changed(current, maximum)
+        +_on_transformation_started(name)
+        +_on_transformation_ended()
+    }
+
+    class RoundTimerUI {
+        +round_time: float
+        +is_timer_active: bool
+        -_time_remaining: float
+        -_timer_label: Label
+        -_round_label: Label
+        -_p1_dots: Array
+        -_p2_dots: Array
+        +_on_round_ended(winner)
+    }
+
+    class VictoryScreenUI {
+        +overlay_color: Color
+        +panel_border_color: Color
+        +main_menu_scene_path: String
+        -_winner_key: String
+        -_lbl_winner: Label
+        -_lbl_score: Label
+        +setup_victory(winner_key)
+        -_freeze_combatants()
+        -_restore_combatants()
+        -_on_rematch_pressed()
+        -_on_menu_pressed()
+    }
+
+    CharacterBase ..> HealthBarUI : emite health_changed (Observer)
+    CharacterBase ..> EnergyBarUI : emite energy_changed y transformation (Observer)
+    GameData ..> RoundTimerUI : emite round_ended (Observer)
+    GameData ..> VictoryScreenUI : emite match_finished (Observer)
+
     EnemyAI "1" o-- "1" CharacterBase
     EnemyAI "1" *-- "*" AIState
 
@@ -311,4 +369,37 @@ stateDiagram-v2
         Difícil: 0.15 s
     end note
 ```
+
+---
+
+## 4. Diagrama de Estados — Ciclo de la Partida (Match Flow)
+
+```mermaid
+stateDiagram-v2
+    [*] --> IniciarPartida : Inicia combate (0 - 0)
+
+    state IniciarPartida {
+        [*] --> RondaEnCurso
+        RondaEnCurso --> FinDeRonda : KO o Time Over
+        FinDeRonda --> ComprobarVictorias : GameData.report_round_winner()
+    }
+
+    ComprobarVictorias --> SiguienteRonda : Victorias < rounds_to_win (2)
+    SiguienteRonda --> RondaEnCurso : Jugador presiona [R] para continuar
+
+    ComprobarVictorias --> FinDePartida : Victorias >= rounds_to_win (2)
+
+    state FinDePartida {
+        [*] --> PantallaVictoria : GameData.match_finished() (Observer)
+        PantallaVictoria --> CongelarLuchadores : Bloquea física y controles
+        CongelarLuchadores --> EsperandoDecision
+
+        EsperandoDecision --> ReiniciarCombate : Botón "Revancha" (reset_match)
+        EsperandoDecision --> SalirAlMenu : Botón "Menú" (back_to_menu_requested)
+    }
+
+    ReiniciarCombate --> IniciarPartida : Partida en 0-0, vida y Ki restablecidos
+    SalirAlMenu --> [*] : Carga menú principal cuando exista
+```
+
 

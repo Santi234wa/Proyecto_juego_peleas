@@ -67,3 +67,13 @@ Los videos requieren assets de alta calidad, compresión adicional, integración
 - Más baratos en disco y memoria.
 - Evaluables como mecánicas de ingeniería, no solo como arte.
 
+---
+
+## ¿Por qué HUD programático por código y Patrón Observer?
+
+El HUD de combate (`HealthBarUI`, `EnergyBarUI` y `RoundTimerUI`) se construye dinámicamente mediante nodos `Control` desde GDScript sin depender de escenas rígidas:
+- **Desacoplamiento total**: La interfaz no modifica variables de los personajes; se suscribe como Observer a `health_changed`, `energy_changed`, `transformation_started` y `transformation_ended`.
+- **Estela de daño (Damage Ghost Trail)**: Doble barra superpuesta donde la barra de vida actual (verde) desciende de inmediato y la estela (amarilla) espera un retardo de 0.4 s antes de interpolar suavemente con un `Tween`, emulando el estándar visual de juegos como Street Fighter 6 y Dragon Ball FighterZ.
+- **Data-Driven Ki Threshold**: El umbral y aviso de transformación no están fijos en código; se calculan en tiempo de ejecución leyendo `energy_cost_transform` del `CharacterData`.
+- **Simetría y Reusabilidad**: El sistema detecta automáticamente `player_id` para invertir la dirección de vaciado (`FILL_END_TO_BEGIN`) en Jugador 2 y centrar el temporizador de ronda y marcadores de victoria entre ambos contendientes.
+

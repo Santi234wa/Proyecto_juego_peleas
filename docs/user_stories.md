@@ -60,32 +60,40 @@ Como **jugador**, quiero ver la barra de vida disminuir al recibir daño, para s
 
 **Criterios de aceptación**
 - [x] La barra se actualiza al recibir la señal Observer `health_changed`.
-- [x] Al llegar a 0 el personaje emite `character_died` y transita a KO.
+- [x] Estela de daño (damage ghost trail): barra amarilla retardada que interpola suavemente con Tween tras 0.4 s.
+- [x] Modo espejado para Jugador 2 (`FILL_END_TO_BEGIN`) que se vacía hacia el lado opuesto.
+- [x] Marco oscuro con borde blanco fino, retrato cuadrado con inicial y nombre del personaje.
+- [x] Al llegar a 0 el personaje emite `character_died`, muestra banner de K.O. y permite reiniciar con [R].
 - [x] La barra nunca baja de 0 ni sube de `max_health`.
 
 ---
 
-### HU-06 · Barra de energía y transformación dinámica por Ki 🔴 · S2
+### HU-06 · Barra de energía, HUD y transformación dinámica por Ki 🔴 · S2
 Como **jugador**, quiero acumular energía dando y recibiendo golpes para poder transformarme y sostener la forma según mi Ki, para tener una mecánica estratégica de gestión de recursos.
 
 **Criterios de aceptación**
 - [x] Fuera de transformación: dar un golpe suma `energy_on_hit_dealt` (+10 Ki) y recibir golpe suma `energy_on_hit_taken` (+5 Ki).
+- [x] Barra de Ki más delgada debajo de la de vida con divisiones visibles al 25%, 50% y 75%.
+- [x] Marcador visual del Ki mínimo necesario para transformar leído dinámicamente del Resource (`CharacterData`).
+- [x] Al tener Ki suficiente: parpadeo suave de la barra y aviso contextual ("H · Transformar" / "P · Transformar").
 - [x] Al presionar la tecla de transformación con Ki suficiente (≥ `energy_cost_transform`), se inicia la transformación.
-- [x] Mientras está transformado, el Ki se drena continuamente cada segundo (`ki_drain_per_second`).
+- [x] Mientras está transformado: la barra cambia a color dorado y se drena continuamente cada segundo (`ki_drain_per_second`).
 - [x] Mientras está transformado, dar golpes suma solo una fracción del Ki (`ki_gain_hit_mult_transformed`) y recibir daño NO suma Ki.
-- [x] La transformación aumenta stats (daño x1.5, velocidad x1.35) y aplica tinte dorado Super Saiyajin.
-- [x] La transformación termina automáticamente cuando el Ki llega a 0 (`end_transformation`), restaurando stats normales.
-- [x] Tras destransformarse, se activa un enfriamiento (`transform_cooldown`) antes de poder volver a transformarse.
+- [x] Temporizador central de ronda en marco superior con cuenta regresiva, número de ronda ("ROUND 1") y marcadores de victorias ganadas por jugador.
 
 ---
 
-### HU-07 · Contador de rondas 🔴 · S2
-Como **jugador**, quiero ver cuántas rondas ha ganado cada jugador, para saber quién va ganando el combate.
+### HU-07 · Contador de rondas y Fin de Partida (Match Over) 🔴 · S2
+Como **jugador**, quiero ver cuántas rondas ha ganado cada jugador y que al alcanzar 2 victorias se termine el combate con una pantalla de victoria, para tener un ciclo completo de partida competitiva.
 
 **Criterios de aceptación**
-- [ ] Se muestra un marcador de victorias de ronda (ej. ● ○) para cada jugador.
-- [ ] Al terminar una ronda se actualiza el marcador y se muestra una pantalla de "Ronda X".
-- [ ] Al ganar 2 rondas se termina el combate y se va a la pantalla de victoria.
+- [x] Se muestra un marcador de victorias de ronda con puntos dorados (`RoundTimerUI`) a los lados del temporizador central.
+- [x] Al terminar una ronda se actualiza el marcador en `GameData`, se muestra el banner de fin de ronda y avanza a la siguiente ronda con [R].
+- [x] Al ganar 2 rondas (`rounds_to_win`, configurable en `GameData`), el controlador emite `match_finished(ganador)` vía Observer y se activa la pantalla de victoria (`VictoryScreenUI`).
+- [x] La pantalla de victoria muestra el nombre del ganador leído directamente de su Resource (`CharacterData.display_name`) y el marcador final de rondas.
+- [x] Los luchadores quedan congelados (sin movimiento ni ataques) mientras la pantalla de victoria está activa.
+- [x] Botón "Revancha": reinicia la partida desde cero (rondas 0-0, vida, Ki y reloj reiniciados) con los mismos personajes.
+- [x] Botón "Menú": emite la señal `back_to_menu_requested` y redirige a la escena de menú principal cuando esté creada.
 
 ---
 

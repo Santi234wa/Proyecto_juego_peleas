@@ -29,8 +29,8 @@ var round_winner: String = ""
 ## Resultados acumulados de rondas en el combate actual.
 var round_wins: Dictionary = {"player1": 0, "player2": 0}
 
-## Rondas necesarias para ganar el combate (best-of-3 → 2).
-var rounds_to_win: int = 2
+## Rondas necesarias para ganar el combate (best-of-3 → 2). Configurable.
+@export var rounds_to_win: int = 2
 
 ## Monedas acumuladas en la sesión (se suman al guardar).
 var session_coins: int = 0
@@ -48,10 +48,12 @@ var ai_difficulty: int = 1
 var story_battle_index: int = 0
 
 # ---------------------------------------------------------------------------
-# Señales de sesión
+# Señales de sesión (Patrón Observer)
 # ---------------------------------------------------------------------------
 signal round_ended(winner: String)
 signal match_ended(winner: String)
+signal match_finished(winner: String)
+signal back_to_menu_requested()
 signal coins_updated(total: int)
 
 # ---------------------------------------------------------------------------
@@ -65,7 +67,38 @@ func report_round_winner(winner_key: String) -> void:
 	emit_signal("round_ended", winner_key)
 
 	if round_wins[winner_key] >= rounds_to_win:
+		emit_signal("match_finished", winner_key)
 		emit_signal("match_ended", winner_key)
+		_spawn_victory_screen(winner_key)
+
+## Retorna el nombre en pantalla del personaje ganador leyendo su CharacterData (Resource).
+func get_character_display_name(winner_key: String) -> String:
+	var target_pid: int = 1 if winner_key == "player1" else 2
+	var pdata = player1_data if target_pid == 1 else player2_data
+	if pdata and pdata.display_name != "":
+		return pdata.display_name
+
+	var tree := get_tree()
+	if tree and tree.current_scene:
+		for node in tree.current_scene.find_children("*", "CharacterBase", true, false):
+			if node.get("player_id") == target_pid and not node.name.to_lower().begins_with("dummy"):
+				if node.get("data") and node.data and node.data.display_name != "":
+					return node.data.display_name
+				return node.name.capitalize()
+
+	return "Jugador 1" if target_pid == 1 else "Jugador 2"
+
+func _spawn_victory_screen(winner_key: String) -> void:
+	var tree := get_tree()
+	if not tree:
+		return
+	if tree.root.has_node("VictoryScreenLayer"):
+		return
+
+	var vscreen = preload("res://scripts/ui/victory_screen_ui.gd").new()
+	vscreen.name = "VictoryScreenLayer"
+	tree.root.add_child(vscreen)
+	vscreen.setup_victory(winner_key)
 
 ## Reinicia contadores de ronda (entre combates de historia, por ejemplo).
 func reset_match() -> void:
