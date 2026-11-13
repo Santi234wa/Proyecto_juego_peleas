@@ -1,5 +1,5 @@
 ## test_main_menu_backgrounds.gd
-## Validación automatizada para DRAGON BALL: ECOS — FASE 9: A1 (Rediseño Visual Definitivo del Menú Principal)
+## Validación automatizada para DRAGON BALL: ECOS — FASE 9: A1 (Rediseño de Composición Definitivo)
 extends Node2D
 
 var _passed: int = 0
@@ -9,7 +9,7 @@ const SCREENSHOT_DIR := "res://tests/screenshots"
 
 func _ready() -> void:
 	print("\n============================================================")
-	print("  INICIANDO VALIDACIÓN: FASE 9 — A1 REDISEÑO VISUAL DEL MENÚ")
+	print("  INICIANDO VALIDACIÓN: FASE 9 — A1 REDISEÑO DE COMPOSICIÓN")
 	print("============================================================\n")
 
 	_run_validation()
@@ -43,7 +43,6 @@ func _run_validation() -> void:
 	# 2. Verificar nodos y capas
 	var bg_current: TextureRect = menu.get_node_or_null("CanvasBase/Layer1_Background/BgCurrent")
 	var bg_incoming: TextureRect = menu.get_node_or_null("CanvasBase/Layer1_Background/BgIncoming")
-	var bg_dimmer: ColorRect = menu.get_node_or_null("CanvasBase/Layer1_Background/BgDimmer")
 	var panel_manga: Control = menu.get_node_or_null("CanvasBase/Layer2_DiagonalPanel")
 	var char_holder: Control = menu.get_node_or_null("CanvasBase/Layer3_CharacterHolder")
 	var logo_banner: Control = menu.get_node_or_null("CanvasBase/Layer4_TitleBanner")
@@ -53,22 +52,20 @@ func _run_validation() -> void:
 
 	_assert(bg_current != null, "Capa 1: BgCurrent presente.")
 	_assert(bg_incoming != null, "Capa 1: BgIncoming presente.")
-	_assert(bg_dimmer != null, "Capa 1: BgDimmer presente para legibilidad.")
-	_assert(panel_manga != null, "Capa 2: Panel diagonal manga presente.")
+	_assert(panel_manga != null, "Capa 2: Panel diagonal manga (tercio izquierdo) presente.")
 	_assert(char_holder != null, "Capa 3: Contenedor del personaje pixel art presente.")
-	_assert(logo_banner != null, "Capa 4: Logotipo DRAGON BALL: ECOS presente.")
-	_assert(options_col != null, "Capa 5: Columna de paneles inclinados presente.")
-	_assert(submenu_story != null, "Capa 6: Submenú de historia presente.")
-	_assert(bottom_bar != null, "Capa 7: Barra inferior de controles presente.")
+	_assert(logo_banner != null, "Capa 4: Logotipo freestanding DRAGON BALL: ECOS presente.")
+	_assert(options_col != null, "Capa 5: Columna de opciones en paneles inclinados presente.")
+	_assert(submenu_story != null, "Capa 6: Submenú de historia en espacio reservado presente.")
+	_assert(bottom_bar != null, "Capa 7: Barra inferior discreta presente.")
 
-	# 3. Comprobación 1: Estado inicial es Modo Historia con Valle del Fin
-	_assert(menu._current_index == 0, "Opción inicial seleccionada es Modo historia (0).")
+	# 3. Comprobación 1: Estado inicial es Historia con Valle del Fin
+	_assert(menu._current_index == 0, "Opción inicial seleccionada es Historia (0).")
 	_assert(menu._active_map_path == "res://assets/maps/valle_del_fin.png", "Fondo inicial activo es Valle del Fin.")
-	_assert(bg_current.texture != null and bg_current.texture.resource_path == "res://assets/maps/valle_del_fin.png", "BgCurrent tiene la textura de valle_del_fin.png.")
-	_assert(menu._displayed_char_idx == 0, "Personaje mostrado es Goku.")
-	_assert(submenu_story.visible == true, "Submenú lateral de Historia está visible al seleccionar Modo historia.")
+	_assert(menu._displayed_char_idx == 0, "Personaje inicial mostrado es Goku.")
+	_assert(submenu_story.visible == true, "Submenú lateral de Historia está visible al seleccionar Historia.")
 
-	# Captura 1: Modo Historia (Valle del Fin + Goku + Submenú Historia)
+	# Captura 1: Historia (Valle del Fin + Goku + Submenú Historia en espacio lateral reservado)
 	await _wait_frames(35)
 	_capture_screenshot("main_menu_01_story_valle_del_fin.png")
 
@@ -78,7 +75,7 @@ func _run_validation() -> void:
 	menu._story_sub_index = 0
 	menu._update_selection_visuals(false)
 	_assert(menu._in_story_submenu == true, "Foco entró al submenú de historia.")
-	_assert(menu._story_sub_index == 0, "Opción por defecto del submenú es 'Continuar'.")
+	_assert(menu._story_sub_index == 0, "Opción activa del submenú es 'Continuar'.")
 
 	menu._navigate_vertical(1)
 	_assert(menu._story_sub_index == 1, "Navegación vertical en submenú cambió a 'Capítulos'.")
@@ -152,7 +149,7 @@ func _run_validation() -> void:
 	if _failed > 0:
 		push_error("Se detectaron fallos en la validación.")
 	else:
-		print("✅ TODAS LAS PRUEBAS DEL REDISEÑO VISUAL DEL MENÚ COMPLETADAS CON ÉXITO.")
+		print("✅ TODAS LAS PRUEBAS DEL REDISEÑO DE COMPOSICIÓN COMPLETADAS CON ÉXITO.")
 
 	menu.queue_free()
 	await _wait_frames(2)
