@@ -1,0 +1,386 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/story/story_stage.gd" id="1_stage"]
+[ext_resource type="Script" path="res://scripts/story/dimensional_rift.gd" id="2_rift"]
+[ext_resource type="Script" path="res://scripts/ui/health_bar_ui.gd" id="3_hp"]
+[ext_resource type="Script" path="res://scripts/ui/energy_bar_ui.gd" id="4_ki"]
+[ext_resource type="Script" path="res://scripts/story/glitch_overlay.gd" id="5_glitch"]
+[ext_resource type="Texture2D" path="res://assets/sprites/goku/select_idle/select_idle_00.png" id="6_goku_face"]
+[ext_resource type="Script" path="res://scripts/story/glitch_avatar.gd" id="7_avatar"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(1400, 30)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_box"]
+bg_color = Color(0.07, 0.07, 0.09, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.824, 0.247, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
+bg_color = Color(1, 0.824, 0.247, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.08, 0.08, 0.08, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_portrait"]
+bg_color = Color(0.12, 0.12, 0.16, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.9, 0.9, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_complete"]
+bg_color = Color(0.08, 0.08, 0.1, 0.96)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.824, 0.247, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.95, 0.55, 0.16, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.824, 0.247, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="StoryStage" type="Node2D"]
+script = ExtResource("1_stage")
+
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Sky" type="ColorRect" parent="BackgroundLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.227, 0.184, 0.333, 1)
+
+[node name="SunGlow" type="ColorRect" parent="BackgroundLayer"]
+offset_left = 280.0
+offset_top = 80.0
+offset_right = 440.0
+offset_bottom = 240.0
+color = Color(0.91, 0.569, 0.353, 0.75)
+
+[node name="MountainsFar" type="Polygon2D" parent="BackgroundLayer"]
+color = Color(0.365, 0.247, 0.388, 1)
+polygon = PackedVector2Array(0, 400, 0, 220, 100, 160, 240, 240, 360, 140, 500, 230, 620, 170, 680, 210, 680, 400)
+
+[node name="MountainsNear" type="Polygon2D" parent="BackgroundLayer"]
+color = Color(0.275, 0.188, 0.31, 1)
+polygon = PackedVector2Array(0, 400, 0, 260, 140, 190, 260, 270, 380, 210, 490, 280, 680, 230, 680, 400)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(350, 67)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="GroundVisual" type="ColorRect" parent="Ground"]
+offset_left = -700.0
+offset_top = -15.0
+offset_right = 700.0
+offset_bottom = 5.0
+color = Color(0.00784314, 0.976471, 0.290196, 1)
+
+[node name="GroundSub" type="ColorRect" parent="Ground"]
+offset_left = -700.0
+offset_top = 5.0
+offset_right = 700.0
+offset_bottom = 200.0
+color = Color(0.18, 0.13, 0.22, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(350, 0)
+
+[node name="DimensionalRift" type="Node2D" parent="."]
+position = Vector2(490, -10)
+script = ExtResource("2_rift")
+
+[node name="Fighters" type="Node2D" parent="."]
+
+[node name="CombatHUD" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="GokuHealthBar" type="ProgressBar" parent="CombatHUD"]
+offset_left = 30.0
+offset_top = 24.0
+offset_right = 260.0
+offset_bottom = 46.0
+script = ExtResource("3_hp")
+
+[node name="GokuEnergyBar" type="ProgressBar" parent="CombatHUD"]
+offset_left = 30.0
+offset_top = 50.0
+offset_right = 260.0
+offset_bottom = 60.0
+script = ExtResource("4_ki")
+
+[node name="DummyHealthBar" type="ProgressBar" parent="CombatHUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -260.0
+offset_top = 24.0
+offset_right = -30.0
+offset_bottom = 46.0
+grow_horizontal = 0
+script = ExtResource("3_hp")
+is_player_2 = true
+
+[node name="MangaUILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="GlitchOverlay" type="ColorRect" parent="MangaUILayer"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.2, 0.9, 1, 0.15)
+script = ExtResource("5_glitch")
+
+[node name="BlackOverlay" type="ColorRect" parent="MangaUILayer"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="DialogueBox" type="Control" parent="MangaUILayer"]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -128.0
+offset_right = -24.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="BoxPanel" type="Panel" parent="MangaUILayer/DialogueBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_box")
+
+[node name="SpeakerBadge" type="Panel" parent="MangaUILayer/DialogueBox"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = -14.0
+offset_right = 140.0
+offset_bottom = 14.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="SpeakerLabel" type="Label" parent="MangaUILayer/DialogueBox/SpeakerBadge"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.08, 0.08, 0.08, 1)
+theme_override_font_sizes/font_size = 14
+text = "GOKU"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PortraitFrame" type="Panel" parent="MangaUILayer/DialogueBox"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 18.0
+offset_right = 96.0
+offset_bottom = 98.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_portrait")
+
+[node name="PortraitTexture" type="TextureRect" parent="MangaUILayer/DialogueBox/PortraitFrame"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_goku_face")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GlitchAvatar" type="Control" parent="MangaUILayer/DialogueBox/PortraitFrame"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_avatar")
+
+[node name="DialogueLabel" type="Label" parent="MangaUILayer/DialogueBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 112.0
+offset_top = 18.0
+offset_right = -24.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.96, 0.96, 0.98, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 15
+text = "Texto de diálogo..."
+autowrap_mode = 3
+
+[node name="ArrowIndicator" type="Label" parent="MangaUILayer/DialogueBox"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -28.0
+offset_top = -26.0
+offset_right = -12.0
+offset_bottom = -6.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.824, 0.247, 1)
+theme_override_font_sizes/font_size = 14
+text = "▼"
+horizontal_alignment = 1
+
+[node name="SkipHint" type="Label" parent="MangaUILayer/DialogueBox"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -280.0
+offset_top = -18.0
+offset_right = -4.0
+offset_bottom = 2.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.85, 0.8, 0.9, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "[ESC] Saltar  ·  [ESPACIO/F] Avanzar"
+horizontal_alignment = 2
+
+[node name="ChapterCompleteLayer" type="CanvasLayer" parent="."]
+layer = 15
+visible = false
+
+[node name="BannerPanel" type="Panel" parent="ChapterCompleteLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -120.0
+offset_right = 260.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_complete")
+
+[node name="TitleLabel" type="Label" parent="ChapterCompleteLayer/BannerPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 22.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.824, 0.247, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "CAPÍTULO 1 COMPLETADO"
+horizontal_alignment = 1
+
+[node name="SubLabel" type="Label" parent="ChapterCompleteLayer/BannerPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 66.0
+offset_bottom = 92.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 0.9)
+theme_override_font_sizes/font_size = 14
+text = "El despertar — Registro de combate verificado"
+horizontal_alignment = 1
+
+[node name="UnlockedLabel" type="Label" parent="ChapterCompleteLayer/BannerPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 110.0
+offset_bottom = 136.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "⭐ Capítulo 2 Desbloqueado: Encuentro entre mundos"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="ChapterCompleteLayer/BannerPanel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -110.0
+offset_top = -56.0
+offset_right = 110.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.08, 0.08, 0.08, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button")
+text = "CONTINUAR AL MENÚ"
+
+[connection signal="pressed" from="ChapterCompleteLayer/BannerPanel/ContinueButton" to="." method="_on_continue_button_pressed"]

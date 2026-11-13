@@ -85,7 +85,7 @@ const BASE_H: float = 400.0
 
 # Definición de opciones del menú (nombre, habilitada)
 const OPTIONS_DEF: Array[Dictionary] = [
-	{"id": "story",   "label": "Modo historia", "enabled": false},
+	{"id": "story",   "label": "Modo historia", "enabled": true},
 	{"id": "local",   "label": "Modo local",    "enabled": true},
 	{"id": "shop",    "label": "Tienda",        "enabled": false},
 	{"id": "options", "label": "Opciones",      "enabled": false},
@@ -812,6 +812,16 @@ func _activate_current_option() -> void:
 	emit_signal("option_selected", opt_id)
 
 	match opt_id:
+		"story":
+			print("[Menú] 📖 Iniciando Modo Historia: ECOS...")
+			var sm = get_node_or_null("/root/StoryManager")
+			if sm:
+				sm.start_story(false)
+			var target_scene := "res://scenes/story/story_stage.tscn"
+			if ResourceLoader.exists(target_scene):
+				get_tree().change_scene_to_file(target_scene)
+			else:
+				push_error("MainMenu: No se encontró la escena '%s'." % target_scene)
 		"local":
 			print("[Menú] ⚔️ Iniciando Selección de Personaje...")
 			emit_signal("start_local_mode")
