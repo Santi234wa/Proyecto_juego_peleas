@@ -48,28 +48,29 @@ func enter() -> void:
 
 func _setup_combo_step(step: int) -> void:
 	var base_dmg: float = character.data.damage_basic if character.data else 8.0
+	var is_tf: bool = character != null and character.is_transformed
 	match step:
 		1:
 			_step_anim = "punch_1"
-			_step_duration = 0.34
-			_step_active_start = 0.08
-			_step_active_end = 0.22
+			_step_duration = 0.28 if is_tf else 0.34
+			_step_active_start = 0.06 if is_tf else 0.08
+			_step_active_end = 0.18 if is_tf else 0.22
 			_step_damage = base_dmg
-			_step_knockback = Vector2(70.0, 0.0)
+			_step_knockback = Vector2(90.0 if is_tf else 70.0, 0.0)
 		2:
 			_step_anim = "punch_2"
-			_step_duration = 0.34
-			_step_active_start = 0.08
-			_step_active_end = 0.22
+			_step_duration = 0.28 if is_tf else 0.34
+			_step_active_start = 0.06 if is_tf else 0.08
+			_step_active_end = 0.18 if is_tf else 0.22
 			_step_damage = base_dmg * 1.15
-			_step_knockback = Vector2(95.0, 0.0)
+			_step_knockback = Vector2(130.0 if is_tf else 95.0, 0.0)
 		3:
 			_step_anim = "kick"
-			_step_duration = 0.44
-			_step_active_start = 0.10
-			_step_active_end = 0.30
+			_step_duration = 0.38 if is_tf else 0.44
+			_step_active_start = 0.08 if is_tf else 0.10
+			_step_active_end = 0.26 if is_tf else 0.30
 			_step_damage = base_dmg * 1.65
-			_step_knockback = Vector2(220.0, -90.0)
+			_step_knockback = Vector2(320.0 if is_tf else 220.0, -110.0 if is_tf else -90.0)
 		_:
 			combo_step = 1
 			_setup_combo_step(1)
@@ -81,7 +82,15 @@ func physics_update(delta: float) -> void:
 	else:
 		character.velocity.y = 0.0
 
-	character.velocity.x = 0.0
+	# Avance ofensivo táctico de Madara: avanza hacia el rival durante cada golpe
+	var dir: float = 1.0 if character.is_facing_right else -1.0
+	var is_tf: bool = character.is_transformed
+	if character.is_on_floor() and _elapsed < _step_active_end:
+		var lunge_speed: float = (115.0 if is_tf else 80.0) * (1.3 if combo_step == 3 else 1.0)
+		character.velocity.x = dir * lunge_speed
+	else:
+		character.velocity.x = move_toward(character.velocity.x, 0.0, 700.0 * delta)
+
 	_elapsed += delta
 
 	# Buffer de siguiente ataque si el jugador presiona atacar durante la animación
@@ -95,7 +104,6 @@ func physics_update(delta: float) -> void:
 			_hitbox_was_active = true
 			if _hitbox:
 				var eff_dmg: float = character.get_effective_damage(_step_damage)
-				var dir: float = 1.0 if character.is_facing_right else -1.0
 				if "knockback_vector" in _hitbox:
 					_hitbox.knockback_vector = Vector2(_step_knockback.x * dir, _step_knockback.y)
 				_hitbox.activate(eff_dmg)

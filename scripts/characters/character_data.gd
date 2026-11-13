@@ -17,7 +17,7 @@ extends Resource
 @export var max_health: float = 100.0
 @export var max_energy: float = 100.0
 @export var move_speed: float = 180.0
-@export var jump_force: float = -500.0
+@export var jump_force: float = -680.0
 @export var gravity_scale: float = 1.0
 
 # ---------------------------------------------------------------------------

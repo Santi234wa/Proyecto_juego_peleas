@@ -81,3 +81,4 @@ func _run_captures() -> void:
 
 	print("\n--- VALIDACIÓN VISUAL Y CAPTURAS FINALIZADAS CON ÉXITO ---")
 	get_tree().quit(0)
+

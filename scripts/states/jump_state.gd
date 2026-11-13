@@ -8,7 +8,7 @@ const GRAVITY: float = 980.0
 
 func enter() -> void:
 	# Fuerza de salto: valor negativo porque en Godot Y+ = hacia abajo.
-	var jump_force: float = character.data.jump_force if character.data else -520.0
+	var jump_force: float = character.data.jump_force if character.data else -680.0
 	character.velocity.y = jump_force
 	character.play_animation("jump")
 

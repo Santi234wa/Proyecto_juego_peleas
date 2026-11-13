@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://capturestages01"]
+[gd_scene format=3 uid="uid://5auathmgnwto"]
 
 [ext_resource type="Script" path="res://tests/capture_stages.gd" id="1_cap"]
 
 [node name="CaptureStages" type="Node"]
 script = ExtResource("1_cap")
+

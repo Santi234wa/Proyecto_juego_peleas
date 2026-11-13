@@ -57,31 +57,58 @@ func _setup_sharingan_aura() -> void:
 		return
 	_sharingan_particles = CPUParticles2D.new()
 	_sharingan_particles.name = "SharinganAura"
-	_sharingan_particles.amount = 22
-	_sharingan_particles.lifetime = 0.7
+	_sharingan_particles.amount = 35
+	_sharingan_particles.lifetime = 0.8
 	_sharingan_particles.direction = Vector2.UP
-	_sharingan_particles.spread = 30.0
-	_sharingan_particles.gravity = Vector2.ZERO
-	_sharingan_particles.initial_velocity_min = 25.0
-	_sharingan_particles.initial_velocity_max = 65.0
-	_sharingan_particles.scale_amount_min = 1.8
-	_sharingan_particles.scale_amount_max = 3.5
-	_sharingan_particles.color = Color(0.95, 0.12, 0.18, 0.75)
+	_sharingan_particles.spread = 35.0
+	_sharingan_particles.gravity = Vector2(0, -10)
+	_sharingan_particles.initial_velocity_min = 35.0
+	_sharingan_particles.initial_velocity_max = 85.0
+	_sharingan_particles.scale_amount_min = 2.0
+	_sharingan_particles.scale_amount_max = 4.2
+	_sharingan_particles.color = Color(1.0, 0.08, 0.15, 0.85)
 	_sharingan_particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	_sharingan_particles.emission_rect_extents = Vector2(10, 3)
+	_sharingan_particles.emission_rect_extents = Vector2(12, 4)
 	_sharingan_particles.position = Vector2(0, 20)
 	_sharingan_particles.emitting = false
 	add_child(_sharingan_particles)
 
 func finish_transform() -> void:
 	super.finish_transform()
+	modulate = Color(1.15, 0.90, 0.92, 1.0)
 	if _sharingan_particles:
 		_sharingan_particles.emitting = true
 
 func end_transformation() -> void:
 	super.end_transformation()
+	modulate = Color(1.0, 1.0, 1.0, 1.0)
 	if _sharingan_particles:
 		_sharingan_particles.emitting = false
+
+## Mecánica de Semi-Jefe Sharingan:
+## - Lectura Uchiha: reduce el daño recibido un 30% mientras está transformado.
+## - Super-Armor: durante la ejecución de ataques en Sharingan no es interrumpido (no entra a Hurt).
+func take_damage(amount: float) -> void:
+	if invulnerable:
+		return
+
+	var effective: float = amount
+	if is_transformed:
+		effective = amount * 0.70
+
+	# Super-Armor en Sharingan si está atacando
+	if is_transformed and state_machine and state_machine.current_state and state_machine.current_state.name == "Attack":
+		var max_hp: float = data.max_health if data else 100.0
+		var final_dmg: float = effective * 0.5 if is_blocked else effective
+		current_health = maxf(0.0, current_health - final_dmg)
+		emit_signal("health_changed", current_health, max_hp)
+		_flash_hit()
+		if current_health <= 0.0:
+			emit_signal("character_died")
+			state_machine.transition_to("KO")
+		return
+
+	super.take_damage(effective)
 
 func play_animation(anim_name: String) -> void:
 	# Fallback inteligente si se invoca 'attack' genérico
