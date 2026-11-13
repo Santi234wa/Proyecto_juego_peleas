@@ -95,10 +95,10 @@ func physics_update(delta: float) -> void:
 			_hitbox_was_active = true
 			if _hitbox:
 				var eff_dmg: float = character.get_effective_damage(_step_damage)
-				_hitbox.activate(eff_dmg)
-				# Empuje hacia la dirección a la que mira
 				var dir: float = 1.0 if character.is_facing_right else -1.0
-				_hitbox.knockback_vector = Vector2(_step_knockback.x * dir, _step_knockback.y)
+				if "knockback_vector" in _hitbox:
+					_hitbox.knockback_vector = Vector2(_step_knockback.x * dir, _step_knockback.y)
+				_hitbox.activate(eff_dmg)
 		elif _hitbox:
 			_hitbox.check_overlaps()
 	elif _elapsed >= _step_active_end and _hitbox_was_active:

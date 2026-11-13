@@ -103,3 +103,4 @@ func _bind_combat_hud() -> void:
 	if not p2_energy: p2_energy = get_node_or_null("P2_EnergyBar")
 	if p2_energy and player2 and p2_energy.has_method("bind_character"):
 		p2_energy.bind_character(player2)
+

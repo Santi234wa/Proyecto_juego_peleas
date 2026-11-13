@@ -113,3 +113,4 @@ func test_03_spawn_madara_mirror_match() -> void:
 	assert_true(p2.modulate == gdata.player2_data.alt_tint, "P2 tiene alt_tint aplicado para diferenciarlo visualmente")
 
 	map.queue_free()
+

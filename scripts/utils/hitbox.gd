@@ -14,6 +14,9 @@ signal hit_registered(hurtbox: Area2D, damage_amount: float)
 ## Daño que inflige este golpe (se actualiza en activate)
 var damage: float = 0.0
 
+## Vector de empuje (knockback) aplicado a la víctima
+var knockback_vector: Vector2 = Vector2.ZERO
+
 ## Registro de hurtboxes ya golpeados durante este swing
 var _hit_targets: Array[Area2D] = []
 
@@ -41,6 +44,7 @@ func activate(damage_amount: float) -> void:
 func deactivate() -> void:
 	monitoring = false
 	_hit_targets.clear()
+	knockback_vector = Vector2.ZERO
 
 ## Comprueba manualmente hurtboxes ya solapados
 func check_overlaps() -> void:
@@ -64,6 +68,8 @@ func _on_area_entered(area: Area2D) -> void:
 
 	if area.has_method("receive_hit"):
 		area.receive_hit(damage, self)
+		if knockback_vector != Vector2.ZERO and area.get("owner_character") and area.owner_character.has_method("apply_knockback"):
+			area.owner_character.apply_knockback(knockback_vector)
 
 	# ── Recompensa de energía (Ki/Chakra) al atacante ──────────────────────
 	# Si está transformado, gana solo una fracción del Ki (ki_gain_hit_mult_transformed).

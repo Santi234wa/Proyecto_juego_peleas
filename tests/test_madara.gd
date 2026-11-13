@@ -20,6 +20,7 @@ func _ready() -> void:
 	test_06_combo_timeout_reset()
 	test_07_sharingan_transformation_lifecycle()
 	test_08_unlock_and_select_integration()
+	test_09_madara_attack_hit_and_knockback()
 
 	print("\n=======================================================")
 	print("RESUMEN DE PRUEBAS MADARA:")
@@ -223,3 +224,31 @@ func test_08_unlock_and_select_integration() -> void:
 	GameData.player2_data = char_data
 	var disp_name = GameData.get_character_display_name("player2")
 	assert_true(disp_name == "Madara", "GameData resuelve el nombre 'Madara' correctamente")
+
+func test_09_madara_attack_hit_and_knockback() -> void:
+	print("\n--- TEST 9: Golpe efectivo y Knockback sin error de propiedad ---")
+	var scene = load("res://scenes/characters/madara.tscn") as PackedScene
+	var madara = scene.instantiate()
+	add_child(madara)
+
+	var goku_scn = load("res://scenes/characters/goku.tscn") as PackedScene
+	var goku = goku_scn.instantiate()
+	add_child(goku)
+
+	madara.position = Vector2(100, 0)
+	goku.position = Vector2(115, 0)
+	madara.set_facing(true)
+
+	var atk_state = madara.state_machine.get_node("Attack")
+	atk_state.combo_step = 1
+	atk_state.enter()
+
+	# Simular physics_update en el frame activo del golpe
+	atk_state.physics_update(0.12)
+
+	assert_true(atk_state._hitbox != null, "Hitbox activo")
+	assert_true("knockback_vector" in atk_state._hitbox, "Hitbox tiene propiedad 'knockback_vector'")
+	assert_true(atk_state._hitbox.knockback_vector.x > 0, "knockback_vector asignado con dirección positiva a la derecha")
+
+	madara.queue_free()
+	goku.queue_free()
