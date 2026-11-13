@@ -1,9 +1,9 @@
 ## vegetto_attack_state.gd
-## Combo de combate de Vegetto:
-##   Golpe 1: Puñetazo rápido (punch_1 / ssj_punch)
-##   Golpe 2: Gancho directo (punch_2 / ssj_punch)
-##   Golpe 3: Patada alta (kick / ssj_kick)
-##   Golpe 4: Ráfaga de golpes relámpago (combo / ssj_combo)
+## Combo de combate definitivo de Vegetto:
+##   Golpe 1: Puñetazo veloz (punch_1)
+##   Golpe 2: Gancho directo contundente (punch_2)
+##   Golpe 3: Patada ciclónica ascendente (kick)
+##   Golpe 4: Ráfaga brutal de golpes continuos (combo)
 ##   Bucle: 1 → 2 → 3 → 4 → 1
 ## Si pasan más de COMBO_RESET_DELAY segundos sin atacar, el combo se reinicia al paso 1.
 class_name VegettoAttackState
@@ -17,8 +17,9 @@ var _buffered_next_attack: bool = false
 var _step_duration: float = 0.34
 var _step_active_start: float = 0.08
 var _step_active_end: float = 0.22
-var _step_damage: float = 9.0
+var _step_damage: float = 11.0
 var _step_knockback: Vector2 = Vector2(80.0, 0.0)
+var _step_lunge: float = 50.0
 var _step_anim: String = "punch_1"
 
 func enter() -> void:
@@ -42,38 +43,41 @@ func enter() -> void:
 		character.play_animation(_step_anim)
 
 func _setup_combo_step(step: int) -> void:
-	var base_dmg: float = character.data.damage_basic if character.data else 9.0
-	var is_ssj: bool = character.is_transformed
+	var base_dmg: float = character.data.damage_basic if character.data else 11.0
 
 	match step:
 		1:
-			_step_anim = "ssj_punch" if is_ssj else "punch_1"
-			_step_duration = 0.32
-			_step_active_start = 0.07
-			_step_active_end = 0.20
+			_step_anim = "punch_1"
+			_step_duration = 0.30
+			_step_active_start = 0.06
+			_step_active_end = 0.18
 			_step_damage = base_dmg
-			_step_knockback = Vector2(70.0, 0.0)
+			_step_knockback = Vector2(80.0, 0.0)
+			_step_lunge = 60.0
 		2:
-			_step_anim = "ssj_punch" if is_ssj else "punch_2"
-			_step_duration = 0.32
-			_step_active_start = 0.07
-			_step_active_end = 0.20
-			_step_damage = base_dmg * 1.1
-			_step_knockback = Vector2(90.0, 0.0)
+			_step_anim = "punch_2"
+			_step_duration = 0.30
+			_step_active_start = 0.06
+			_step_active_end = 0.18
+			_step_damage = base_dmg * 1.15
+			_step_knockback = Vector2(100.0, 0.0)
+			_step_lunge = 80.0
 		3:
-			_step_anim = "ssj_kick" if is_ssj else "kick"
-			_step_duration = 0.36
-			_step_active_start = 0.08
-			_step_active_end = 0.24
-			_step_damage = base_dmg * 1.3
-			_step_knockback = Vector2(120.0, -20.0)
+			_step_anim = "kick"
+			_step_duration = 0.34
+			_step_active_start = 0.07
+			_step_active_end = 0.22
+			_step_damage = base_dmg * 1.35
+			_step_knockback = Vector2(140.0, -30.0)
+			_step_lunge = 90.0
 		4:
-			_step_anim = "ssj_combo" if is_ssj else "combo"
-			_step_duration = 0.45
-			_step_active_start = 0.08
+			_step_anim = "combo"
+			_step_duration = 0.42
+			_step_active_start = 0.07
 			_step_active_end = 0.32
-			_step_damage = base_dmg * 1.6
-			_step_knockback = Vector2(170.0, -35.0)
+			_step_damage = base_dmg * 1.70
+			_step_knockback = Vector2(200.0, -50.0)
+			_step_lunge = 110.0
 
 func physics_update(delta: float) -> void:
 	if not character.is_on_floor():
@@ -81,11 +85,17 @@ func physics_update(delta: float) -> void:
 	else:
 		character.velocity.y = 0.0
 
-	character.velocity.x = 0.0
 	_elapsed += delta
 
+	# Pequeño avance ofensivo durante el inicio del golpe
+	var dir_x: float = 1.0 if character.is_facing_right else -1.0
+	if _elapsed < _step_active_start:
+		character.velocity.x = dir_x * _step_lunge
+	else:
+		character.velocity.x = 0.0
+
 	# Buffer de ataque
-	if _elapsed > 0.12 and InputManager.is_action_just_pressed(character.player_id, "attack"):
+	if _elapsed > 0.10 and InputManager.is_action_just_pressed(character.player_id, "attack"):
 		_buffered_next_attack = true
 
 	# Gestión de frames activos de la Hitbox
@@ -95,8 +105,7 @@ func physics_update(delta: float) -> void:
 			if _hitbox:
 				var eff_dmg: float = character.get_effective_damage(_step_damage)
 				_hitbox.activate(eff_dmg)
-				var dir: float = 1.0 if character.is_facing_right else -1.0
-				_hitbox.knockback_vector = Vector2(_step_knockback.x * dir, _step_knockback.y)
+				_hitbox.knockback_vector = Vector2(_step_knockback.x * dir_x, _step_knockback.y)
 		elif _hitbox:
 			_hitbox.check_overlaps()
 	elif _elapsed >= _step_active_end and _hitbox_was_active:
@@ -126,4 +135,3 @@ func exit() -> void:
 		_hitbox.deactivate()
 	_hitbox_was_active = false
 	_buffered_next_attack = false
-

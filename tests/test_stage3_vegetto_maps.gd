@@ -87,13 +87,12 @@ func _test_vegetto_resource_and_scene() -> void:
 	if v_res:
 		_assert(v_res.id == "vegetto", "ID de Vegetto es 'vegetto'.")
 		_assert(v_res.display_name == "Vegetto", "display_name es 'Vegetto'.")
-		_assert(v_res.max_health == 100.0, "max_health es 100.0.")
+		_assert(v_res.max_health == 145.0, "max_health es 145.0 (el luchador más fuerte del juego).")
 		_assert(v_res.max_energy == 100.0, "max_energy es 100.0.")
-		_assert(v_res.damage_basic == 9.0, "damage_basic calibrado a 9.0.")
-		_assert(v_res.damage_special == 18.0, "damage_special calibrado a 18.0.")
+		_assert(v_res.damage_basic == 11.0, "damage_basic calibrado a 11.0.")
+		_assert(v_res.damage_special == 26.0, "damage_special calibrado a 26.0.")
 		_assert(v_res.energy_cost_special == 20.0, "energy_cost_special es 20.0.")
-		_assert(v_res.transform_name == "Super Saiyajin", "transform_name es 'Super Saiyajin'.")
-		_assert(v_res.transform_damage_mult == 1.5, "transform_damage_mult es 1.50.")
+		_assert(v_res.transform_name == "", "Vegetto no tiene transformación (transform_name vacío).")
 
 	var scn = load("res://scenes/characters/vegetto.tscn") as PackedScene
 	_assert(scn != null, "Escena 'vegetto.tscn' existe y compila correctamente.")
@@ -124,13 +123,14 @@ func _test_vegetto_animations() -> void:
 	if spr and spr.sprite_frames:
 		var required_anims: Array[String] = [
 			"idle", "walk", "run", "jump", "fall", "punch_1", "punch_2", "kick", "combo",
-			"hurt", "ko", "transform",
-			"ssj_idle", "ssj_walk", "ssj_run", "ssj_punch", "ssj_kick", "ssj_combo"
+			"hurt", "ko", "energy_attack"
 		]
 		for anim in required_anims:
 			var has_a: bool = spr.sprite_frames.has_animation(anim)
 			var f_cnt: int = spr.sprite_frames.get_frame_count(anim) if has_a else 0
 			_assert(has_a and f_cnt > 0, "Animación '%s' existe con %d fotogramas." % [anim, f_cnt])
+
+		_assert(not spr.sprite_frames.has_animation("ssj_idle"), "No contiene animaciones SSJ (pura versión base).")
 
 	v_inst.queue_free()
 
@@ -153,7 +153,7 @@ func _test_vegetto_combo_and_attacks() -> void:
 	_assert(sm != null, "StateMachine inicializada.")
 	_assert(sm.has_node("Attack"), "Estado 'Attack' presente en FSM.")
 	_assert(sm.has_node("Special"), "Estado 'Special' presente en FSM.")
-	_assert(sm.has_node("Transforming"), "Estado 'Transforming' presente en FSM.")
+	_assert(not sm.has_node("Transforming"), "Estado 'Transforming' ausente (sin transformación).")
 
 	var atk_state = sm.get_node("Attack")
 	_assert(atk_state is VegettoAttackStateRef, "Estado de ataque es VegettoAttackState.")
@@ -186,8 +186,8 @@ func _test_vegetto_ki_blast_projectile() -> void:
 		_assert(p is VegettoKiBlastRef, "Instancia es de clase VegettoKiBlast.")
 		_assert(p.collision_layer == 2, "Capa de colisión es 2 (Hitbox).")
 		_assert(p.collision_mask == 16, "Máscara de colisión es 16 (Hurtbox).")
-		_assert(p.damage == 16.0, "Daño del proyectil calibrado a 16.0.")
-		_assert(p.speed == 480.0, "Velocidad de proyectil calibrada a 480.0 px/s.")
+		_assert(p.damage == 25.0, "Daño del proyectil calibrado a 25.0.")
+		_assert(p.speed == 500.0, "Velocidad de proyectil calibrada a 500.0 px/s.")
 
 		add_child(p)
 		p._physics_process(0.1)
@@ -195,11 +195,11 @@ func _test_vegetto_ki_blast_projectile() -> void:
 		p.queue_free()
 
 # ---------------------------------------------------------------------------
-# 6. Vegetto: Transformación en Super Saiyajin
+# 6. Vegetto: Inexistencia de Transformación (Luchador Definitivo)
 # ---------------------------------------------------------------------------
 
 func _test_vegetto_transformation() -> void:
-	print("\n--- 6. Pruebas de Transformación Super Saiyajin ---")
+	print("\n--- 6. Pruebas de Definitivo: Sin Transformación ---")
 	var scn = load("res://scenes/characters/vegetto.tscn") as PackedScene
 	if not scn:
 		_assert(false, "No se pudo instanciar vegetto.")
@@ -209,22 +209,15 @@ func _test_vegetto_transformation() -> void:
 	add_child(v)
 	v.current_energy = 100.0
 
-	_assert(v.can_transform(), "Vegetto cumple condiciones para transformarse con 100 Ki.")
+	_assert(not v.can_transform(), "can_transform() retorna false (sin transformación).")
 	var ok: bool = v.begin_transform()
-	_assert(ok and v.is_transforming, "begin_transform() inicia secuencia de transformación.")
+	_assert(not ok and not v.is_transforming, "begin_transform() no se activa en Vegetto.")
+	_assert(not v.is_transformed, "is_transformed permanece false.")
 
-	v.finish_transform()
-	_assert(v.is_transformed, "finish_transform() activa is_transformed = true.")
-	_assert(v.get_effective_damage(10.0) == 15.0, "Buff de daño Super Saiyajin activo (x1.50).")
-	_assert(v.get_effective_speed() > v.data.move_speed, "Buff de velocidad Super Saiyajin activo.")
-
-	# Comprobar animación ssj_idle al solicitar idle transformado
-	v.play_animation("idle")
+	# Comprobar animación energy_attack existe para su Ataque Especial
 	var spr = v.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
-	_assert(spr and spr.animation == "ssj_idle", "Vegetto reproduce 'ssj_idle' automáticamente al estar transformado.")
+	_assert(spr and spr.sprite_frames.has_animation("energy_attack"), "Vegetto posee animación 'energy_attack' para su disparo de Ki.")
 
-	v.end_transformation()
-	_assert(not v.is_transformed, "end_transformation() revierte el estado a base.")
 	v.queue_free()
 
 # ---------------------------------------------------------------------------

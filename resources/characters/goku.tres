@@ -7,7 +7,6 @@ script = ExtResource("1_g6noj")
 id = "goku"
 display_name = "Goku"
 move_speed = 200.0
-jump_force = -680.0
 sprite_dir_select = "res://assets/sprites/goku/select_idle"
 alt_tint = Color(0.65, 0.95, 0.75, 1)
 dialogue_key = "goku_story"

@@ -1,5 +1,5 @@
 ## vegetto_ki_state.gd
-## Estado de ataque especial de Vegetto: Disparo de ráfaga de Ki.
+## Estado de ataque especial de Vegetto: Ataque de Energía (Ráfaga de Ki / Big Bang Blast).
 ## Gasta energía, prepara la animación de lanzamiento e instancia el proyectil VegettoKiBlast.
 class_name VegettoKiState
 extends CharacterState
@@ -8,8 +8,8 @@ const GRAVITY: float = 980.0
 const KI_SCENE_PATH: String = "res://scenes/effects/vegetto_ki_blast.tscn"
 
 @export var ki_cost: float = 20.0
-@export var cast_delay: float = 0.12
-@export var total_duration: float = 0.38
+@export var cast_delay: float = 0.14
+@export var total_duration: float = 0.42
 
 var _elapsed: float = 0.0
 var _has_spawned: bool = false
@@ -18,7 +18,7 @@ func enter() -> void:
 	_elapsed = 0.0
 	_has_spawned = false
 
-	# Detener movimiento para disparar
+	# Detener movimiento para concentrar el disparo
 	character.velocity.x = 0.0
 
 	var cost: float = ki_cost
@@ -26,14 +26,12 @@ func enter() -> void:
 		cost = character.data.energy_cost_special
 
 	if not character.spend_energy(cost):
-		# Sin energía suficiente, volver a Idle de inmediato
 		state_machine.transition_to("Idle")
 		return
 
-	# Animación de lanzamiento de ki (usa punch_2 o pose de ataque)
-	var anim: String = "ssj_punch" if character.is_transformed else "punch_2"
+	# Reproducir animación de ataque de energía
 	if character.has_method("play_animation"):
-		character.play_animation(anim)
+		character.play_animation("energy_attack")
 
 func physics_update(delta: float) -> void:
 	if not character.is_on_floor():
@@ -65,7 +63,7 @@ func _spawn_ki_projectile() -> void:
 	var proj: Area2D = scene.instantiate()
 	var dir_x: float = 1.0 if character.is_facing_right else -1.0
 	proj.scale = character.scale
-	var offset: Vector2 = Vector2(36.0 * dir_x, -4.0)
+	var offset: Vector2 = Vector2(36.0 * dir_x, -2.0)
 
 	proj.owner_character = character
 	proj.direction = Vector2(dir_x, 0.0)
@@ -79,4 +77,3 @@ func _spawn_ki_projectile() -> void:
 
 func exit() -> void:
 	_has_spawned = false
-

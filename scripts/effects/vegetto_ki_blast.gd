@@ -7,10 +7,10 @@ extends Area2D
 
 signal exploded()
 
-@export var speed: float = 480.0
-@export var damage: float = 16.0
+@export var speed: float = 500.0
+@export var damage: float = 25.0
 @export var lifetime: float = 2.2
-@export var knockback_force: Vector2 = Vector2(110.0, -15.0)
+@export var knockback_force: Vector2 = Vector2(130.0, -25.0)
 
 var owner_character: CharacterBase = null
 var direction: Vector2 = Vector2.RIGHT

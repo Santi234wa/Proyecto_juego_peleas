@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterData" format=3]
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://c7cku4dphnoek"]
 
 [ext_resource type="Script" path="res://scripts/characters/character_data.gd" id="1_cdata"]
 
@@ -6,27 +6,26 @@
 script = ExtResource("1_cdata")
 id = "vegetto"
 display_name = "Vegetto"
-max_health = 100.0
+max_health = 145.0
 max_energy = 100.0
-move_speed = 195.0
+move_speed = 210.0
 jump_force = -680.0
-damage_basic = 9.0
-damage_special = 18.0
+damage_basic = 11.0
+damage_special = 26.0
 energy_cost_special = 20.0
-energy_cost_transform = 40.0
-attack_duration = 0.36
+energy_cost_transform = 0.0
+attack_duration = 0.35
 attack_active_start = 0.08
-attack_active_end = 0.24
-hurt_duration = 0.4
-energy_on_hit_dealt = 10.0
+attack_active_end = 0.22
+hurt_duration = 0.38
+energy_on_hit_dealt = 12.0
 energy_on_hit_taken = 5.0
-transform_name = "Super Saiyajin"
-transform_speed_mult = 1.35
-transform_damage_mult = 1.50
-ki_drain_per_second = 7.0
-ki_gain_hit_mult_transformed = 0.3
-transform_cooldown = 8.0
+transform_name = ""
+transform_speed_mult = 1.0
+transform_damage_mult = 1.0
+ki_drain_per_second = 0.0
+ki_gain_hit_mult_transformed = 1.0
+transform_cooldown = 0.0
 sprite_dir_select = "res://assets/sprites/vegetto/idle"
-alt_tint = Color(0.7, 0.85, 1.2, 1.0)
+alt_tint = Color(0.7, 0.85, 1.2, 1)
 dialogue_key = "vegetto_story"
-
