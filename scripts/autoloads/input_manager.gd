@@ -23,6 +23,29 @@ const ACTIONS: Dictionary = {
 	},
 }
 
+func _ready() -> void:
+	_register_default_p2_actions()
+
+## Registra automáticamente los controles por defecto de Player 2 si no están configurados en project.godot
+func _register_default_p2_actions() -> void:
+	var defaults: Dictionary = {
+		"p2_left":      [KEY_LEFT],
+		"p2_right":     [KEY_RIGHT],
+		"p2_jump":      [KEY_UP],
+		"p2_block":     [KEY_DOWN],
+		"p2_attack":    [KEY_K, KEY_KP_1],
+		"p2_special":   [KEY_L, KEY_KP_2],
+		"p2_transform": [KEY_P, KEY_KP_3],
+	}
+
+	for action_name in defaults:
+		if not InputMap.has_action(action_name):
+			InputMap.add_action(action_name)
+			for key_code in defaults[action_name]:
+				var event := InputEventKey.new()
+				event.physical_keycode = key_code
+				InputMap.action_add_event(action_name, event)
+
 ## Retorna true si la acción está siendo sostenida en este frame.
 func is_action_held(player_id: int, action: String) -> bool:
 	var mapped: String = _get_action(player_id, action)

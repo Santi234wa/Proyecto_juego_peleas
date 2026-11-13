@@ -95,8 +95,10 @@ Como **jugador**, quiero ver cuántas rondas ha ganado cada jugador, para saber 
 Como **jugador local**, quiero jugar contra un amigo en el mismo teclado, para competir en el mismo equipo.
 
 **Criterios de aceptación**
-- [ ] P1 usa el mapeo `p1_*` (WASD + teclas cercanas) y P2 usa `p2_*` (flechas + teclado numérico).
-- [ ] Los controles no interfieren entre jugadores.
+- [x] P1 usa el mapeo `p1_*` (WASD para movimiento/salto, S para bloqueo, F para ataque, H para transformación).
+- [x] P2 usa el mapeo `p2_*` (Flechas del cursor para movimiento/salto, Flecha abajo para bloqueo, K / Numpad 1 para ataque, P / Numpad 3 para transformación).
+- [x] Los controles no interfieren entre jugadores (leídos independientemente por `player_id` en `InputManager`).
+- [x] `InputManager` auto-registra controles de P2 por defecto sin requerir configuración manual.
 - [ ] Se puede iniciar desde el menú principal con la opción "Local".
 
 ---

@@ -251,17 +251,24 @@ func get_effective_speed() -> float:
 func get_effective_damage(base_damage: float) -> float:
 	return base_damage * _damage_mult
 
-## Reproduce la animación adecuada. Si está transformado, busca el prefijo 'ssj_'.
+## Reproduce la animación adecuada. Si está transformado, busca prefijos ('transformed_', 'ssj_', 'sage_', 'kurama_').
 func play_animation(anim_name: String) -> void:
 	if not _animated_sprite or not _animated_sprite.sprite_frames:
 		return
 
-	# Si está transformado, intentar buscar la versión 'ssj_' de la animación
+	# Si está transformado, intentar buscar versiones transformadas de la animación
 	var target_name: String = anim_name
 	if is_transformed:
-		var ssj_candidate: String = "ssj_" + anim_name
-		if _animated_sprite.sprite_frames.has_animation(ssj_candidate):
-			target_name = ssj_candidate
+		var candidates: Array[String] = [
+			"transformed_" + anim_name,
+			"ssj_" + anim_name,
+			"sage_" + anim_name,
+			"kurama_" + anim_name
+		]
+		for c in candidates:
+			if _animated_sprite.sprite_frames.has_animation(c):
+				target_name = c
+				break
 
 	# Si la animación no existe en SpriteFrames, no hacer nada para evitar errores
 	if not _animated_sprite.sprite_frames.has_animation(target_name):

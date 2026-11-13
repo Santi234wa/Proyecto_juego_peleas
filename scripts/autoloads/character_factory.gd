@@ -56,8 +56,12 @@ func _get_or_load_scene(id: String) -> PackedScene:
 
 	var path: String = _SCENE_MAP[id]
 	if not ResourceLoader.exists(path):
-		# Escena aún no creada en esta fase del desarrollo; no es error fatal.
-		return null
+		var alt_path: String = "res://resources/characters/%s.tscn" % id
+		if ResourceLoader.exists(alt_path):
+			path = alt_path
+		else:
+			# Escena aún no creada en esta fase del desarrollo; no es error fatal.
+			return null
 
 	var scene := load(path) as PackedScene
 	_scene_cache[id] = scene
