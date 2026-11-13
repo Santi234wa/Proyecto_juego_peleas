@@ -21,7 +21,7 @@ var unlocked_map_ids: Array[String] = ["valle_del_fin", "torneo", "dimension_eco
 # ---------------------------------------------------------------------------
 var player1_data: CharacterData = null  ## Personaje elegido por P1
 var player2_data: CharacterData = null  ## Personaje elegido por P2 / IA
-var selected_map_id: String = "valley_of_end"
+var selected_map_id: String = "valle_del_fin"
 
 ## Resultado de la última ronda: "player1", "player2", "" (en curso)
 var round_winner: String = ""

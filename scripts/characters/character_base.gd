@@ -381,7 +381,10 @@ func set_facing(facing_right: bool) -> void:
 		# Mantenemos scale.x en 1.0 positivo y reflejamos las posiciones de las formas hijas.
 		hitbox.scale = Vector2.ONE
 		var dir: float = 1.0 if facing_right else -1.0
-		hitbox.position.x = 2.0 * dir
+		var current_reach: float = absf(hitbox.position.x)
+		if current_reach < 0.1:
+			current_reach = 2.0
+		hitbox.position.x = current_reach * dir
 		for child in hitbox.get_children():
 			if child is CollisionShape2D:
 				child.position.x = absf(child.position.x) * dir

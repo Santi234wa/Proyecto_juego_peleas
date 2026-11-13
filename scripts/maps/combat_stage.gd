@@ -18,11 +18,18 @@ func _ready() -> void:
 
 func _cleanup_stray_fighters() -> void:
 	# Eliminar cualquier muñeco o nodo estático residual de prototipos previos
-	var stray_names := ["Dummy", "DummyHealthBar", "goku", "naruto"]
+	var stray_names := [
+		"Dummy", "DummyHealthBar", "goku", "naruto", "madara", "vegetto",
+		"Goku", "Naruto", "Madara", "Vegetto"
+	]
 	for n_name in stray_names:
 		var node = get_node_or_null(n_name)
 		if node and is_instance_valid(node):
 			node.queue_free()
+
+	for child in get_children():
+		if child is CharacterBase:
+			child.queue_free()
 
 func _spawn_selected_fighters() -> void:
 	var gdata = get_node_or_null("/root/GameData")
@@ -48,7 +55,7 @@ func _spawn_selected_fighters() -> void:
 	if player1:
 		player1.name = "Player1"
 		player1.player_id = 1
-		player1.position = p1_spawn_pos
+		player1.position = _calculate_spawn_pos(p1_spawn_pos.x, p1_spawn_pos.y, player1)
 		player1.set_facing(true)
 		add_child(player1)
 
@@ -64,7 +71,7 @@ func _spawn_selected_fighters() -> void:
 	if player2:
 		player2.name = "Player2"
 		player2.player_id = 2
-		player2.position = p2_spawn_pos
+		player2.position = _calculate_spawn_pos(p2_spawn_pos.x, p2_spawn_pos.y, player2)
 		player2.set_facing(false)
 		if gdata and gdata.current_mode in [gdata.GameMode.VS_AI, gdata.GameMode.STORY]:
 			player2.is_ai = true
@@ -103,4 +110,27 @@ func _bind_combat_hud() -> void:
 	if not p2_energy: p2_energy = find_child("P2_EnergyBar", true, false)
 	if p2_energy and player2 and p2_energy.has_method("bind_character"):
 		p2_energy.bind_character(player2)
+
+func _get_ground_surface_y() -> float:
+	var ground = get_node_or_null("Ground/CollisionShape2D")
+	if ground and ground.shape is RectangleShape2D:
+		return ground.global_position.y - (ground.shape.size.y * 0.5)
+	return 530.0
+
+func _calculate_spawn_pos(spawn_x: float, default_y: float, fighter: CharacterBase) -> Vector2:
+	if not fighter:
+		return Vector2(spawn_x, default_y)
+	var floor_y := _get_ground_surface_y()
+	var col := fighter.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	var bottom_offset: float = 0.0
+	if col and col.shape:
+		if col.shape is CapsuleShape2D:
+			bottom_offset = (col.shape.height * 0.5) * fighter.scale.y
+		elif col.shape is RectangleShape2D:
+			bottom_offset = (col.shape.size.y * 0.5) * fighter.scale.y
+		elif col.shape is CircleShape2D:
+			bottom_offset = col.shape.radius * fighter.scale.y
+	if bottom_offset > 0.0:
+		return Vector2(spawn_x, floor_y - bottom_offset)
+	return Vector2(spawn_x, default_y)
 

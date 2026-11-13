@@ -64,7 +64,8 @@ func _spawn_ki_projectile() -> void:
 
 	var proj: Area2D = scene.instantiate()
 	var dir_x: float = 1.0 if character.is_facing_right else -1.0
-	var offset: Vector2 = Vector2(32.0 * dir_x, -4.0)
+	proj.scale = character.scale
+	var offset: Vector2 = Vector2(36.0 * dir_x, -4.0)
 
 	proj.owner_character = character
 	proj.direction = Vector2(dir_x, 0.0)
@@ -78,3 +79,4 @@ func _spawn_ki_projectile() -> void:
 
 func exit() -> void:
 	_has_spawned = false
+

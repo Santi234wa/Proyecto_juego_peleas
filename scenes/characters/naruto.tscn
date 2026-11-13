@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://naruto_scene_v1"]
 
-[ext_resource type="Script" uid="uid://c6narutotscript" path="res://scripts/characters/naruto.gd" id="1_naruto"]
-[ext_resource type="Resource" uid="uid://b6y8k2m7naruto" path="res://resources/characters/naruto.tres" id="2_naruto"]
+[ext_resource type="Script" path="res://scripts/characters/naruto.gd" id="1_naruto"]
+[ext_resource type="Resource" path="res://resources/characters/naruto.tres" id="2_naruto"]
 [ext_resource type="Script" uid="uid://b62lh3r0wglh5" path="res://scripts/states/state_machine.gd" id="4_eoue0"]
 [ext_resource type="Script" uid="uid://7vk7xj544oko" path="res://scripts/states/idle_state.gd" id="5_7on5h"]
 [ext_resource type="Script" uid="uid://cgorcm1v17hry" path="res://scripts/states/walk_state.gd" id="6_gkl1l"]
@@ -336,12 +336,14 @@ size = Vector2(18, 6)
 size = Vector2(24, 48)
 
 [node name="naruto" type="CharacterBody2D"]
+scale = Vector2(3, 3)
 collision_layer = 1
 script = ExtResource("1_naruto")
 data = ExtResource("2_naruto")
 player_id = 2
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_naruto")
 animation = &"idle"
 autoplay = "idle"

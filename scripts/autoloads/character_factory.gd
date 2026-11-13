@@ -60,6 +60,8 @@ func get_map_scene_path(map_id: String) -> String:
 		var p: String = _MAP_SCENE_MAP[map_id]
 		if ResourceLoader.exists(p):
 			return p
+	if ResourceLoader.exists("res://scenes/maps/valle_del_fin.tscn"):
+		return "res://scenes/maps/valle_del_fin.tscn"
 	if ResourceLoader.exists("res://scenes/maps/test_map.tscn"):
 		return "res://scenes/maps/test_map.tscn"
 	return "res://resources/characters/test_map.tscn"

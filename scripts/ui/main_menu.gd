@@ -24,7 +24,7 @@ signal menu_exited()
 # ---------------------------------------------------------------------------
 @export_group("Textos y Título")
 @export var game_title: String = "Nombre del juego"
-@export var local_map_scene_path: String = "res://resources/characters/test_map.tscn"
+@export var local_map_scene_path: String = "res://scenes/maps/valle_del_fin.tscn"
 
 @export_group("Tipografía")
 @export var font_path: String = "res://assets/fonts/PixelifySans-Regular.ttf" ## Ruta preferida de la fuente .ttf

@@ -188,3 +188,4 @@ func _get_available_sfx_player() -> AudioStreamPlayer:
 	var chosen: AudioStreamPlayer = _sfx_players[_sfx_pool_index]
 	_sfx_pool_index = (_sfx_pool_index + 1) % _sfx_players.size()
 	return chosen
+

@@ -133,9 +133,16 @@ func _spawn_fighters() -> void:
 		var goku_scene = load("res://scenes/characters/goku.tscn") as PackedScene
 		if goku_scene:
 			goku_instance = goku_scene.instantiate()
+	var floor_y: float = 52.0
+	if ground:
+		var ground_col = ground.get_node_or_null("CollisionShape2D")
+		if ground_col and ground_col.shape is RectangleShape2D:
+			floor_y = ground.global_position.y - (ground_col.shape.size.y * 0.5)
+
 	if goku_instance:
 		goku_instance.player_id = 1
-		goku_instance.position = Vector2(160, 27)
+		var goku_offset: float = 25.0 * goku_instance.scale.y
+		goku_instance.position = Vector2(160, floor_y - goku_offset)
 		fighters_container.add_child(goku_instance)
 
 	# 2. Instanciar Dummy (P2)
@@ -147,7 +154,8 @@ func _spawn_fighters() -> void:
 			dummy_instance = dummy_scene.instantiate()
 	if dummy_instance:
 		dummy_instance.player_id = 2
-		dummy_instance.position = Vector2(430, 27)
+		var dummy_offset: float = 64.0 * dummy_instance.scale.y
+		dummy_instance.position = Vector2(430, floor_y - dummy_offset)
 		# Inicialmente oculto durante los primeros compases de la intro
 		dummy_instance.visible = false
 		dummy_instance.set_physics_process(false)

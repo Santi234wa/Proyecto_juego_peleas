@@ -29,3 +29,4 @@ transform_cooldown = 8.0
 sprite_dir_select = "res://assets/sprites/vegetto/idle"
 alt_tint = Color(0.7, 0.85, 1.2, 1.0)
 dialogue_key = "vegetto_story"
+

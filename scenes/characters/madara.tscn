@@ -397,11 +397,13 @@ size = Vector2(20, 8)
 size = Vector2(24, 48)
 
 [node name="madara" type="CharacterBody2D" unique_id=483335586]
+scale = Vector2(3, 3)
 script = ExtResource("ext_1")
 data = ExtResource("ext_2")
 player_id = 2
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1748599268]
+texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_madara")
 animation = &"kick"
 autoplay = "idle"

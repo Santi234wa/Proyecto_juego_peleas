@@ -15,7 +15,7 @@ signal back_to_menu_requested()
 # Variables Exportadas (Personalizables en el Inspector)
 # ---------------------------------------------------------------------------
 @export_group("Escenas y Navegación")
-@export var combat_scene_path: String = "res://resources/characters/test_map.tscn"
+@export var combat_scene_path: String = "res://scenes/maps/valle_del_fin.tscn"
 @export var main_menu_scene_path: String = "res://scenes/ui/main_menu.tscn"
 
 @export_group("Tipografía")
@@ -74,10 +74,17 @@ var _p1_ready: bool = false
 var _p2_ready: bool = false
 var _match_starting: bool = false
 
-# Modo de Oponente (VS Jugador / VS IA)
+# Modo de Oponente (VS Jugador / VS IA) y Selección de Mapa
 var _vs_ai_mode: bool = false
 var _btn_mode_toggle: Button = null
+var _btn_map_toggle: Button = null
 var _lbl_mode_hint: Label = null
+
+const MAP_OPTIONS: Array[Dictionary] = [
+	{"id": "valle_del_fin", "name": "VALLE DEL FIN"},
+	{"id": "torneo", "name": "TORNEO ARTES MARCIALES"},
+	{"id": "dimension_ecos", "name": "DIMENSIÓN DE LOS ECOS"},
+]
 
 # Nodos de Luchadores y UI
 var _p1_container: Control = null
@@ -706,39 +713,51 @@ func _update_badges_appearance() -> void:
 	_badge_j2.add_theme_stylebox_override("panel", b2)
 
 # ---------------------------------------------------------------------------
-# Botón Selector de Modo de Oponente (VS Jugador / VS IA)
+# Botones Selectores de Modo y Escenario
 # ---------------------------------------------------------------------------
 func _build_layer_mode_toggle() -> void:
 	var mode_container := Control.new()
 	mode_container.name = "Layer_ModeToggle"
-	mode_container.position = Vector2(230.0, 252.0)
-	mode_container.size = Vector2(220.0, 36.0)
+	mode_container.position = Vector2(230.0, 240.0)
+	mode_container.size = Vector2(220.0, 60.0)
 	_content.add_child(mode_container)
 
 	_btn_mode_toggle = Button.new()
-	_btn_mode_toggle.size = Vector2(220.0, 24.0)
+	_btn_mode_toggle.size = Vector2(220.0, 21.0)
 	_btn_mode_toggle.position = Vector2(0.0, 0.0)
 	_btn_mode_toggle.focus_mode = Control.FOCUS_NONE
 	_btn_mode_toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_mode_toggle.pressed.connect(_toggle_vs_ai_mode)
 	if _italic_font:
 		_btn_mode_toggle.add_theme_font_override("font", _italic_font)
-	_btn_mode_toggle.add_theme_font_size_override("font_size", 12)
+	_btn_mode_toggle.add_theme_font_size_override("font_size", 11)
 	mode_container.add_child(_btn_mode_toggle)
 
+	_btn_map_toggle = Button.new()
+	_btn_map_toggle.size = Vector2(220.0, 21.0)
+	_btn_map_toggle.position = Vector2(0.0, 23.0)
+	_btn_map_toggle.focus_mode = Control.FOCUS_NONE
+	_btn_map_toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_map_toggle.pressed.connect(_toggle_map)
+	if _italic_font:
+		_btn_map_toggle.add_theme_font_override("font", _italic_font)
+	_btn_map_toggle.add_theme_font_size_override("font_size", 10)
+	mode_container.add_child(_btn_map_toggle)
+
 	_lbl_mode_hint = Label.new()
-	_lbl_mode_hint.text = "[ Tab o Clic para alternar ]"
-	_lbl_mode_hint.position = Vector2(0.0, 25.0)
+	_lbl_mode_hint.text = "[ Tab: Modo | M: Mapa | Clic ]"
+	_lbl_mode_hint.position = Vector2(0.0, 46.0)
 	_lbl_mode_hint.size = Vector2(220.0, 12.0)
 	_lbl_mode_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_lbl_mode_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_lbl_mode_hint.add_theme_font_size_override("font_size", 9)
+	_lbl_mode_hint.add_theme_font_size_override("font_size", 8)
 	_lbl_mode_hint.add_theme_color_override("font_color", Color("#B8B0C8"))
 	if _italic_font:
 		_lbl_mode_hint.add_theme_font_override("font", _italic_font)
 	mode_container.add_child(_lbl_mode_hint)
 
 	_update_mode_button_visuals()
+	_update_map_button_visuals()
 
 func _toggle_vs_ai_mode() -> void:
 	if _match_starting:
@@ -747,6 +766,50 @@ func _toggle_vs_ai_mode() -> void:
 	_play_sfx(_sfx_move)
 	_update_mode_button_visuals()
 	_update_badges_appearance()
+
+func _toggle_map() -> void:
+	if _match_starting:
+		return
+	var gdata = get_node_or_null("/root/GameData")
+	if not gdata:
+		return
+	var cur: String = gdata.selected_map_id
+	var idx: int = 0
+	for i in range(MAP_OPTIONS.size()):
+		if MAP_OPTIONS[i]["id"] == cur:
+			idx = i
+			break
+	var next_idx: int = (idx + 1) % MAP_OPTIONS.size()
+	gdata.selected_map_id = MAP_OPTIONS[next_idx]["id"]
+	_play_sfx(_sfx_move)
+	_update_map_button_visuals()
+	print("[Selección] 🗺️ Escenario seleccionado: %s (%s)" % [
+		MAP_OPTIONS[next_idx]["name"], gdata.selected_map_id
+	])
+
+func _update_map_button_visuals() -> void:
+	if not _btn_map_toggle:
+		return
+	var gdata = get_node_or_null("/root/GameData")
+	var cur_id: String = gdata.selected_map_id if gdata else "valle_del_fin"
+	var m_name: String = "VALLE DEL FIN"
+	for m in MAP_OPTIONS:
+		if m["id"] == cur_id:
+			m_name = m["name"]
+			break
+
+	var sb := StyleBoxFlat.new()
+	sb.set_corner_radius_all(0)
+	sb.set_border_width_all(2)
+	sb.bg_color = color_stripe_black
+	sb.border_color = color_stripe_yellow
+	_btn_map_toggle.text = "🗺️ %s" % m_name
+	_btn_map_toggle.add_theme_color_override("font_color", color_stripe_yellow)
+	_btn_map_toggle.add_theme_color_override("font_hover_color", Color.WHITE)
+	_btn_map_toggle.add_theme_stylebox_override("normal", sb)
+	_btn_map_toggle.add_theme_stylebox_override("hover", sb)
+	_btn_map_toggle.add_theme_stylebox_override("pressed", sb)
+	_btn_map_toggle.add_theme_stylebox_override("focus", sb)
 
 func _update_mode_button_visuals() -> void:
 	if not _btn_mode_toggle:
@@ -900,6 +963,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.keycode == KEY_TAB:
 			if vp: vp.set_input_as_handled()
 			_toggle_vs_ai_mode()
+			return
+
+		# Alternar escenario de combate con M
+		if event.keycode == KEY_M:
+			if vp: vp.set_input_as_handled()
+			_toggle_map()
 			return
 
 		# --- NAVEGACIÓN Y CONFIRMACIÓN JUGADOR 1 (WASD / F / Enter) ---

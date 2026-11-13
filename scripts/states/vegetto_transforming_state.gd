@@ -27,3 +27,4 @@ func _play_sequence() -> void:
 		_sprite.play("transform")
 
 	super._play_sequence()
+
