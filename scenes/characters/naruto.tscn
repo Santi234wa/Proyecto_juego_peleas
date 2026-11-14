@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://naruto_scene_v1"]
+[gd_scene format=3 uid="uid://6u06jvfhshq5"]
 
-[ext_resource type="Script" path="res://scripts/characters/naruto.gd" id="1_naruto"]
-[ext_resource type="Resource" path="res://resources/characters/naruto.tres" id="2_naruto"]
+[ext_resource type="Script" uid="uid://c2w21d54awaq2" path="res://scripts/characters/naruto.gd" id="1_naruto"]
+[ext_resource type="Resource" uid="uid://bbr1oldocyxo" path="res://resources/characters/naruto.tres" id="2_naruto"]
 [ext_resource type="Script" uid="uid://b62lh3r0wglh5" path="res://scripts/states/state_machine.gd" id="4_eoue0"]
 [ext_resource type="Script" uid="uid://7vk7xj544oko" path="res://scripts/states/idle_state.gd" id="5_7on5h"]
 [ext_resource type="Script" uid="uid://cgorcm1v17hry" path="res://scripts/states/walk_state.gd" id="6_gkl1l"]
@@ -12,7 +12,7 @@
 [ext_resource type="Script" uid="uid://2ipip1e7ygr6" path="res://scripts/utils/hitbox.gd" id="11_gkl1l"]
 [ext_resource type="Script" uid="uid://yj6urpfcrhmd" path="res://scripts/states/block_state.gd" id="11_gu68j"]
 [ext_resource type="Script" uid="uid://sn6wyjvs3f1a" path="res://scripts/utils/hurtbox.gd" id="12_gu68j"]
-[ext_resource type="Script" path="res://scripts/states/ecos_naruto_transforming_state.gd" id="13_trans"]
+[ext_resource type="Script" uid="uid://dk7qmtuewmvih" path="res://scripts/states/ecos_naruto_transforming_state.gd" id="13_trans"]
 [ext_resource type="Texture2D" uid="uid://bgcphttt88v3l" path="res://assets/sprites/naruto/attack/attack_00.png" id="tex_20"]
 [ext_resource type="Texture2D" uid="uid://bnfsh54fu05rs" path="res://assets/sprites/naruto/attack/attack_01.png" id="tex_21"]
 [ext_resource type="Texture2D" uid="uid://1yohs87vttks" path="res://assets/sprites/naruto/attack/attack_02.png" id="tex_22"]
@@ -107,9 +107,9 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("tex_27")
 }],
-"loop": false,
+"loop": 0,
 "name": &"attack",
-"speed": 12
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -136,9 +136,9 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("tex_35")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
-"speed": 8
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -168,38 +168,9 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("tex_44")
 }],
-"loop": false,
+"loop": 0,
 "name": &"jump",
-"speed": 10
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("tex_45")
-}, {
-"duration": 1.0,
-"texture": ExtResource("tex_46")
-}, {
-"duration": 1.0,
-"texture": ExtResource("tex_47")
-}, {
-"duration": 1.0,
-"texture": ExtResource("tex_48")
-}, {
-"duration": 1.0,
-"texture": ExtResource("tex_49")
-}, {
-"duration": 1.0,
-"texture": ExtResource("tex_50")
-}, {
-"duration": 1.0,
-"texture": ExtResource("tex_51")
-}, {
-"duration": 1.0,
-"texture": ExtResource("tex_52")
-}],
-"loop": true,
-"name": &"walk",
-"speed": 10
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -226,9 +197,9 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("tex_60")
 }],
-"loop": false,
+"loop": 0,
 "name": &"transformed_attack",
-"speed": 12
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -255,9 +226,9 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("tex_68")
 }],
-"loop": true,
+"loop": 1,
 "name": &"transformed_idle",
-"speed": 8
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -287,9 +258,9 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("tex_77")
 }],
-"loop": false,
+"loop": 0,
 "name": &"transformed_jump",
-"speed": 10
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -316,86 +287,114 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("tex_85")
 }],
-"loop": true,
+"loop": 1,
 "name": &"transformed_walk",
-"speed": 10
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("tex_45")
+}, {
+"duration": 1.0,
+"texture": ExtResource("tex_46")
+}, {
+"duration": 1.0,
+"texture": ExtResource("tex_47")
+}, {
+"duration": 1.0,
+"texture": ExtResource("tex_48")
+}, {
+"duration": 1.0,
+"texture": ExtResource("tex_49")
+}, {
+"duration": 1.0,
+"texture": ExtResource("tex_50")
+}, {
+"duration": 1.0,
+"texture": ExtResource("tex_51")
+}, {
+"duration": 1.0,
+"texture": ExtResource("tex_52")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 10.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
-radius = 11.0
 height = 50.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hit1"]
-radius = 11.0
-height = 42.0
+radius = 9.666667
+height = 46.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_punch"]
 size = Vector2(18, 6)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
-size = Vector2(24, 48)
+size = Vector2(18.333334, 48)
 
-[node name="naruto" type="CharacterBody2D"]
+[node name="naruto" type="CharacterBody2D" unique_id=1771304429]
 scale = Vector2(3, 3)
-collision_layer = 1
 script = ExtResource("1_naruto")
 data = ExtResource("2_naruto")
 player_id = 2
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2041800091]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_naruto")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1029896726]
 shape = SubResource("CapsuleShape2D_body")
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="." unique_id=2039220506]
 script = ExtResource("4_eoue0")
 
-[node name="Idle" type="Node" parent="StateMachine"]
+[node name="Idle" type="Node" parent="StateMachine" unique_id=2074730521]
 script = ExtResource("5_7on5h")
 
-[node name="Walk" type="Node" parent="StateMachine"]
+[node name="Walk" type="Node" parent="StateMachine" unique_id=882473462]
 script = ExtResource("6_gkl1l")
 
-[node name="Jump" type="Node" parent="StateMachine"]
+[node name="Jump" type="Node" parent="StateMachine" unique_id=1704846661]
 script = ExtResource("7_gu68j")
 
-[node name="Attack" type="Node" parent="StateMachine"]
+[node name="Attack" type="Node" parent="StateMachine" unique_id=277308711]
 script = ExtResource("8_l8ill")
 
-[node name="Hurt" type="Node" parent="StateMachine"]
+[node name="Hurt" type="Node" parent="StateMachine" unique_id=2053865266]
 script = ExtResource("9_pay4t")
 
-[node name="KO" type="Node" parent="StateMachine"]
+[node name="KO" type="Node" parent="StateMachine" unique_id=1921117395]
 script = ExtResource("10_j04nu")
 
-[node name="Blocking" type="Node" parent="StateMachine"]
+[node name="Blocking" type="Node" parent="StateMachine" unique_id=12306212]
 script = ExtResource("11_gu68j")
 
-[node name="Transforming" type="Node" parent="StateMachine"]
+[node name="Transforming" type="Node" parent="StateMachine" unique_id=1382409192]
 script = ExtResource("13_trans")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=1251427157]
 position = Vector2(2, 4)
 collision_layer = 2
 collision_mask = 16
 script = ExtResource("11_gkl1l")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=2051164043]
 position = Vector2(-2, -4)
 shape = SubResource("CapsuleShape2D_hit1")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(17, -6)
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitbox" unique_id=807125673]
+position = Vector2(18, -7)
 shape = SubResource("RectangleShape2D_punch")
 
-[node name="Hurtbox" type="Area2D" parent="."]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1239565480]
 collision_layer = 16
 collision_mask = 0
 script = ExtResource("12_gu68j")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1708107726]
+position = Vector2(0.8333329, 0)
 shape = SubResource("RectangleShape2D_hurt")

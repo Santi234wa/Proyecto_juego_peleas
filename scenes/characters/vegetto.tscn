@@ -85,8 +85,8 @@
 [ext_resource type="Texture2D" uid="uid://bsrh0t0d5obnv" path="res://assets/sprites/vegetto/energy_attack/energy_attack_05.png" id="ext_78"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_char"]
-radius = 11.0
-height = 36.0
+radius = 8.0
+height = 38.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vegetto"]
 animations = [{
@@ -422,10 +422,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
-size = Vector2(15.666668, 9.666667)
+size = Vector2(12.833335, 9.666667)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurtbox"]
-radius = 13.0
+radius = 8.0
 height = 42.666664
 
 [node name="Vegetto" type="CharacterBody2D" unique_id=220502194]
@@ -435,7 +435,6 @@ script = ExtResource("1_script")
 data = ExtResource("2_data")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=308193941]
-visible = false
 position = Vector2(0, 7)
 shape = SubResource("CapsuleShape2D_char")
 
@@ -444,8 +443,7 @@ position = Vector2(0.6666667, 2)
 sprite_frames = SubResource("SpriteFrames_vegetto")
 animation = &"combo"
 autoplay = "idle"
-frame = 19
-frame_progress = 1.0
+frame = 12
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=175043489]
 collision_layer = 2
@@ -453,8 +451,7 @@ collision_mask = 16
 script = ExtResource("3_hitbox")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=196804946]
-visible = false
-position = Vector2(11.833334, 3.1666667)
+position = Vector2(12.25, -1.0000002)
 shape = SubResource("RectangleShape2D_hitbox")
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=1781193932]
