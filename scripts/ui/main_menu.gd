@@ -4,14 +4,14 @@
 ##
 ## Esquema de Distribución (Canvas base 680 × 400):
 ## ┌─────────────────────────────────────────────────────────────────────────┐
-## │ [ZONA IZQUIERDA ~33%]     │ [ZONA SUPERIOR: LOGO OFICIAL FREESTANDING]  │
-## │ Banderas Manga Oficiales  │ DRAGON BALL: ECOS Oficial (2125 x 710)      │
-## │ Goku / Naruto / Madara /  │ x: 235 - 525, y: 8 - 80                     │
+## │ [ZONA IZQUIERDA FLUSH ~34%]│ [ZONA SUPERIOR: LOGO OFICIAL FREESTANDING]  │
+## │ Banderas Manga Oficiales  │ DRAGON BALL: ECOS Oficial                   │
+## │ Goku / Naruto / Madara /  │ x: 252 - 537, y: 8 - 80                     │
 ## │ Vegetto + Trama Halftone  ├───────────────────────┬─────────────────────┤
-## │ Luchador Pixel Art 6x     │ [COLUMNA DE BOTONES]  │ [SUBMENÚ HISTORIA]  │
-## │ Sombra sólida de suelo    │ Paralelogramos 236 px │ Espacio reservado   │
-## │ x: 0..330 (con corte)     │ x: 220 / 228          │ x: 472 - 666        │
-## │                           │ y: 86 - 354           │ y: 90 - 220         │
+## │ Luchador Pixel Art (4.0x) │ [COLUMNA DE BOTONES]  │ [SUBMENÚ HISTORIA]  │
+## │ en espacio inferior vacío │ Paralelogramos 222 px │ Espacio reservado   │
+## │ Totalmente pegado a borde │ x: 244 / 252          │ x: 480 - 670        │
+## │                           │ y: 90 - 341 (6 ítems) │ y: 90 - 218         │
 ## ├───────────────────────────┴───────────────────────┴─────────────────────┤
 ## │ [BARRA INFERIOR DE CONTROLES (26 px)]                                   │
 ## │ x: 0 - 680, y: 374 - 400. Teclas: ▲▼ Navegar | Enter | Esc              │
@@ -37,8 +37,8 @@ signal menu_exited()
 @export var font_shear: float = 0.2 ## Inclinación para itálica manga
 
 @export_group("Personaje")
-@export var character_scale: Vector2 = Vector2(6.0, 6.0)
-@export var character_ground_x: float = 95.0
+@export var character_scale: Vector2 = Vector2(4.0, 4.0) ## Escala proporcionada para no tapar la cara del banner
+@export var character_ground_x: float = 90.0
 @export var feet_y_offset: float = 23.0
 @export var char_exit_time: float = 0.10
 @export var char_enter_time: float = 0.16
@@ -70,7 +70,7 @@ signal menu_exited()
 # ---------------------------------------------------------------------------
 const BASE_W: float = 680.0
 const BASE_H: float = 400.0
-const BG_NEUTRAL_X: float = -8.0
+const BG_NEUTRAL_X: float = 0.0
 
 const OPTIONS_DEF: Array[Dictionary] = [
 	{"id": "story",    "label": "Modo historia", "icon": "res://assets/ui/menu/icon_story.png",    "icon_tag": "BOOK",  "enabled": true},
@@ -78,7 +78,6 @@ const OPTIONS_DEF: Array[Dictionary] = [
 	{"id": "vs_ai",    "label": "Vs IA",         "icon": "res://assets/ui/menu/icon_vs_ai.png",    "icon_tag": "VS",    "enabled": true},
 	{"id": "training", "label": "Entrenamiento", "icon": "res://assets/ui/menu/icon_training.png", "icon_tag": "BELL",  "enabled": false},
 	{"id": "shop",     "label": "Tienda",        "icon": "res://assets/ui/menu/icon_shop.png",     "icon_tag": "CART",  "enabled": false},
-	{"id": "options",  "label": "Opciones",      "icon": "res://assets/ui/menu/icon_options.png",  "icon_tag": "GEAR",  "enabled": false},
 	{"id": "exit",     "label": "Salir",         "icon": "res://assets/ui/menu/icon_exit.png",     "icon_tag": "EXIT",  "enabled": true},
 ]
 
@@ -99,7 +98,6 @@ const BANNER_ASSOCIATIONS: Dictionary = {
 	"vs_ai": "res://assets/ui/menu/banner_madara.png",
 	"training": "res://assets/ui/menu/banner_vegetto.png",
 	"shop": "res://assets/ui/menu/banner_goku.png",
-	"options": "res://assets/ui/menu/banner_naruto.png",
 	"exit": "res://assets/ui/menu/banner_goku.png",
 }
 
@@ -199,6 +197,21 @@ func _rescale_canvas() -> void:
 	_content.scale = Vector2(s, s)
 	_content.position = (vp_size - Vector2(BASE_W, BASE_H) * s) / 2.0
 
+	# Extender el panel manga y el fondo hacia la izquierda para eliminar cualquier separación de la esquina
+	var left_extra: float = maxf(0.0, _content.position.x / s)
+	if _banner_current:
+		_banner_current.position.x = -left_extra - 4.0
+		_banner_current.size.x = 350.0 + left_extra + 4.0
+	if _banner_incoming:
+		_banner_incoming.position.x = -left_extra - 4.0
+		_banner_incoming.size.x = 350.0 + left_extra + 4.0
+	if _bg_current:
+		_bg_current.position.x = -left_extra - 4.0
+		_bg_current.size.x = BASE_W + (left_extra * 2.0) + 8.0
+	if _bg_incoming:
+		_bg_incoming.position.x = -left_extra - 4.0
+		_bg_incoming.size.x = BASE_W + (left_extra * 2.0) + 8.0
+
 func _setup_italic_font() -> void:
 	_italic_font = FontVariation.new()
 	if ResourceLoader.exists(font_path):
@@ -243,8 +256,8 @@ func _build_layer_1_background() -> void:
 	# Atenuador lateral derecho suave para proteger contraste de opciones
 	_bg_dimmer = ColorRect.new()
 	_bg_dimmer.name = "BgDimmer"
-	_bg_dimmer.position = Vector2(210.0, 0.0)
-	_bg_dimmer.size = Vector2(BASE_W - 210.0, BASE_H)
+	_bg_dimmer.position = Vector2(230.0, 0.0)
+	_bg_dimmer.size = Vector2(BASE_W - 230.0, BASE_H)
 	_bg_dimmer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_bg_dimmer.color = Color(0.06, 0.04, 0.10, 0.25)
 	_bg_layer.add_child(_bg_dimmer)
@@ -311,20 +324,22 @@ func _change_background_for_option(option_idx: int) -> void:
 	)
 
 # ---------------------------------------------------------------------------
-# CAPA 2: Banderas Manga Oficiales (Tercio Izquierdo con Corte Relámpago)
+# CAPA 2: Banderas Manga Oficiales (Totalmente Flush a la Esquina Izquierda)
 # ---------------------------------------------------------------------------
 func _build_layer_2_diagonal_manga_panel() -> void:
 	_panel_manga = Control.new()
 	_panel_manga.name = "Layer2_DiagonalPanel"
-	_panel_manga.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_panel_manga.position = Vector2(0.0, 0.0)
+	_panel_manga.size = Vector2(BASE_W, BASE_H)
 	_panel_manga.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_panel_manga)
 
-	var banner_size := Vector2(335.0, BASE_H)
+	var banner_pos := Vector2(-10.0, 0.0)
+	var banner_size := Vector2(350.0, BASE_H)
 
 	_banner_current = TextureRect.new()
 	_banner_current.name = "BannerCurrent"
-	_banner_current.position = Vector2(0.0, 0.0)
+	_banner_current.position = banner_pos
 	_banner_current.size = banner_size
 	_banner_current.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_banner_current.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -334,7 +349,7 @@ func _build_layer_2_diagonal_manga_panel() -> void:
 
 	_banner_incoming = TextureRect.new()
 	_banner_incoming.name = "BannerIncoming"
-	_banner_incoming.position = Vector2(0.0, 0.0)
+	_banner_incoming.position = banner_pos
 	_banner_incoming.size = banner_size
 	_banner_incoming.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_banner_incoming.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -343,7 +358,6 @@ func _build_layer_2_diagonal_manga_panel() -> void:
 	_banner_incoming.modulate.a = 0.0
 	_panel_manga.add_child(_banner_incoming)
 
-	# Dibujo procedural de respaldo si falta textura
 	_panel_manga.draw.connect(_on_draw_diagonal_panel_fallback)
 
 func _get_banner_texture(path: String) -> Texture2D:
@@ -387,12 +401,13 @@ func _change_banner_for_option(option_idx: int) -> void:
 	_active_banner_path = target_path
 	_banner_incoming.texture = next_tex
 	_banner_incoming.modulate.a = 0.0
-	_banner_incoming.position.x = -15.0
+	var base_banner_x: float = _banner_current.position.x
+	_banner_incoming.position.x = base_banner_x - 15.0
 
 	_banner_tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_banner_tween.tween_property(_banner_current, "modulate:a", 0.0, banner_transition_time)
 	_banner_tween.tween_property(_banner_incoming, "modulate:a", 1.0, banner_transition_time)
-	_banner_tween.tween_property(_banner_incoming, "position:x", 0.0, banner_transition_time)
+	_banner_tween.tween_property(_banner_incoming, "position:x", base_banner_x, banner_transition_time)
 
 	_banner_tween.chain().tween_callback(func():
 		_banner_current.texture = next_tex
@@ -404,12 +419,12 @@ func _on_draw_diagonal_panel_fallback() -> void:
 	if _banner_current and _banner_current.texture:
 		return
 	var pts_panel := PackedVector2Array([
-		Vector2(0, 0), Vector2(215, 0), Vector2(155, BASE_H - 26.0), Vector2(0, BASE_H - 26.0)
+		Vector2(-20, 0), Vector2(215, 0), Vector2(155, BASE_H - 26.0), Vector2(-20, BASE_H - 26.0)
 	])
 	_panel_manga.draw_colored_polygon(pts_panel, color_panel_orange)
 
 # ---------------------------------------------------------------------------
-# CAPA 3: Personaje Pixel Art con Sombra Sólida
+# CAPA 3: Personaje Pixel Art en Espacio Inferior Vacío del Banner
 # ---------------------------------------------------------------------------
 func _build_layer_3_character() -> void:
 	_char_holder = Control.new()
@@ -419,14 +434,17 @@ func _build_layer_3_character() -> void:
 	_char_holder.position = Vector2(character_ground_x, BASE_H - 26.0)
 	_content.add_child(_char_holder)
 
-	# Sombra sólida elíptica en el suelo
+	# Sombra sólida elíptica en el suelo proporcionada al tamaño 4.0x
 	_char_shadow = Control.new()
 	_char_shadow.name = "CharShadow"
 	_char_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_char_holder.add_child(_char_shadow)
 	_char_shadow.draw.connect(func():
 		var pts_shadow := PackedVector2Array([
-			Vector2(-38, -3), Vector2(38, -3), Vector2(48, 3), Vector2(-28, 3)
+			Vector2(-26, -2),
+			Vector2(26, -2),
+			Vector2(32, 2),
+			Vector2(-20, 2)
 		])
 		_char_shadow.draw_colored_polygon(pts_shadow, Color(0.08, 0.08, 0.08, 0.75))
 	)
@@ -511,8 +529,6 @@ func _get_sprite_frames_for_option(index: int) -> SpriteFrames:
 			frames = _load_character_frames("res://scenes/characters/vegetto.tscn", "res://resources/characters/vegetto.tscn", "idle")
 		"shop":
 			frames = _load_character_frames("res://scenes/characters/goku.tscn", "res://resources/characters/goku.tscn", "ssj_idle")
-		"options":
-			frames = _load_character_frames("res://scenes/characters/naruto.tscn", "res://resources/characters/naruto.tscn", "transformed_idle")
 		"exit":
 			frames = _load_character_frames("res://scenes/characters/goku.tscn", "res://resources/characters/goku.tscn", "idle")
 
@@ -549,12 +565,12 @@ func _load_character_frames(primary_path: String, alt_path: String, anim_name: S
 	return result_frames
 
 # ---------------------------------------------------------------------------
-# CAPA 4: Logotipo Oficial DRAGON BALL: ECOS (Zona Superior)
+# CAPA 4: Logotipo Oficial DRAGON BALL: ECOS (Alineado con Opciones)
 # ---------------------------------------------------------------------------
 func _build_layer_4_logo() -> void:
 	_logo_node = Control.new()
-	_logo_node.name = "Layer4_TitleBanner" # Compatible con suites y animaciones
-	_logo_node.position = Vector2(235.0, 8.0)
+	_logo_node.name = "Layer4_TitleBanner"
+	_logo_node.position = Vector2(252.0, 8.0)
 	_logo_node.size = Vector2(285.0, 74.0)
 	_logo_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_logo_node)
@@ -579,7 +595,7 @@ func _on_draw_freestanding_logo_fallback() -> void:
 	_logo_node.draw_string(font_to_use, Vector2(10, 44), "DRAGON BALL: ECOS", HORIZONTAL_ALIGNMENT_LEFT, -1, 28, color_stripe_yellow)
 
 # ---------------------------------------------------------------------------
-# CAPA 5: Columna de Opciones con Iconos Oficiales
+# CAPA 5: Columna de Opciones (Sin chocar con el Banner Naranja)
 # ---------------------------------------------------------------------------
 func _build_layer_5_options_column() -> void:
 	_options_container = Control.new()
@@ -588,11 +604,12 @@ func _build_layer_5_options_column() -> void:
 	_options_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_options_container)
 
-	var start_x: float = 228.0
-	var start_y: float = 86.0
-	var step_y: float = 39.0
-	var item_w: float = 236.0
-	var item_h: float = 33.0
+	# Posicionado a x = 252 para dar margen de seguridad al corte del banner
+	var start_x: float = 252.0
+	var start_y: float = 90.0
+	var step_y: float = 43.0
+	var item_w: float = 222.0
+	var item_h: float = 36.0
 
 	_option_nodes.clear()
 
@@ -622,8 +639,8 @@ func _build_layer_5_options_column() -> void:
 			icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			icon_rect.position = Vector2(16.0, (item_h - 22.0) / 2.0)
-			icon_rect.size = Vector2(30.0, 22.0)
+			icon_rect.position = Vector2(16.0, (item_h - 24.0) / 2.0)
+			icon_rect.size = Vector2(30.0, 24.0)
 			icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			btn_holder.add_child(icon_rect)
 
@@ -631,15 +648,15 @@ func _build_layer_5_options_column() -> void:
 		lbl.name = "Label"
 		lbl.text = opt_data["label"]
 		lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		lbl.position = Vector2(52.0, 0.0)
-		lbl.size = Vector2(item_w - 52.0 - 74.0, item_h)
+		lbl.position = Vector2(50.0, 0.0)
+		lbl.size = Vector2(item_w - 50.0 - 64.0, item_h)
 		lbl.clip_text = false
 		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		if _italic_font:
 			lbl.add_theme_font_override("font", _italic_font)
 		btn_holder.add_child(lbl)
 
-		# Insignia "Próximamente" para opciones no disponibles
+		# Insignia "Próximamente" para opciones bloqueadas
 		if not opt_data["enabled"] and opt_data["id"] != "exit":
 			var badge := PanelContainer.new()
 			badge.name = "Badge"
@@ -647,8 +664,8 @@ func _build_layer_5_options_column() -> void:
 			var b_box := StyleBoxFlat.new()
 			b_box.bg_color = color_badge_bg
 			b_box.set_corner_radius_all(2)
-			b_box.content_margin_left = 4
-			b_box.content_margin_right = 4
+			b_box.content_margin_left = 3
+			b_box.content_margin_right = 3
 			b_box.content_margin_top = 1
 			b_box.content_margin_bottom = 1
 			badge.add_theme_stylebox_override("panel", b_box)
@@ -661,7 +678,7 @@ func _build_layer_5_options_column() -> void:
 			if _italic_font:
 				b_lbl.add_theme_font_override("font", _italic_font)
 			badge.add_child(b_lbl)
-			badge.position = Vector2(item_w - 74.0, (item_h - 17.0) / 2.0)
+			badge.position = Vector2(item_w - 70.0, (item_h - 17.0) / 2.0)
 			btn_holder.add_child(badge)
 
 		btn_holder.mouse_entered.connect(func():
@@ -747,8 +764,8 @@ func _draw_option_panel(holder: Control, idx: int) -> void:
 func _build_layer_6_story_submenu() -> void:
 	_story_submenu_panel = Control.new()
 	_story_submenu_panel.name = "Layer6_StorySubmenu"
-	_story_submenu_panel.position = Vector2(472.0, 90.0)
-	_story_submenu_panel.size = Vector2(194.0, 128.0)
+	_story_submenu_panel.position = Vector2(480.0, 90.0)
+	_story_submenu_panel.size = Vector2(190.0, 128.0)
 	_story_submenu_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_story_submenu_panel)
 
@@ -761,7 +778,7 @@ func _build_layer_6_story_submenu() -> void:
 		var sub_holder := Control.new()
 		sub_holder.name = "SubOption_%s" % sub_data["id"]
 		sub_holder.position = Vector2(14.0, 44.0 + (i * 38.0))
-		sub_holder.size = Vector2(165.0, sub_h)
+		sub_holder.size = Vector2(162.0, sub_h)
 		sub_holder.mouse_filter = Control.MOUSE_FILTER_STOP
 		_story_submenu_panel.add_child(sub_holder)
 		_story_sub_nodes.append(sub_holder)
@@ -776,7 +793,7 @@ func _build_layer_6_story_submenu() -> void:
 		lbl.text = sub_data["label"]
 		lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		lbl.position = Vector2(28.0, 0.0)
-		lbl.size = Vector2(130.0, sub_h)
+		lbl.size = Vector2(128.0, sub_h)
 		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		if _italic_font:
 			lbl.add_theme_font_override("font", _italic_font)
@@ -825,7 +842,7 @@ func _on_draw_story_submenu_bg() -> void:
 	])
 	_story_submenu_panel.draw_polyline(outline, color_stripe_yellow, 2.5)
 
-	# Cabecera "📖 Historia"
+	# Cabecera "📖 HISTORIA"
 	var font_to_use: Font = _italic_font if _italic_font else ThemeDB.fallback_font
 	_story_submenu_panel.draw_string(font_to_use, Vector2(24, 26), "📖  HISTORIA", HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(1.0, 1.0, 1.0))
 
@@ -961,7 +978,7 @@ func _set_selection(new_index: int) -> void:
 	_update_story_submenu_visibility(true)
 
 func _update_selection_visuals(animate: bool) -> void:
-	var base_x: float = 228.0
+	var base_x: float = 252.0
 	for i in range(_option_nodes.size()):
 		var holder: Control = _option_nodes[i]
 		var is_selected: bool = (i == _current_index and not _in_story_submenu)

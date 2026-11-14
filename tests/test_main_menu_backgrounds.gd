@@ -121,11 +121,8 @@ func _run_validation() -> void:
 	menu._set_selection(4) # Tienda -> Goku SSJ
 	_assert(menu._displayed_char_idx == 4, "Tienda muestra a Goku SSJ.")
 
-	menu._set_selection(5) # Opciones -> Naruto Sabio
-	_assert(menu._displayed_char_idx == 5, "Opciones muestra a Naruto Sabio.")
-
-	menu._set_selection(6) # Salir -> Goku
-	_assert(menu._displayed_char_idx == 6, "Salir muestra a Goku.")
+	menu._set_selection(5) # Salir -> Goku
+	_assert(menu._displayed_char_idx == 5, "Salir muestra a Goku.")
 
 	# 8. Comprobación 5: Prueba de estrés con cambios rápidos
 	print("\n--- Prueba de Estrés: Navegación Rápida ---")
