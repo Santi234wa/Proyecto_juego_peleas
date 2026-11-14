@@ -1,20 +1,20 @@
 ## main_menu.gd
 ## Menú Principal de DRAGON BALL: ECOS
-## Fase 9 · Módulo A1 — Rediseño de Composición Definitivo (Referencia Conceptual 2).
+## Fase 9 · Módulo A1 — Composición Definitiva con Assets Oficiales (Logos, Banderas e Iconos).
 ##
 ## Esquema de Distribución (Canvas base 680 × 400):
 ## ┌─────────────────────────────────────────────────────────────────────────┐
-## │ [ZONA IZQUIERDA 32%]     │ [ZONA SUPERIOR: LOGO FREESTANDING]           │
-## │ Panel manga diagonal     │ DRAGON (★) BALL: ECOS                        │
-## │ Silueta oscura + Trama   │ x: 230 - 580, y: 12 - 72                     │
-## │ Personaje Pixel Art 6x   ├───────────────────────┬──────────────────────┤
-## │ Sombra sólida de suelo   │ [COLUMNA DE OPCIONES] │ [SUBMENÚ HISTORIA]   │
-## │ x: 0..215 (top)          │ Paneles inclinados    │ Espacio reservado    │
-## │ x: 0..155 (bottom)       │ x: 225 - 450          │ x: 468 - 665         │
-## │                           │ y: 88 - 360           │ y: 92 - 225          │
-## ├───────────────────────────┴───────────────────────┴──────────────────────┤
+## │ [ZONA IZQUIERDA ~33%]     │ [ZONA SUPERIOR: LOGO OFICIAL FREESTANDING]  │
+## │ Banderas Manga Oficiales  │ DRAGON BALL: ECOS Oficial (2125 x 710)      │
+## │ Goku / Naruto / Madara /  │ x: 235 - 525, y: 8 - 80                     │
+## │ Vegetto + Trama Halftone  ├───────────────────────┬─────────────────────┤
+## │ Luchador Pixel Art 6x     │ [COLUMNA DE BOTONES]  │ [SUBMENÚ HISTORIA]  │
+## │ Sombra sólida de suelo    │ Paralelogramos 236 px │ Espacio reservado   │
+## │ x: 0..330 (con corte)     │ x: 220 / 228          │ x: 472 - 666        │
+## │                           │ y: 86 - 354           │ y: 90 - 220         │
+## ├───────────────────────────┴───────────────────────┴─────────────────────┤
 ## │ [BARRA INFERIOR DE CONTROLES (26 px)]                                   │
-## │ x: 0 - 680, y: 374 - 400. Teclas amarillas: ▲▼ Navegar | Enter | Esc    │
+## │ x: 0 - 680, y: 374 - 400. Teclas: ▲▼ Navegar | Enter | Esc              │
 ## └─────────────────────────────────────────────────────────────────────────┘
 class_name MainMenu
 extends Control
@@ -48,6 +48,7 @@ signal menu_exited()
 @export_group("Fondos y Animaciones")
 @export var bg_transition_time: float = 0.40
 @export var bg_parallax_offset: float = 4.0
+@export var banner_transition_time: float = 0.25
 @export var option_slide_time: float = 0.10
 
 @export_group("Paleta de Color Manga")
@@ -72,13 +73,13 @@ const BASE_H: float = 400.0
 const BG_NEUTRAL_X: float = -8.0
 
 const OPTIONS_DEF: Array[Dictionary] = [
-	{"id": "story",    "label": "Historia",      "icon_tag": "BOOK", "enabled": true},
-	{"id": "local",    "label": "Modo local",    "icon_tag": "SWORD", "enabled": true},
-	{"id": "vs_ai",    "label": "Vs IA",         "icon_tag": "VS",    "enabled": true},
-	{"id": "training", "label": "Entrenamiento", "icon_tag": "BELL",  "enabled": false},
-	{"id": "shop",     "label": "Tienda",        "icon_tag": "CART",  "enabled": false},
-	{"id": "options",  "label": "Opciones",      "icon_tag": "GEAR",  "enabled": false},
-	{"id": "exit",     "label": "Salir",         "icon_tag": "EXIT",  "enabled": true},
+	{"id": "story",    "label": "Modo historia", "icon": "res://assets/ui/menu/icon_story.png",    "icon_tag": "BOOK",  "enabled": true},
+	{"id": "local",    "label": "Modo local",    "icon": "res://assets/ui/menu/icon_local.png",    "icon_tag": "SWORD", "enabled": true},
+	{"id": "vs_ai",    "label": "Vs IA",         "icon": "res://assets/ui/menu/icon_vs_ai.png",    "icon_tag": "VS",    "enabled": true},
+	{"id": "training", "label": "Entrenamiento", "icon": "res://assets/ui/menu/icon_training.png", "icon_tag": "BELL",  "enabled": false},
+	{"id": "shop",     "label": "Tienda",        "icon": "res://assets/ui/menu/icon_shop.png",     "icon_tag": "CART",  "enabled": false},
+	{"id": "options",  "label": "Opciones",      "icon": "res://assets/ui/menu/icon_options.png",  "icon_tag": "GEAR",  "enabled": false},
+	{"id": "exit",     "label": "Salir",         "icon": "res://assets/ui/menu/icon_exit.png",     "icon_tag": "EXIT",  "enabled": true},
 ]
 
 const STORY_SUBMENU_DEF: Array[Dictionary] = [
@@ -90,6 +91,16 @@ const MAP_ASSOCIATIONS: Dictionary = {
 	"story": "res://assets/maps/valle_del_fin.png",
 	"local": "res://assets/maps/torneo_artes_marciales.png",
 	"vs_ai": "res://assets/maps/dimension_ecos.png",
+}
+
+const BANNER_ASSOCIATIONS: Dictionary = {
+	"story": "res://assets/ui/menu/banner_goku.png",
+	"local": "res://assets/ui/menu/banner_naruto.png",
+	"vs_ai": "res://assets/ui/menu/banner_madara.png",
+	"training": "res://assets/ui/menu/banner_vegetto.png",
+	"shop": "res://assets/ui/menu/banner_goku.png",
+	"options": "res://assets/ui/menu/banner_naruto.png",
+	"exit": "res://assets/ui/menu/banner_goku.png",
 }
 
 # ---------------------------------------------------------------------------
@@ -109,7 +120,15 @@ var _active_map_path: String = ""
 var _map_texture_cache: Dictionary = {}
 
 var _panel_manga: Control = null
+var _banner_current: TextureRect = null
+var _banner_incoming: TextureRect = null
+var _banner_tween: Tween = null
+var _active_banner_path: String = ""
+var _banner_texture_cache: Dictionary = {}
+
 var _logo_node: Control = null
+var _logo_rect: TextureRect = null
+
 var _options_container: Control = null
 var _story_submenu_panel: Control = null
 var _story_sub_nodes: Array[Control] = []
@@ -144,7 +163,7 @@ func _ready() -> void:
 
 	_setup_italic_font()
 
-	# Construir las 6 capas de la nueva composición
+	# Construir las capas del menú principal
 	_build_layer_1_background()
 	_build_layer_2_diagonal_manga_panel()
 	_build_layer_3_character()
@@ -163,6 +182,7 @@ func _ready() -> void:
 	_update_selection_visuals(false)
 	_set_initial_character(0)
 	_init_initial_background(0)
+	_init_initial_banner(0)
 	_update_story_submenu_visibility(false)
 
 	_play_intro_animations()
@@ -291,7 +311,7 @@ func _change_background_for_option(option_idx: int) -> void:
 	)
 
 # ---------------------------------------------------------------------------
-# CAPA 2: Tercio Izquierdo Manga Diagonal
+# CAPA 2: Banderas Manga Oficiales (Tercio Izquierdo con Corte Relámpago)
 # ---------------------------------------------------------------------------
 func _build_layer_2_diagonal_manga_panel() -> void:
 	_panel_manga = Control.new()
@@ -299,66 +319,94 @@ func _build_layer_2_diagonal_manga_panel() -> void:
 	_panel_manga.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_panel_manga.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_panel_manga)
-	_panel_manga.draw.connect(_on_draw_diagonal_panel)
 
-func _on_draw_diagonal_panel() -> void:
-	# 1. Polígono naranja #F28C28 (corte diagonal a ~ 215 en top, 155 en bottom)
+	var banner_size := Vector2(335.0, BASE_H)
+
+	_banner_current = TextureRect.new()
+	_banner_current.name = "BannerCurrent"
+	_banner_current.position = Vector2(0.0, 0.0)
+	_banner_current.size = banner_size
+	_banner_current.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_banner_current.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_banner_current.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_banner_current.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_panel_manga.add_child(_banner_current)
+
+	_banner_incoming = TextureRect.new()
+	_banner_incoming.name = "BannerIncoming"
+	_banner_incoming.position = Vector2(0.0, 0.0)
+	_banner_incoming.size = banner_size
+	_banner_incoming.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_banner_incoming.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_banner_incoming.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_banner_incoming.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_banner_incoming.modulate.a = 0.0
+	_panel_manga.add_child(_banner_incoming)
+
+	# Dibujo procedural de respaldo si falta textura
+	_panel_manga.draw.connect(_on_draw_diagonal_panel_fallback)
+
+func _get_banner_texture(path: String) -> Texture2D:
+	if _banner_texture_cache.has(path):
+		return _banner_texture_cache[path]
+	if ResourceLoader.exists(path):
+		var tex = load(path) as Texture2D
+		if tex:
+			_banner_texture_cache[path] = tex
+			return tex
+	return null
+
+func _init_initial_banner(option_idx: int) -> void:
+	var opt_id: String = OPTIONS_DEF[option_idx]["id"] if option_idx >= 0 and option_idx < OPTIONS_DEF.size() else "story"
+	var target_path: String = BANNER_ASSOCIATIONS.get(opt_id, "res://assets/ui/menu/banner_goku.png")
+	_active_banner_path = target_path
+	var tex := _get_banner_texture(target_path)
+	if tex and _banner_current:
+		_banner_current.texture = tex
+		_banner_current.modulate.a = 1.0
+
+func _change_banner_for_option(option_idx: int) -> void:
+	if option_idx < 0 or option_idx >= OPTIONS_DEF.size():
+		return
+	var opt_id: String = OPTIONS_DEF[option_idx]["id"]
+	var target_path: String = BANNER_ASSOCIATIONS.get(opt_id, "res://assets/ui/menu/banner_goku.png")
+	if target_path == _active_banner_path:
+		return
+
+	var next_tex: Texture2D = _get_banner_texture(target_path)
+	if not next_tex:
+		return
+
+	if _banner_tween and _banner_tween.is_valid():
+		_banner_tween.kill()
+		if _banner_incoming.texture:
+			_banner_current.texture = _banner_incoming.texture
+		_banner_current.modulate.a = 1.0
+		_banner_incoming.modulate.a = 0.0
+
+	_active_banner_path = target_path
+	_banner_incoming.texture = next_tex
+	_banner_incoming.modulate.a = 0.0
+	_banner_incoming.position.x = -15.0
+
+	_banner_tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_banner_tween.tween_property(_banner_current, "modulate:a", 0.0, banner_transition_time)
+	_banner_tween.tween_property(_banner_incoming, "modulate:a", 1.0, banner_transition_time)
+	_banner_tween.tween_property(_banner_incoming, "position:x", 0.0, banner_transition_time)
+
+	_banner_tween.chain().tween_callback(func():
+		_banner_current.texture = next_tex
+		_banner_current.modulate.a = 1.0
+		_banner_incoming.modulate.a = 0.0
+	)
+
+func _on_draw_diagonal_panel_fallback() -> void:
+	if _banner_current and _banner_current.texture:
+		return
 	var pts_panel := PackedVector2Array([
-		Vector2(0, 0),
-		Vector2(215, 0),
-		Vector2(155, BASE_H - 26.0),
-		Vector2(0, BASE_H - 26.0)
+		Vector2(0, 0), Vector2(215, 0), Vector2(155, BASE_H - 26.0), Vector2(0, BASE_H - 26.0)
 	])
 	_panel_manga.draw_colored_polygon(pts_panel, color_panel_orange)
-
-	# 2. Silueta de cabello / busto oscuro detrás del luchador (como en Ref 2)
-	var pts_silhouette := PackedVector2Array([
-		Vector2(10, 40),
-		Vector2(65, 30),
-		Vector2(120, 15),
-		Vector2(165, 55),
-		Vector2(185, 115),
-		Vector2(160, 155),
-		Vector2(195, 205),
-		Vector2(145, 275),
-		Vector2(150, 340),
-		Vector2(20, 360),
-		Vector2(0, 360),
-		Vector2(0, 40)
-	])
-	_panel_manga.draw_colored_polygon(pts_silhouette, Color(0.12, 0.08, 0.06, 0.85))
-
-	# 3. Trama de puntos halftone
-	var step: float = 12.0
-	var dot_r: float = 1.5
-	for y in range(8, int(BASE_H - 26.0), int(step)):
-		var edge_x: float = 215.0 - 60.0 * (float(y) / (BASE_H - 26.0))
-		var off_x: float = 6.0 if (int(y / step) % 2 == 1) else 0.0
-		for x in range(int(off_x + 6), int(edge_x - 6), int(step)):
-			_panel_manga.draw_circle(Vector2(x, y), dot_r, color_dot_pattern)
-
-	# 4. Rayos diagonales de velocidad
-	_panel_manga.draw_line(Vector2(0, 60), Vector2(170, 42), color_speed_lines, 2.0)
-	_panel_manga.draw_line(Vector2(0, 130), Vector2(185, 110), color_speed_lines, 2.5)
-	_panel_manga.draw_line(Vector2(0, 200), Vector2(150, 185), color_speed_lines, 2.0)
-
-	# 5. Franja divisoria de impacto (Línea negra + Franja Amarilla + Contorno)
-	var pts_black := PackedVector2Array([
-		Vector2(215, 0),
-		Vector2(221, 0),
-		Vector2(161, BASE_H - 26.0),
-		Vector2(155, BASE_H - 26.0)
-	])
-	_panel_manga.draw_colored_polygon(pts_black, color_stripe_black)
-
-	var pts_yellow := PackedVector2Array([
-		Vector2(221, 0),
-		Vector2(229, 0),
-		Vector2(169, BASE_H - 26.0),
-		Vector2(161, BASE_H - 26.0)
-	])
-	_panel_manga.draw_colored_polygon(pts_yellow, color_stripe_yellow)
-	_panel_manga.draw_line(Vector2(229, 0), Vector2(169, BASE_H - 26.0), color_stripe_black, 2.0)
 
 # ---------------------------------------------------------------------------
 # CAPA 3: Personaje Pixel Art con Sombra Sólida
@@ -378,10 +426,7 @@ func _build_layer_3_character() -> void:
 	_char_holder.add_child(_char_shadow)
 	_char_shadow.draw.connect(func():
 		var pts_shadow := PackedVector2Array([
-			Vector2(-38, -3),
-			Vector2(38, -3),
-			Vector2(48, 3),
-			Vector2(-28, 3)
+			Vector2(-38, -3), Vector2(38, -3), Vector2(48, 3), Vector2(-28, 3)
 		])
 		_char_shadow.draw_colored_polygon(pts_shadow, Color(0.08, 0.08, 0.08, 0.75))
 	)
@@ -504,67 +549,37 @@ func _load_character_frames(primary_path: String, alt_path: String, anim_name: S
 	return result_frames
 
 # ---------------------------------------------------------------------------
-# CAPA 4: Logotipo Freestanding DRAGON BALL: ECOS (Zona Superior)
+# CAPA 4: Logotipo Oficial DRAGON BALL: ECOS (Zona Superior)
 # ---------------------------------------------------------------------------
 func _build_layer_4_logo() -> void:
 	_logo_node = Control.new()
 	_logo_node.name = "Layer4_TitleBanner" # Compatible con suites y animaciones
-	_logo_node.position = Vector2(235.0, 10.0)
-	_logo_node.size = Vector2(390.0, 68.0)
+	_logo_node.position = Vector2(235.0, 8.0)
+	_logo_node.size = Vector2(285.0, 74.0)
 	_logo_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_logo_node)
-	_logo_node.draw.connect(_on_draw_freestanding_logo)
 
-func _on_draw_freestanding_logo() -> void:
-	# Resplandor y estela de energía cósmica detrás del logo
-	var pts_glow := PackedVector2Array([
-		Vector2(10, 32),
-		Vector2(180, 10),
-		Vector2(370, 22),
-		Vector2(320, 60),
-		Vector2(130, 56)
-	])
-	_logo_node.draw_colored_polygon(pts_glow, Color(0.40, 0.15, 0.65, 0.35))
+	var logo_path := "res://assets/ui/menu/logo_dragon_ball_ecos.png"
+	if ResourceLoader.exists(logo_path):
+		_logo_rect = TextureRect.new()
+		_logo_rect.name = "LogoImage"
+		_logo_rect.texture = load(logo_path)
+		_logo_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_logo_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		_logo_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		_logo_rect.position = Vector2(0.0, 0.0)
+		_logo_rect.size = Vector2(285.0, 74.0)
+		_logo_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_logo_node.add_child(_logo_rect)
+	else:
+		_logo_node.draw.connect(_on_draw_freestanding_logo_fallback)
 
+func _on_draw_freestanding_logo_fallback() -> void:
 	var font_to_use: Font = _italic_font if _italic_font else ThemeDB.fallback_font
-
-	# 1. "DRAGON" arqueado/inclinado en Amarillo Dragon Ball
-	var dragon_pos := Vector2(10, 44)
-	# Sombra profunda roja/negra
-	_logo_node.draw_string(font_to_use, dragon_pos + Vector2(3, 3), "DRAGON", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, Color(0.60, 0.05, 0.05))
-	_logo_node.draw_string_outline(font_to_use, dragon_pos, "DRAGON", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, 6, color_stripe_black)
-	_logo_node.draw_string(font_to_use, dragon_pos, "DRAGON", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, color_stripe_yellow)
-
-	# 2. Esfera del Dragón vectorizada (como el icono oficial)
-	var ball_center := Vector2(148, 33)
-	_logo_node.draw_circle(ball_center + Vector2(2, 2), 12.0, color_stripe_black)
-	_logo_node.draw_circle(ball_center, 12.0, color_ball_orange)
-	_logo_node.draw_arc(ball_center, 12.0, 0.0, TAU, 20, color_stripe_black, 2.0)
-	# 4 estrellas rojas
-	_logo_node.draw_circle(ball_center + Vector2(-4, -4), 1.8, color_ball_star)
-	_logo_node.draw_circle(ball_center + Vector2(4, -4), 1.8, color_ball_star)
-	_logo_node.draw_circle(ball_center + Vector2(-4, 4), 1.8, color_ball_star)
-	_logo_node.draw_circle(ball_center + Vector2(4, 4), 1.8, color_ball_star)
-
-	# 3. "BALL:" en Rojo Intenso
-	var ball_pos := Vector2(170, 44)
-	_logo_node.draw_string(font_to_use, ball_pos + Vector2(3, 3), "BALL:", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, color_stripe_black)
-	_logo_node.draw_string_outline(font_to_use, ball_pos, "BALL:", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, 6, color_stripe_black)
-	_logo_node.draw_string(font_to_use, ball_pos, "BALL:", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, Color(0.95, 0.18, 0.18))
-
-	# 4. "ECOS" en Blanco con aura morada intensa (tipografía brush manga)
-	var ecos_pos := Vector2(285, 47)
-	# Resplandor morado grueso
-	_logo_node.draw_string_outline(font_to_use, ecos_pos, "ECOS", HORIZONTAL_ALIGNMENT_LEFT, -1, 36, 10, Color(0.50, 0.10, 0.85, 0.80))
-	_logo_node.draw_string_outline(font_to_use, ecos_pos, "ECOS", HORIZONTAL_ALIGNMENT_LEFT, -1, 36, 6, color_stripe_black)
-	_logo_node.draw_string(font_to_use, ecos_pos, "ECOS", HORIZONTAL_ALIGNMENT_LEFT, -1, 36, Color(1.0, 1.0, 1.0))
-
-	# Líneas de velocidad manga de salida del logo
-	_logo_node.draw_line(Vector2(275, 18), Vector2(370, 14), Color(0.85, 0.60, 1.0, 0.70), 2.0)
-	_logo_node.draw_line(Vector2(290, 56), Vector2(380, 52), Color(0.85, 0.60, 1.0, 0.70), 2.0)
+	_logo_node.draw_string(font_to_use, Vector2(10, 44), "DRAGON BALL: ECOS", HORIZONTAL_ALIGNMENT_LEFT, -1, 28, color_stripe_yellow)
 
 # ---------------------------------------------------------------------------
-# CAPA 5: Columna de Opciones (Centro-Derecha)
+# CAPA 5: Columna de Opciones con Iconos Oficiales
 # ---------------------------------------------------------------------------
 func _build_layer_5_options_column() -> void:
 	_options_container = Control.new()
@@ -573,11 +588,11 @@ func _build_layer_5_options_column() -> void:
 	_options_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_options_container)
 
-	var start_x: float = 225.0
-	var start_y: float = 88.0
-	var step_y: float = 38.0
-	var item_w: float = 232.0
-	var item_h: float = 31.0
+	var start_x: float = 228.0
+	var start_y: float = 86.0
+	var step_y: float = 39.0
+	var item_w: float = 236.0
+	var item_h: float = 33.0
 
 	_option_nodes.clear()
 
@@ -598,12 +613,26 @@ func _build_layer_5_options_column() -> void:
 			_draw_option_panel(btn_holder, idx)
 		)
 
+		# Icono oficial estilizado
+		var icon_path: String = opt_data.get("icon", "")
+		if ResourceLoader.exists(icon_path):
+			var icon_rect := TextureRect.new()
+			icon_rect.name = "IconRect"
+			icon_rect.texture = load(icon_path)
+			icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			icon_rect.position = Vector2(16.0, (item_h - 22.0) / 2.0)
+			icon_rect.size = Vector2(30.0, 22.0)
+			icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			btn_holder.add_child(icon_rect)
+
 		var lbl := Label.new()
 		lbl.name = "Label"
 		lbl.text = opt_data["label"]
 		lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		lbl.position = Vector2(28.0, 0.0)
-		lbl.size = Vector2(item_w - 95.0, item_h)
+		lbl.position = Vector2(52.0, 0.0)
+		lbl.size = Vector2(item_w - 52.0 - 74.0, item_h)
 		lbl.clip_text = false
 		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		if _italic_font:
@@ -664,83 +693,53 @@ func _draw_option_panel(holder: Control, idx: int) -> void:
 	# 1. Sombra sólida proyectada 4 px hacia abajo-derecha
 	var shadow_off := Vector2(4.0, 4.0)
 	var pts_shadow := PackedVector2Array([p1 + shadow_off, p2 + shadow_off, p3 + shadow_off, p4 + shadow_off])
-	holder.draw_colored_polygon(pts_shadow, Color(0.04, 0.03, 0.06, 0.85))
+	holder.draw_colored_polygon(pts_shadow, Color(0.04, 0.02, 0.08, 0.85))
 
 	if is_selected:
-		# Panel seleccionado: Amarillo Dragon Ball brillante #FFD23F
-		var pts_body := PackedVector2Array([p1, p2, p3, p4])
-		holder.draw_colored_polygon(pts_body, color_stripe_yellow)
+		# Panel seleccionado: Gradiente Amarillo brillante Manga Dragon Ball
+		var p_mid_left := Vector2(slant * 0.5, h * 0.5)
+		var p_mid_right := Vector2(w - slant * 0.5, h * 0.5)
+
+		# Mitad superior
+		holder.draw_colored_polygon(PackedVector2Array([p1, p2, p_mid_right, p_mid_left]), Color(1.0, 0.95, 0.40))
+		# Mitad inferior
+		holder.draw_colored_polygon(PackedVector2Array([p_mid_left, p_mid_right, p3, p4]), Color(1.0, 0.70, 0.0))
 
 		# Trama halftone sutil en la mitad derecha del botón
 		for y in range(4, int(h - 4), 6):
 			for x in range(int(w * 0.55), int(w - slant - 6), 8):
-				holder.draw_circle(Vector2(x, y), 1.0, Color(0.85, 0.65, 0.10, 0.60))
+				holder.draw_circle(Vector2(x, y), 1.0, Color(0.85, 0.55, 0.0, 0.45))
 
-		# Borde negro grueso de 3 px
+		# Borde negro grueso de 2.5 px
 		var outline := PackedVector2Array([p1, p2, p3, p4, p1])
-		holder.draw_polyline(outline, color_stripe_black, 3.0)
+		holder.draw_polyline(outline, Color(0.08, 0.05, 0.02), 2.5)
 
 		# Triángulo de selección '▶' saliente en la izquierda
 		var arrow_pts := PackedVector2Array([
-			Vector2(-10.0, h * 0.20),
+			Vector2(-12.0, h * 0.18),
 			Vector2(4.0, h * 0.50),
-			Vector2(-10.0, h * 0.80)
+			Vector2(-12.0, h * 0.82)
 		])
 		holder.draw_colored_polygon(arrow_pts, color_stripe_yellow)
 		holder.draw_polyline(PackedVector2Array([arrow_pts[0], arrow_pts[1], arrow_pts[2], arrow_pts[0]]), color_stripe_black, 2.5)
-
-		# Flecha interior negra
-		var inner_arrow := PackedVector2Array([
-			Vector2(10.0, h * 0.28),
-			Vector2(19.0, h * 0.50),
-			Vector2(10.0, h * 0.72)
-		])
-		holder.draw_colored_polygon(inner_arrow, color_stripe_black)
 
 		# Franjas diagonales de velocidad en el extremo derecho
 		holder.draw_line(Vector2(w - 24, 6), Vector2(w - 34, h - 6), color_stripe_black, 2.5)
 		holder.draw_line(Vector2(w - 17, 6), Vector2(w - 27, h - 6), color_stripe_black, 2.5)
 		holder.draw_line(Vector2(w - 10, 6), Vector2(w - 20, h - 6), color_stripe_black, 2.5)
 	else:
-		# Panel en reposo: Morado oscuro uniforme #261A3D
-		var pts_body := PackedVector2Array([p1, p2, p3, p4])
-		holder.draw_colored_polygon(pts_body, color_panel_dark)
+		# Panel en reposo: Morado oscuro manga biselado
+		var p_mid_left := Vector2(slant * 0.5, h * 0.5)
+		var p_mid_right := Vector2(w - slant * 0.5, h * 0.5)
+
+		holder.draw_colored_polygon(PackedVector2Array([p1, p2, p_mid_right, p_mid_left]), Color(0.18, 0.11, 0.28))
+		holder.draw_colored_polygon(PackedVector2Array([p_mid_left, p_mid_right, p3, p4]), Color(0.10, 0.06, 0.18))
+
+		# Línea de bisel superior de brillo
+		holder.draw_line(p1 + Vector2(2, 2), p2 + Vector2(-2, 2), Color(0.48, 0.32, 0.68, 0.85), 1.5)
 
 		var outline := PackedVector2Array([p1, p2, p3, p4, p1])
-		holder.draw_polyline(outline, color_panel_dark_border, 2.0)
-
-	# Icono gráfico vectorial estilizado a la izquierda
-	_draw_option_icon(holder, opt_def["icon_tag"], is_selected, h)
-
-func _draw_option_icon(holder: Control, icon_tag: String, is_selected: bool, h: float) -> void:
-	var col := color_stripe_black if is_selected else Color(1.0, 0.82, 0.30)
-	var cy := h * 0.50
-	match icon_tag:
-		"BOOK":
-			holder.draw_rect(Rect2(14, cy - 5, 5, 10), col, false, 1.5)
-			holder.draw_rect(Rect2(19, cy - 5, 5, 10), col, false, 1.5)
-		"SWORD":
-			holder.draw_line(Vector2(14, cy + 4), Vector2(23, cy - 4), col, 2.0)
-			holder.draw_line(Vector2(14, cy - 4), Vector2(23, cy + 4), col, 2.0)
-		"VS":
-			var font_to_use: Font = _italic_font if _italic_font else ThemeDB.fallback_font
-			holder.draw_string(font_to_use, Vector2(13, cy + 4), "VS", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, col)
-		"BELL":
-			holder.draw_line(Vector2(14, cy), Vector2(23, cy), col, 2.0)
-			holder.draw_line(Vector2(14, cy - 3), Vector2(14, cy + 3), col, 1.5)
-			holder.draw_line(Vector2(23, cy - 3), Vector2(23, cy + 3), col, 1.5)
-		"CART":
-			holder.draw_line(Vector2(14, cy - 3), Vector2(16, cy + 3), col, 1.5)
-			holder.draw_line(Vector2(16, cy + 3), Vector2(22, cy + 3), col, 1.5)
-			holder.draw_line(Vector2(22, cy + 3), Vector2(23, cy - 3), col, 1.5)
-			holder.draw_circle(Vector2(17, cy + 5), 1.2, col)
-			holder.draw_circle(Vector2(21, cy + 5), 1.2, col)
-		"GEAR":
-			holder.draw_circle(Vector2(19, cy), 4.0, col)
-			holder.draw_circle(Vector2(19, cy), 1.5, color_stripe_yellow if is_selected else color_panel_dark)
-		"EXIT":
-			holder.draw_rect(Rect2(14, cy - 4, 7, 8), col, false, 1.5)
-			holder.draw_line(Vector2(19, cy), Vector2(23, cy), col, 1.5)
+		holder.draw_polyline(outline, Color(0.07, 0.04, 0.12), 2.0)
 
 # ---------------------------------------------------------------------------
 # CAPA 6: Submenú de Historia (Espacio Reservado a la Derecha)
@@ -748,8 +747,8 @@ func _draw_option_icon(holder: Control, icon_tag: String, is_selected: bool, h: 
 func _build_layer_6_story_submenu() -> void:
 	_story_submenu_panel = Control.new()
 	_story_submenu_panel.name = "Layer6_StorySubmenu"
-	_story_submenu_panel.position = Vector2(468.0, 92.0)
-	_story_submenu_panel.size = Vector2(195.0, 130.0)
+	_story_submenu_panel.position = Vector2(472.0, 90.0)
+	_story_submenu_panel.size = Vector2(194.0, 128.0)
 	_story_submenu_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_story_submenu_panel)
 
@@ -957,15 +956,17 @@ func _set_selection(new_index: int) -> void:
 	_play_sfx(_sfx_move)
 	_update_selection_visuals(true)
 	_change_character_for_option(_current_index)
+	_change_banner_for_option(_current_index)
 	_change_background_for_option(_current_index)
 	_update_story_submenu_visibility(true)
 
 func _update_selection_visuals(animate: bool) -> void:
-	var base_x: float = 230.0
+	var base_x: float = 228.0
 	for i in range(_option_nodes.size()):
 		var holder: Control = _option_nodes[i]
 		var is_selected: bool = (i == _current_index and not _in_story_submenu)
-		var target_x: float = (base_x + 8.0) if is_selected else base_x
+		var is_enabled: bool = OPTIONS_DEF[i]["enabled"]
+		var target_x: float = (base_x - 8.0) if is_selected else base_x
 
 		if animate:
 			var tw := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -973,18 +974,29 @@ func _update_selection_visuals(animate: bool) -> void:
 		else:
 			holder.position.x = target_x
 
+		var icon_rect: TextureRect = holder.get_node_or_null("IconRect")
+		if icon_rect:
+			if is_selected:
+				icon_rect.modulate = Color(1.0, 1.0, 1.0, 1.0)
+				icon_rect.scale = Vector2(1.10, 1.10)
+			elif is_enabled:
+				icon_rect.modulate = Color(0.90, 0.86, 0.98, 0.90)
+				icon_rect.scale = Vector2(1.0, 1.0)
+			else:
+				icon_rect.modulate = Color(0.55, 0.50, 0.65, 0.60)
+				icon_rect.scale = Vector2(1.0, 1.0)
+
 		var lbl: Label = holder.get_node_or_null("Label")
 		if lbl:
 			if is_selected:
-				lbl.add_theme_font_size_override("font_size", 16)
-				lbl.add_theme_color_override("font_color", color_stripe_black)
+				lbl.add_theme_font_size_override("font_size", 15)
+				lbl.add_theme_color_override("font_color", Color(0.08, 0.04, 0.02))
 				lbl.remove_theme_constant_override("outline_size")
 			else:
-				lbl.add_theme_font_size_override("font_size", 15)
-				var is_enabled: bool = OPTIONS_DEF[i]["enabled"]
+				lbl.add_theme_font_size_override("font_size", 14)
 				lbl.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0) if is_enabled else color_text_disabled)
 				lbl.add_theme_constant_override("outline_size", 2)
-				lbl.add_theme_color_override("font_outline_color", Color(0.08, 0.08, 0.08))
+				lbl.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.12))
 
 		holder.queue_redraw()
 
