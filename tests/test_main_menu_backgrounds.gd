@@ -23,7 +23,8 @@ func _assert(condition: bool, message: String) -> void:
 		_failed += 1
 
 func _wait_frames(count: int) -> void:
-	for i in range(count):
+	await get_tree().create_timer(float(count) / 60.0).timeout
+	for i in range(5):
 		await get_tree().process_frame
 
 func _run_validation() -> void:
